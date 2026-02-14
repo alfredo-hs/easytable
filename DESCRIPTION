@@ -1,10 +1,35 @@
 Package: easytable
 Type: Package
-Title: Create MS word (docx) friendly regression tables
-Version: 0.1.0
-Author: Alfredo Hernandez Sanchez
-Maintainer: AHS <alhdzsz@gmail.com>
-Description: Create regression tables in Flextable format. Input is a named list of regression models. Currently supports lm and glm. 
-License: MIT
+Title: Create Multi-Format Regression Tables
+Version: 2.0.0
+Authors@R: person("Alfredo", "Hernandez Sanchez",
+    email = "alhdzsz@gmail.com",
+    role = c("aut", "cre"))
+Description: Create publication-ready regression tables in multiple formats
+    (Word, Markdown, LaTeX/PDF) from statistical models. Supports lm and glm
+    models with options for robust standard errors, marginal effects, and
+    control variable grouping. Tables can be exported to Word via flextable,
+    Markdown for Quarto/RMarkdown documents, or LaTeX for PDF output.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Imports:
+    broom,
+    dplyr,
+    magrittr,
+    stats
+Suggests:
+    flextable,
+    knitr,
+    kableExtra,
+    lmtest,
+    sandwich,
+    margins,
+    rmarkdown,
+    testthat (>= 3.0.0),
+    palmerpenguins
+VignetteBuilder: knitr
+URL: https://github.com/alhdzsz/easytable
+BugReports: https://github.com/alhdzsz/easytable/issues

@@ -1,185 +1,133 @@
-
+#' Create publication-ready regression tables in multiple formats
+#'
+#' Takes a named list of regression models and creates formatted tables for
+#' Word, Markdown, or LaTeX/PDF output. Supports robust standard errors,
+#' marginal effects, and control variable grouping.
+#'
+#' @param model_list A named list of statistical models (lm or glm objects).
+#'   Example: \code{list(Model1 = m1, Model2 = m2)}
+#' @param output Character string specifying output format. One of:
+#'   \itemize{
+#'     \item \code{"word"} - Microsoft Word via flextable (default)
+#'     \item \code{"markdown"} - Markdown for Quarto/RMarkdown
+#'     \item \code{"latex"} - LaTeX for PDF output
+#'   }
+#' @param csv Character string for CSV file export (without .csv extension).
+#'   If NULL (default), no CSV is created.
+#' @param robust.se Logical. Use robust standard errors (HC type)? Default FALSE.
+#'   Requires packages: lmtest, sandwich
+#' @param control.var Character vector of variable names to group as "control
+#'   variables". These will be collapsed into single rows showing "Y" for
+#'   presence instead of individual coefficients. Default NULL.
+#' @param margins Logical. Compute average marginal effects (AME)? Default FALSE.
+#'   Requires package: margins
+#' @param highlight Logical. Highlight significant coefficients (positive in green,
+#'   negative in red)? Default FALSE. Works best with Word output.
+#'
+#' @return
+#' Depends on \code{output}:
+#' \itemize{
+#'   \item \code{"word"} - A flextable object
+#'   \item \code{"markdown"} - Character string with markdown table
+#'   \item \code{"latex"} - Character string with LaTeX table code
+#' }
+#'
+#' @details
+#' The function extracts coefficients, standard errors, and p-values from each
+#' model, adds significance stars (*** p<.01, ** p<.05, * p<.1), and includes
+#' model fit statistics (N, R-squared, Adjusted R-squared, AIC).
+#'
+#' Control variables can be grouped to show presence/absence rather than
+#' individual coefficients for each factor level or transformation.
+#'
+#' @section Dependencies:
+#' \itemize{
+#'   \item Always required: broom, dplyr
+#'   \item Word output: flextable
+#'   \item Markdown/LaTeX: knitr, optionally kableExtra for enhanced formatting
+#'   \item Robust SE: lmtest, sandwich
+#'   \item Marginal effects: margins
+#' }
+#'
+#' @examples
+#' \dontrun{
+#' # Load example data
+#' library(palmerpenguins)
+#' data(penguins)
+#'
+#' # Fit models
+#' m1 <- lm(body_mass_g ~ flipper_length_mm, data = penguins)
+#' m2 <- lm(body_mass_g ~ flipper_length_mm + species, data = penguins)
+#' m3 <- lm(body_mass_g ~ flipper_length_mm + species + island, data = penguins)
+#' models <- list(Model1 = m1, Model2 = m2, Model3 = m3)
+#'
+#' # Word output (default)
+#' easy_table(models)
+#'
+#' # Markdown for Quarto/RMarkdown
+#' easy_table(models, output = "markdown")
+#'
+#' # LaTeX for PDF
+#' easy_table(models, output = "latex")
+#'
+#' # With robust standard errors
+#' easy_table(models, output = "word", robust.se = TRUE)
+#'
+#' # Group species and island as control variables
+#' easy_table(models, output = "markdown", control.var = c("species", "island"))
+#'
+#' # Highlight significant results
+#' easy_table(models, output = "word", highlight = TRUE)
+#'
+#' # Export to CSV as well
+#' easy_table(models, output = "latex", csv = "regression_results")
+#' }
+#'
+#' @export
 easy_table <- function(model_list,
+                       output = "word",
                        csv = NULL,
-                       robust.se = F,
+                       robust.se = FALSE,
                        control.var = NULL,
-                       margins = F,
-                       highlight = F) {
+                       margins = FALSE,
+                       highlight = FALSE) {
 
-  # Dependencies
-  if (!requireNamespace("margins", quietly = TRUE)) {
-    install.packages("margins")
-  }
-  if (!requireNamespace("dplyr", quietly = TRUE)) {
-    install.packages("dplyr")
-  }
-  if (!requireNamespace("flextable", quietly = TRUE)) {
-    install.packages("flextable")
-  }
-  if (!requireNamespace("lmtest", quietly = TRUE)) {
-    install.packages("lmtest")
-  }
-  if (!requireNamespace("broom", quietly = TRUE)) {
-    install.packages("broom")
-  }
-  if (!requireNamespace("sandwich", quietly = TRUE)) {
-    install.packages("sandwich")
-  }
+  # Validate output parameter
+  output <- match.arg(output, choices = c("word", "markdown", "latex"))
 
-  require(broom)
-  require(dplyr)
-  require(lmtest)
-  require(flextable)
-  require(sandwich)
-  require(margins)
+  # Validate inputs
+  validate_model_list(model_list)
+  validate_model_types(model_list)
+  validate_control_vars(model_list, control.var)
+  validate_parameters(robust.se, margins, highlight, csv)
 
-  # Error messages
-  if (!is.list(model_list) || is.null(names(model_list))) {
-    stop("Input must be a named list of models. Each element of the list must be a statistical model object.")
-  }
+  # Check feature dependencies
+  check_robust_dependencies(robust.se)
+  check_margins_dependencies(margins)
+  check_format_dependencies(output)
 
-  # Function
-  mnames <- names(model_list)
+  # Parse models (extract coefficients, SE, p-values)
+  parsed <- parse_models(model_list, robust.se, margins)
 
-  parse_model <- function(model) {
-    model_name <- deparse(substitute(model))
+  # Transform table (handle control vars, sort, organize)
+  transformed <- transform_table(parsed, control.var)
 
-    if(robust.se == T & margins == F){
-      m <- lmtest::coeftest(model, vcov = sandwich::vcovHC(model, type = "HC")) %>% tidy()
-    }
-    if(robust.se == F & margins == T){
-      m <- margins::margins(model) %>% tidy()
-    }
-    if(robust.se == T & margins == T){
-      m1 <- lmtest::coeftest(model, vcov = sandwich::vcovHC(model, type = "HC")) %>%
-        tidy() %>%
-        filter(term != "(Intercept)") %>%
-        select(-estimate)
-      m2 <- margins::margins(model) %>%
-        tidy() %>%
-        select(term, estimate)
-      m <- left_join(m1,m2)
-    }
-    if(robust.se == F & margins == F){
-      m <- model %>% tidy()
-    }
-
-    mod.df <- m %>%
-      select(term, estimate, std.error, p.value) %>%
-      mutate(
-        significance = case_when(
-          p.value < 0.01 ~ "***",
-          p.value >= 0.01 & p.value <= 0.05 ~ "** ",
-          p.value > 0.05 & p.value <= 0.1  ~ "*  ",
-          TRUE ~ "   "
-        )) %>%
-      mutate(across(where(is.numeric), round, digits = 2)) %>%
-      mutate(estimate = paste0(estimate, " ",
-                               significance, "\n", "(",
-                               std.error, ")")) %>%
-      select(term, estimate) %>%
-      rename(model = estimate)
-
-    measures <-
-      data.frame(
-        term = c("N", "R sq.", "Adj. R sq.", "AIC"),
-        model = c(
-          stats::nobs(model),
-          ifelse(!is.null(summary(model)$r.squared),summary(model)$r.squared,NA),
-          ifelse(!is.null(summary(model)$adj.r.squared),summary(model)$adj.r.squared,NA),
-          ifelse(!is.null(summary(model)$aic),summary(model)$aic,NA)
-        )
-      )
-
-    measures$model <- round(measures$model, 2)
-
-    measures$model <- as.character(measures$model)
-
-    mod.df <- bind_rows(mod.df, measures)
-
-    return(mod.df)
-
-  }
-
-  mtable <- parse_model(model_list[[1]])
-  names(mtable)[2] <- mnames[1]
-
-  if(length(model_list) > 1){
-    for(i in 2:length(model_list)){
-      mod <- model_list[[i]]
-      mtableadd <- parse_model(mod)
-      names(mtableadd)[2] <- mnames[i]
-      mtable <- full_join(mtable,mtableadd)
-    }
-  }
-
-  if(!is.null(control.var)){
-    for(var in control.var){
-      mtable$term <- gsub(sprintf("^factor\\(%s\\).*$", var), var, mtable$term)
-      mtable$term <- gsub(sprintf("^log\\(%s\\).*$", var), var, mtable$term)
-      mtable$term <- gsub(sprintf("^%s.*$", var), var, mtable$term)
-    }
-  }
-
-  for (col in names(mtable)[-1]) {
-    replace_indices <- mtable$term %in% control.var & !is.na(mtable[[col]])
-    mtable[replace_indices, col] <- "Y"
-  }
-
-  # This is a slight problem!
-  for (col in names(mtable)[-1]) {
-    mtable <- mtable[!(duplicated(mtable$term) & mtable[[col]] == "Y"), ]
-  }
-
-  mtable[is.na(mtable)] <- ""
-  mtable <- mtable[order(apply(mtable[, -1], 1, function(row) sum(row == "Y")), decreasing = F),]
-
-  mmes <- mtable %>% filter(term %in% c("N", "R sq.", "Adj. R sq.", "AIC"))
-  mmes <- mmes[rowSums(mmes[-1] != "") > 0, ]
-  mtable <- mtable %>% filter(!term %in% c("N", "R sq.", "Adj. R sq.", "AIC"))
-  mtable <- bind_rows(mtable, mmes)
-
-  ft <- flextable(mtable) %>%
-    add_footer_lines("Significance: ***p < .01; **p < .05; *p < .1 ") %>%
-    hline(j = 1:ncol(mtable), i = nrow(mtable)-nrow(mmes))
-
-  if(robust.se == T & margins == F){
-    ft <- ft %>%
-      add_footer_lines("Note: Robust Standard Errors")
-  }
-  if(robust.se == F & margins == T){
-    ft <- ft %>%
-      add_footer_lines("Note: Average Marginal Effects (AME)")
-  }
-  if(robust.se == T & margins == T){
-    ft <- ft %>%
-      add_footer_lines("Note: Marginal Effects and Robust Standard Errors")
-  }
-
-  if(highlight){
-    for(i in 2:ncol(mtable)) {
-      p_values <- grepl("\\*", mtable[[i]])
-      ft <- ft %>%
-        bg(j = i,
-           i = p_values,
-           part = "body", bg = "#e6ffe6")
-    }
-    for(i in 2:ncol(mtable)) {
-      p_values <- grepl("-\\d+(\\.\\d+)? \\*", mtable[[i]])
-      ft <- ft %>%
-        bg(j = i,
-           i = p_values,
-           part = "body", bg = "#ffcccc")
-    }
-  }
-
-  if(!is.null(csv)){
+  # Export to CSV if requested
+  if (!is.null(csv)) {
     write.csv(
-      mtable,
+      transformed,
       file = paste0(csv, ".csv"),
-      row.names = F,
+      row.names = FALSE
     )
   }
-  return(ft)
-}
 
+  # Format based on output type
+  result <- switch(
+    output,
+    word = format_word(transformed, robust.se, margins, highlight),
+    markdown = format_markdown(transformed, robust.se, margins, highlight),
+    latex = format_latex(transformed, robust.se, margins, highlight)
+  )
+
+  return(result)
+}
