@@ -1,5 +1,9 @@
 # easytable
 
+<p align="center">
+  <img src="man/figures/logo.png" width="180">
+</p>
+
 > Create publication-ready regression tables in multiple formats
 
 [![R-CMD-check](https://img.shields.io/badge/R%20CMD%20check-passing-brightgreen)](https://github.com/alfredo-hs/easytable)
