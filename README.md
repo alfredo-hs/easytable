@@ -1,25 +1,12 @@
-<table>
-<tr>
-<td>
-
-# easytable
+# easytable <img src="man/figures/logo.png" align="right" />
 
 **Create publication-ready regression tables in multiple formats**
 
-**Author:** [Alfredo Hernandez Sanchez](https://alfredohs.com)  
-Built with Claude Code ✨
+**Author:** [Alfredo Hernandez Sanchez](https://alfredohs.com),  Claude Code ✨ <br>
+**License:** [MIT](https://opensource.org/licenses/MIT)
 
 [![R-CMD-check](https://img.shields.io/badge/R--CMD--check-passing-brightgreen)]()
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
-
-</td>
-<td align="right">
-
-<img src="man/figures/logo.png" width="160">
-
-</td>
-</tr>
-</table>
 
 ---
 ## Overview
