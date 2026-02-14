@@ -1,14 +1,27 @@
+<table>
+<tr>
+<td>
+
 # easytable
 
-<p align="center">
-  <img src="man/figures/logo.png" width="180">
-</p>
+**Create publication-ready regression tables in multiple formats**
 
-> Create publication-ready regression tables in multiple formats
+**Author:** [Alfredo Hernandez Sanchez](https://alfredohs.com)  
+Built with Claude Code ✨
 
-[![R-CMD-check](https://img.shields.io/badge/R%20CMD%20check-passing-brightgreen)](https://github.com/alfredo-hs/easytable)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![R-CMD-check](https://img.shields.io/badge/R--CMD--check-passing-brightgreen)]()
+[![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 
+</td>
+<td align="right">
+
+<img src="man/figures/logo.png" width="160">
+
+</td>
+</tr>
+</table>
+
+---
 ## Overview
 
 **easytable** creates beautiful, publication-ready regression tables from R statistical models. Export your results to:
