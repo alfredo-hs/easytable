@@ -1,8 +1,8 @@
-# easytable <img src="man/figures/logo.png" align="right" width="160"/>
+# easytable <img src="man/figures/logo.png" align="right" width="190"/>
 
 **Create publication-ready regression tables in multiple formats**
 
-**Author:** [Alfredo Hernandez Sanchez](https://alfredohs.com),  Claude Code ✨ <br>
+**Authors:** [Alfredo Hernandez Sanchez](https://alfredohs.com),  Claude Code ✨ <br>
 **License:** [MIT](https://opensource.org/licenses/MIT)
 
 [![R-CMD-check](https://img.shields.io/badge/R--CMD--check-passing-brightgreen)]()
