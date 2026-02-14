@@ -1,4 +1,4 @@
-# easytable <img src="man/figures/logo.png" align="right" />
+# easytable <img src="man/figures/logo.png" align="right" width="160"/>
 
 **Create publication-ready regression tables in multiple formats**
 
