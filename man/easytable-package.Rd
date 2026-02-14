@@ -6,6 +6,8 @@
 \alias{easytable-package}
 \title{easytable: Create Multi-Format Regression Tables}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 Create publication-ready regression tables in multiple formats (Word, Markdown, LaTeX/PDF) from statistical models. Supports lm and glm models with options for robust standard errors, marginal effects, and control variable grouping. Tables can be exported to Word via flextable, Markdown for Quarto/RMarkdown documents, or LaTeX for PDF output.
 }
 \seealso{

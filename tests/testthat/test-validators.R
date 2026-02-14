@@ -41,9 +41,15 @@ test_that("validate_control_vars warns about missing variables", {
     "not found in any model"
   )
 
-  # Should not warn for existing variable
+  # Should not warn for existing variable (hp exists in test_m2 and test_m3)
   expect_silent(
-    validate_control_vars(test_models_lm, "species")
+    validate_control_vars(test_models_lm, "hp")
+  )
+
+  # Should warn for another missing variable
+  expect_warning(
+    validate_control_vars(test_models_lm, "not_a_var"),
+    "not found in any model"
   )
 
   # NULL control.var is valid
