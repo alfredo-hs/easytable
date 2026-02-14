@@ -2,7 +2,7 @@
 
 > Create publication-ready regression tables in multiple formats
 
-[![R-CMD-check](https://img.shields.io/badge/R%20CMD%20check-passing-brightgreen)](https://github.com/alhdzsz/easytable)
+[![R-CMD-check](https://img.shields.io/badge/R%20CMD%20check-passing-brightgreen)](https://github.com/alfredo-hs/easytable)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Overview
@@ -32,7 +32,7 @@ Install the development version from GitHub:
 
 ```r
 # install.packages("devtools")
-devtools::install_github("alhdzsz/easytable")
+devtools::install_github("alfredo-hs/easytable")
 ```
 
 ## Quick Start
@@ -239,8 +239,8 @@ Missing packages will trigger informative error messages with installation instr
 
 ## Getting Help
 
-- **Bug reports**: [GitHub Issues](https://github.com/alhdzsz/easytable/issues)
-- **Questions**: [GitHub Discussions](https://github.com/alhdzsz/easytable/discussions)
+- **Bug reports**: [GitHub Issues](https://github.com/alfredo-hs/easytable/issues)
+- **Questions**: [GitHub Discussions](https://github.com/alfredo-hs/easytable/discussions)
 
 ## Citation
 
@@ -248,7 +248,7 @@ If you use easytable in your research, please cite:
 
 ```
 Hernandez Sanchez, A. (2026). easytable: Create Multi-Format Regression Tables.
-R package version 2.0.0. https://github.com/alhdzsz/easytable
+R package version 2.0.0. https://github.com/alfredo-hs/easytable
 ```
 
 ## License

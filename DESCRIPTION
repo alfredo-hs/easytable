@@ -31,5 +31,5 @@ Suggests:
     testthat (>= 3.0.0),
     palmerpenguins
 VignetteBuilder: knitr
-URL: https://github.com/alhdzsz/easytable
-BugReports: https://github.com/alhdzsz/easytable/issues
+URL: https://github.com/alfredo-hs/easytable
+BugReports: https://github.com/alfredo-hs/easytable/issues

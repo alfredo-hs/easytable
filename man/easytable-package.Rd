@@ -11,8 +11,8 @@ Create publication-ready regression tables in multiple formats (Word, Markdown, 
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/alhdzsz/easytable}
-  \item Report bugs at \url{https://github.com/alhdzsz/easytable/issues}
+  \item \url{https://github.com/alfredo-hs/easytable}
+  \item Report bugs at \url{https://github.com/alfredo-hs/easytable/issues}
 }
 
 }

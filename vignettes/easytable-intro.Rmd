@@ -26,7 +26,7 @@ The **easytable** package creates publication-ready regression tables in multipl
 
 ```{r eval=FALSE}
 # Install from GitHub
-devtools::install_github("alhdzsz/easytable")
+devtools::install_github("alfredo-hs/easytable")
 ```
 
 ## Setup
@@ -348,7 +348,7 @@ Coming soon: `plm`, `fixest`, and other model types.
 ## Next Steps
 
 - See `?easy_table` for complete function documentation
-- Check [GitHub](https://github.com/alhdzsz/easytable) for latest updates
+- Check [GitHub](https://github.com/alfredo-hs/easytable) for latest updates
 - Report issues or request features on GitHub Issues
 
 ## References

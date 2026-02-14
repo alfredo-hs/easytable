@@ -14,7 +14,7 @@
 - **Language**: R
 - **License**: MIT
 - **Author**: Alfredo Hernandez Sanchez
-- **Repository**: https://github.com/alhdzsz/easytable
+- **Repository**: https://github.com/alfredo-hs/easytable
 
 ---
 
@@ -702,8 +702,8 @@ When updating dependencies:
 ## Contact
 
 - **Maintainer**: Alfredo Hernandez Sanchez <alhdzsz@gmail.com>
-- **Issues**: https://github.com/alhdzsz/easytable/issues
-- **Discussions**: https://github.com/alhdzsz/easytable/discussions
+- **Issues**: https://github.com/alfredo-hs/easytable/issues
+- **Discussions**: https://github.com/alfredo-hs/easytable/discussions
 
 ---
 

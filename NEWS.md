@@ -242,7 +242,7 @@ The modular architecture in 2.0.0 makes it easy to add:
 ## Feedback
 
 Found a bug? Have a feature request? Please open an issue on GitHub:
-https://github.com/alhdzsz/easytable/issues
+https://github.com/alfredo-hs/easytable/issues
 
 ---
 
