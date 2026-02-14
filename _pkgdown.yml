@@ -1,0 +1,19 @@
+url: https://alfredo-hs.github.io/easytable/
+template:
+  bootstrap: 5
+
+home:
+  title: easytable
+  description: Create publication-ready regression tables in Word, Markdown, and LaTeX.
+
+navbar:
+  structure:
+    left:  [intro, reference, articles, news]
+    right: [github]
+
+news: []
+
+articles:
+  - title: Articles
+    contents:
+      - easytable-intro
