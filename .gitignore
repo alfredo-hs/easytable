@@ -8,3 +8,4 @@
 *.Rcheck/
 *.tar.gz
 inst/doc
+CLAUDE.md
