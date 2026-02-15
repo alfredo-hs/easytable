@@ -2,6 +2,7 @@
 
 export("%>%")
 export(easy_table)
+export(easytable)
 export(format_latex)
 export(format_markdown)
 export(format_word)

@@ -1,3 +1,49 @@
+# easytable 2.0.1
+
+## New Features
+
+* **Stargazer-style interface**: New `easytable()` function accepts model objects directly through dots, like `easytable(m1, m2, m3)`. This provides a more intuitive API similar to stargazer.
+
+* **Default model naming**: Model columns are now automatically named "Model 1", "Model 2", etc. when using the new `easytable()` interface.
+
+* **Custom model names**: Added `model.names` parameter to specify custom column names for models. Example: `easytable(m1, m2, model.names = c("Baseline", "Full"))`
+
+* **Enhanced term label formatting**: Term labels are now automatically formatted for improved readability:
+  * Factor levels separated with colon (e.g., `digital_confidence:low`)
+  * Interactions displayed with asterisk and spaces (e.g., `var1 * var2`)
+  * Polynomial contrasts shown as L indices (e.g., `var:L1` for `.Q`, `var:L2` for `.L`)
+  * Common variable names abbreviated (e.g., `fin.prud` for `financial_prudence`)
+
+## Bug Fixes
+
+* **Fixed markdown output**: Resolved issue with stray vertical bars appearing inside table cells. Markdown tables now use `<br>` for line breaks within cells, ensuring proper rendering.
+
+* **Improved markdown formatting**: Ensured coefficient formatting (stars, standard errors) is consistent across markdown and LaTeX output formats.
+
+## Backward Compatibility
+
+* The original `easy_table()` function with list-based interface remains fully functional for backward compatibility.
+
+* All existing code using `easy_table(list(Model1 = m1, Model2 = m2))` continues to work without changes.
+
+## Migration from 2.0.0
+
+Most users can adopt the new interface immediately:
+
+```r
+# Old way (still works)
+models <- list(Model1 = m1, Model2 = m2)
+easy_table(models)
+
+# New way (recommended)
+easytable(m1, m2)
+
+# With custom names
+easytable(m1, m2, model.names = c("Model1", "Model2"))
+```
+
+---
+
 # easytable 2.0.0
 
 ## Major Changes

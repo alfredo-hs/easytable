@@ -16,6 +16,6 @@ A transformed data frame ready for formatting
 }
 \description{
 Main transformation function that handles control variables, sorting,
-deduplication, and organization of the results table.
+deduplication, organization, and term label formatting.
 }
 \keyword{internal}

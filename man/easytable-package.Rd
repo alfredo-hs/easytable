@@ -2,7 +2,6 @@
 % Please edit documentation in R/easytable-package.R
 \docType{package}
 \name{easytable-package}
-\alias{easytable}
 \alias{easytable-package}
 \title{easytable: Create Multi-Format Regression Tables}
 \description{

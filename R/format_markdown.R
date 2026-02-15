@@ -24,18 +24,27 @@ format_markdown <- function(table,
     )
   }
 
+  # Convert multi-line cells to single line for markdown compatibility
+  # Replace newlines with <br> for proper markdown rendering
+  table_clean <- table
+  for (col in names(table_clean)) {
+    if (col != "term") {
+      table_clean[[col]] <- gsub("\n", "<br>", table_clean[[col]], fixed = TRUE)
+    }
+  }
+
   # Identify where measures start (for horizontal line)
   measure_names <- c("N", "R sq.", "Adj. R sq.", "AIC")
-  first_measure_row <- which(table$term %in% measure_names)[1]
+  first_measure_row <- which(table_clean$term %in% measure_names)[1]
 
   # Create base markdown table
   if (requireNamespace("kableExtra", quietly = TRUE) && highlight) {
     # Use kableExtra for enhanced formatting with highlighting
     kbl <- kableExtra::kbl(
-      table,
+      table_clean,
       format = "markdown",
-      col.names = names(table),
-      align = c("l", rep("c", ncol(table) - 1))
+      col.names = names(table_clean),
+      align = c("l", rep("c", ncol(table_clean) - 1))
     )
 
     # Add horizontal line before measures
@@ -48,14 +57,14 @@ format_markdown <- function(table,
     }
 
     # Highlight significant positive coefficients (green)
-    for (i in 2:ncol(table)) {
-      sig_rows <- which(grepl("\\*", table[[i]]) & !grepl("-\\d+(\\.\\d+)? \\*", table[[i]]))
+    for (i in 2:ncol(table_clean)) {
+      sig_rows <- which(grepl("\\*", table_clean[[i]]) & !grepl("-\\d+(\\.\\d+)? \\*", table_clean[[i]]))
       if (length(sig_rows) > 0) {
         kbl <- kableExtra::column_spec(
           kbl,
           column = i,
           background = ifelse(
-            seq_len(nrow(table)) %in% sig_rows,
+            seq_len(nrow(table_clean)) %in% sig_rows,
             "#e6ffe6",
             "white"
           )
@@ -64,14 +73,14 @@ format_markdown <- function(table,
     }
 
     # Highlight significant negative coefficients (red)
-    for (i in 2:ncol(table)) {
-      neg_sig_rows <- which(grepl("-\\d+(\\.\\d+)? \\*", table[[i]]))
+    for (i in 2:ncol(table_clean)) {
+      neg_sig_rows <- which(grepl("-\\d+(\\.\\d+)? \\*", table_clean[[i]]))
       if (length(neg_sig_rows) > 0) {
         kbl <- kableExtra::column_spec(
           kbl,
           column = i,
           background = ifelse(
-            seq_len(nrow(table)) %in% neg_sig_rows,
+            seq_len(nrow(table_clean)) %in% neg_sig_rows,
             "#ffcccc",
             "white"
           )
@@ -79,16 +88,17 @@ format_markdown <- function(table,
       }
     }
 
-    result <- kbl
+    result <- as.character(kbl)
 
   } else {
     # Use basic knitr::kable for simple markdown
     result <- knitr::kable(
-      table,
+      table_clean,
       format = "markdown",
-      col.names = names(table),
-      align = c("l", rep("c", ncol(table) - 1))
+      col.names = names(table_clean),
+      align = c("l", rep("c", ncol(table_clean) - 1))
     )
+    result <- paste(result, collapse = "\n")
   }
 
   # Build footnote text

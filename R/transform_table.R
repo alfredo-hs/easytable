@@ -146,7 +146,7 @@ separate_measures <- function(table) {
 #' Transform parsed model table
 #'
 #' Main transformation function that handles control variables, sorting,
-#' deduplication, and organization of the results table.
+#' deduplication, organization, and term label formatting.
 #'
 #' @param parsed_table A data frame from parse_models()
 #' @param control.var Character vector of control variable names
@@ -172,6 +172,12 @@ transform_table <- function(parsed_table, control.var = NULL) {
 
   # Separate measures and put them at the bottom
   result <- separate_measures(result)
+
+  # Format term labels for display (do this last, before formatting)
+  # Skip formatting for measure rows
+  measure_names <- c("N", "R sq.", "Adj. R sq.", "AIC")
+  non_measure_rows <- !result$term %in% measure_names
+  result$term[non_measure_rows] <- format_term_labels(result$term[non_measure_rows])
 
   return(result)
 }

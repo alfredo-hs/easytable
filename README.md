@@ -50,10 +50,11 @@ m1 <- lm(body_mass_g ~ flipper_length_mm, data = penguins)
 m2 <- lm(body_mass_g ~ flipper_length_mm + species, data = penguins)
 m3 <- lm(body_mass_g ~ flipper_length_mm + species + island, data = penguins)
 
-models <- list(Model1 = m1, Model2 = m2, Model3 = m3)
+# Create table with default names (Model 1, Model 2, Model 3)
+easytable(m1, m2, m3)
 
-# Create table (defaults to Word format)
-easy_table(models)
+# Or with custom names
+easytable(m1, m2, m3, model.names = c("Baseline", "With Species", "Full Model"))
 ```
 
 ## Output Formats
@@ -63,7 +64,7 @@ easy_table(models)
 Perfect for Microsoft Word documents:
 
 ```r
-easy_table(models, output = "word")
+easytable(m1, m2, m3, output = "word")
 ```
 
 Returns a `flextable` object that can be:
@@ -76,7 +77,7 @@ Returns a `flextable` object that can be:
 For Quarto and RMarkdown documents:
 
 ```r
-easy_table(models, output = "markdown")
+easytable(m1, m2, output = "markdown")
 ```
 
 Returns a markdown table that renders beautifully in `.qmd` and `.Rmd` files:
@@ -90,7 +91,7 @@ format: html
 ```{r}
 #| echo: false
 library(easytable)
-easy_table(models, output = "markdown")
+easytable(m1, m2, output = "markdown")
 ```
 ```
 
@@ -99,7 +100,7 @@ easy_table(models, output = "markdown")
 For academic papers and PDF output:
 
 ```r
-easy_table(models, output = "latex")
+easytable(m1, m2, output = "latex")
 ```
 
 Returns LaTeX table code with booktabs styling, perfect for academic journals.
@@ -111,7 +112,7 @@ Returns LaTeX table code with booktabs styling, perfect for academic journals.
 Use heteroskedasticity-consistent (HC) standard errors:
 
 ```r
-easy_table(models, output = "word", robust.se = TRUE)
+easytable(m1, m2, output = "word", robust.se = TRUE)
 ```
 
 *Requires: `lmtest`, `sandwich` packages*
@@ -121,7 +122,7 @@ easy_table(models, output = "word", robust.se = TRUE)
 Compute average marginal effects instead of raw coefficients:
 
 ```r
-easy_table(models, output = "markdown", margins = TRUE)
+easytable(m1, m2, output = "markdown", margins = TRUE)
 ```
 
 *Requires: `margins` package*
@@ -131,9 +132,9 @@ easy_table(models, output = "markdown", margins = TRUE)
 Combine robust SEs with marginal effects:
 
 ```r
-easy_table(models, output = "latex",
-           robust.se = TRUE,
-           margins = TRUE)
+easytable(m1, m2, output = "latex",
+          robust.se = TRUE,
+          margins = TRUE)
 ```
 
 ### Control Variables
@@ -141,18 +142,27 @@ easy_table(models, output = "latex",
 Group control variables to show presence/absence rather than individual coefficients:
 
 ```r
-easy_table(models, output = "word",
-           control.var = c("species", "island"))
+easytable(m1, m2, m3, output = "word",
+          control.var = c("species", "island"))
 ```
 
 Instead of showing separate rows for `speciesChinstrap`, `speciesGentoo`, etc., the table shows a single "species" row marked with "Y" for models that include it.
+
+### Custom Model Names
+
+Provide meaningful names for your model columns:
+
+```r
+easytable(m1, m2, m3,
+          model.names = c("Baseline", "With Controls", "Full Model"))
+```
 
 ### Highlighting
 
 Color-code significant results (positive = green, negative = red):
 
 ```r
-easy_table(models, output = "word", highlight = TRUE)
+easytable(m1, m2, output = "word", highlight = TRUE)
 ```
 
 *Works best with Word output*
@@ -162,7 +172,7 @@ easy_table(models, output = "word", highlight = TRUE)
 Export the underlying data table alongside your formatted output:
 
 ```r
-easy_table(models, output = "latex", csv = "results")
+easytable(m1, m2, output = "latex", csv = "results")
 # Creates results.csv
 ```
 
@@ -179,14 +189,10 @@ m1 <- lm(body_mass_g ~ flipper_length_mm, data = penguins)
 m2 <- lm(body_mass_g ~ flipper_length_mm + species + island + sex,
          data = na.omit(penguins))
 
-models <- list(
-  "Baseline" = m1,
-  "Full Model" = m2
-)
-
 # Create publication-ready table
-easy_table(
-  models,
+easytable(
+  m1, m2,
+  model.names = c("Baseline", "Full Model"),
   output = "word",
   robust.se = TRUE,
   control.var = c("species", "island", "sex"),
@@ -238,7 +244,7 @@ Missing packages will trigger informative error messages with installation instr
 
 - **Quick start**: You're reading it!
 - **Vignette**: `vignette("easytable-intro")`
-- **Function reference**: `?easy_table`
+- **Function reference**: `?easytable` or `?easy_table`
 - **Developer docs**: See `CLAUDE.md` for architecture details
 
 ## Getting Help
@@ -252,7 +258,7 @@ If you use easytable in your research, please cite:
 
 ```
 Hernandez Sanchez, A. (2026). easytable: Create Multi-Format Regression Tables.
-R package version 2.0.0. https://github.com/alfredo-hs/easytable
+R package version 2.0.1. https://github.com/alfredo-hs/easytable
 ```
 
 ## License
