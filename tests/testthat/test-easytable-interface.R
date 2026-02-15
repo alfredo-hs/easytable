@@ -1,4 +1,4 @@
-# Test the new easytable() dots interface
+# Test the easytable() interface
 
 test_that("easytable accepts model objects through dots", {
   # Simple models
@@ -88,20 +88,69 @@ test_that("easytable works with single model", {
   expect_true(grepl("Model 1", result))
 })
 
-test_that("easy_table backward compatibility maintained", {
+test_that("easytable works with lm models", {
   m1 <- lm(mpg ~ wt, data = mtcars)
   m2 <- lm(mpg ~ wt + hp, data = mtcars)
 
-  models <- list(Model1 = m1, Model2 = m2)
-
-  # Old interface should still work
   expect_no_error(
-    easy_table(models, output = "markdown")
+    easytable(m1, m2, output = "markdown")
+  )
+})
+
+test_that("easytable works with glm models", {
+  # Binary outcome for glm
+  mtcars_bin <- mtcars
+  mtcars_bin$am_binary <- mtcars_bin$am
+
+  m1 <- glm(am_binary ~ wt, data = mtcars_bin, family = binomial)
+  m2 <- glm(am_binary ~ wt + hp, data = mtcars_bin, family = binomial)
+
+  expect_no_error(
+    easytable(m1, m2, output = "markdown")
+  )
+})
+
+# Test factor level formatting with synthetic data
+test_that("factor terms display as var:level not varlevel", {
+  # Create synthetic data with factor that has levels low, mid, high
+  set.seed(123)
+  test_data <- data.frame(
+    y = rnorm(100),
+    x = rnorm(100),
+    advisor_confidence = factor(rep(c("low", "mid", "high"), length.out = 100))
   )
 
-  result <- easy_table(models, output = "markdown")
+  m1 <- lm(y ~ x + advisor_confidence, data = test_data)
+  result <- easytable(m1, output = "markdown")
 
-  # Should use the list names
-  expect_true(grepl("Model1", result))
-  expect_true(grepl("Model2", result))
+  # Should contain "adv_conf:low" or "advisor_confidence:low" (depending on abbreviation)
+  # but NOT "advisor_confidencelow" (concatenated)
+  expect_true(grepl(":low", result))
+  expect_true(grepl(":mid", result))
+
+  # Should NOT contain concatenated form
+  expect_false(grepl("advisor_confidencelow", result, fixed = TRUE))
+  expect_false(grepl("advisor_confidencemid", result, fixed = TRUE))
+})
+
+test_that("interaction with contrast and factor displays as var:L2 * other:level", {
+  # Create data with ordered factor (to get polynomial contrasts) and regular factor
+  set.seed(123)
+  test_data <- data.frame(
+    y = rnorm(100),
+    financial_prudence = factor(rep(1:4, length.out = 100), ordered = TRUE),
+    digital_confidence = factor(rep(c("low", "high"), length.out = 100))
+  )
+
+  m1 <- lm(y ~ financial_prudence * digital_confidence, data = test_data)
+  result <- easytable(m1, output = "markdown")
+
+  # Should have polynomial contrast terms like fin.prud:L1 or fin.prud:L2
+  expect_true(grepl(":L[12]", result))
+
+  # Should have interaction with asterisk
+  expect_true(grepl("\\*", result))
+
+  # Should have factor level separated
+  expect_true(grepl(":low|:high", result))
 })

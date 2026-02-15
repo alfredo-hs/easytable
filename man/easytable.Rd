@@ -2,7 +2,7 @@
 % Please edit documentation in R/easytab.R
 \name{easytable}
 \alias{easytable}
-\title{Create publication-ready regression tables (stargazer-style interface)}
+\title{Create publication-ready regression tables}
 \usage{
 easytable(
   ...,
@@ -69,10 +69,10 @@ individual coefficients for each factor level or transformation.
 
 Term labels are automatically formatted for readability:
 \itemize{
-\item Factor levels separated with colon (e.g., \code{digital_confidence:low})
+\item Factor levels separated with colon (e.g., \code{advisor_confidence:low})
 \item Interactions shown with asterisk (e.g., \code{var1 * var2})
 \item Polynomial contrasts as L indices (e.g., \code{var:L1}, \code{var:L2})
-\item Common variables abbreviated (e.g., \code{fin.prud}, \code{dig_conf})
+\item Long variable names abbreviated for clarity
 }
 }
 \section{Dependencies}{
@@ -113,7 +113,4 @@ easytable(m1, m2, robust.se = TRUE)
 easytable(m1, m2, m3, control.var = c("species", "island"))
 }
 
-}
-\seealso{
-\code{\link{easy_table}} for the list-based interface
 }

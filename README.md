@@ -228,18 +228,6 @@ Coming soon:
 
 Missing packages will trigger informative error messages with installation instructions.
 
-## Comparison to Other Packages
-
-| Feature | easytable | stargazer | modelsummary | huxtable |
-|---------|-----------|-----------|--------------|----------|
-| Word output | ✅ | ❌ | ✅ | ✅ |
-| Markdown | ✅ | ❌ | ✅ | ✅ |
-| LaTeX | ✅ | ✅ | ✅ | ✅ |
-| Robust SE | ✅ | ✅ | ✅ | ✅ |
-| Marginal effects | ✅ | ❌ | ⚠️ | ⚠️ |
-| Control var grouping | ✅ | ❌ | ⚠️ | ❌ |
-| Single function | ✅ | ✅ | ✅ | ❌ |
-
 ## Documentation
 
 - **Quick start**: You're reading it!

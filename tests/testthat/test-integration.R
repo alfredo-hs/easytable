@@ -1,80 +1,80 @@
-test_that("easy_table works with Word output (default)", {
+test_that("easytable works with Word output (default)", {
   skip_if_not_installed("flextable")
 
-  result <- easy_table(test_single_model)
+  result <- easytable(test_m1)
 
   expect_s3_class(result, "flextable")
 })
 
-test_that("easy_table works with markdown output", {
+test_that("easytable works with markdown output", {
   skip_if_not_installed("knitr")
 
-  result <- easy_table(test_single_model, output = "markdown")
+  result <- easytable(test_m1, output = "markdown")
 
   expect_type(result, "character")
   expect_true(grepl("\\|", result))
 })
 
-test_that("easy_table works with latex output", {
+test_that("easytable works with latex output", {
   skip_if_not_installed("knitr")
 
-  result <- easy_table(test_single_model, output = "latex")
+  result <- easytable(test_m1, output = "latex")
 
   expect_type(result, "character")
   expect_true(nchar(result) > 0)
 })
 
-test_that("easy_table handles multiple lm models", {
+test_that("easytable handles multiple lm models", {
   skip_if_not_installed("flextable")
 
-  result <- easy_table(test_models_lm, output = "word")
+  result <- easytable(test_m1, test_m2, test_m3, output = "word")
 
   expect_s3_class(result, "flextable")
 })
 
-test_that("easy_table handles glm models", {
+test_that("easytable handles glm models", {
   skip_if_not_installed("flextable")
 
-  result <- easy_table(test_models_glm, output = "word")
+  result <- easytable(test_g1, test_g2, output = "word")
 
   expect_s3_class(result, "flextable")
 })
 
-test_that("easy_table with robust standard errors", {
+test_that("easytable with robust standard errors", {
   skip_if_not_installed("flextable")
   skip_if_not_installed("lmtest")
   skip_if_not_installed("sandwich")
 
-  result <- easy_table(test_single_model, output = "word", robust.se = TRUE)
+  result <- easytable(test_m1, output = "word", robust.se = TRUE)
 
   expect_s3_class(result, "flextable")
 })
 
-test_that("easy_table with marginal effects", {
+test_that("easytable with marginal effects", {
   skip_if_not_installed("flextable")
   skip_if_not_installed("margins")
 
-  result <- easy_table(test_single_model, output = "word", margins = TRUE)
+  result <- easytable(test_m1, output = "word", margins = TRUE)
 
   expect_s3_class(result, "flextable")
 })
 
-test_that("easy_table with robust SE and margins", {
+test_that("easytable with robust SE and margins", {
   skip_if_not_installed("flextable")
   skip_if_not_installed("lmtest")
   skip_if_not_installed("sandwich")
   skip_if_not_installed("margins")
 
-  result <- easy_table(test_models_lm[2:3], output = "word", robust.se = TRUE, margins = TRUE)
+  result <- easytable(test_m2, test_m3, output = "word", robust.se = TRUE, margins = TRUE)
 
   expect_s3_class(result, "flextable")
 })
 
-test_that("easy_table with control variables", {
+test_that("easytable with control variables", {
   skip_if_not_installed("flextable")
 
-  result <- easy_table(
-    test_models_lm,
+  result <- easytable(
+    test_m1, test_m2, test_m3,
     output = "word",
     control.var = c("hp", "am")
   )
@@ -82,15 +82,15 @@ test_that("easy_table with control variables", {
   expect_s3_class(result, "flextable")
 })
 
-test_that("easy_table full pipeline with all features", {
+test_that("easytable full pipeline with all features", {
   skip_if_not_installed("flextable")
   skip_if_not_installed("lmtest")
   skip_if_not_installed("sandwich")
 
   temp_csv <- tempfile()
 
-  result <- easy_table(
-    test_models_lm,
+  result <- easytable(
+    test_m1, test_m2, test_m3,
     output = "word",
     csv = temp_csv,
     robust.se = TRUE,
@@ -104,11 +104,11 @@ test_that("easy_table full pipeline with all features", {
   unlink(paste0(temp_csv, ".csv"))
 })
 
-test_that("easy_table markdown pipeline with control vars", {
+test_that("easytable markdown pipeline with control vars", {
   skip_if_not_installed("knitr")
 
-  result <- easy_table(
-    test_models_lm,
+  result <- easytable(
+    test_m1, test_m2, test_m3,
     output = "markdown",
     control.var = c("hp", "am")
   )
@@ -127,14 +127,13 @@ test_that("penguins dataset end-to-end test", {
   m1 <- lm(body_mass_g ~ flipper_length_mm, data = penguins)
   m2 <- lm(body_mass_g ~ flipper_length_mm + species, data = penguins)
   m3 <- lm(body_mass_g ~ flipper_length_mm + species + island, data = penguins)
-  models <- list(Model1 = m1, Model2 = m2, Model3 = m3)
 
-  result1 <- easy_table(models)
+  result1 <- easytable(m1, m2, m3)
   expect_s3_class(result1, "flextable")
 
-  result2 <- easy_table(models, control.var = c("species", "island"))
+  result2 <- easytable(m1, m2, m3, control.var = c("species", "island"))
   expect_s3_class(result2, "flextable")
 
-  result3 <- easy_table(models, highlight = TRUE)
+  result3 <- easytable(m1, m2, m3, highlight = TRUE)
   expect_s3_class(result3, "flextable")
 })

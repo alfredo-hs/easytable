@@ -16,9 +16,9 @@ Character vector of formatted term labels
 Applies formatting transformations to term labels:
 \enumerate{
 \item Convert polynomial suffixes to L indices (e.g., .Q -> :L1, .L -> :L2)
-\item Separate factor levels with colon (e.g., digital_confidencelow -> digital_confidence:low)
 \item Convert interaction colons to asterisks (e.g., varA:varB -> varA * varB)
-\item Abbreviate long variable names using a predefined mapping
+\item Separate factor levels with colon (e.g., advisor_confidencelow -> advisor_confidence:low)
+\item Abbreviate long variable names
 }
 }
 \keyword{internal}

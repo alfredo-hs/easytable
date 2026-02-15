@@ -1,4 +1,4 @@
-#' Create publication-ready regression tables (stargazer-style interface)
+#' Create publication-ready regression tables
 #'
 #' Takes model objects as arguments and creates formatted tables for
 #' Word, Markdown, or LaTeX/PDF output. Supports robust standard errors,
@@ -45,10 +45,10 @@
 #'
 #' Term labels are automatically formatted for readability:
 #' \itemize{
-#'   \item Factor levels separated with colon (e.g., \code{digital_confidence:low})
+#'   \item Factor levels separated with colon (e.g., \code{advisor_confidence:low})
 #'   \item Interactions shown with asterisk (e.g., \code{var1 * var2})
 #'   \item Polynomial contrasts as L indices (e.g., \code{var:L1}, \code{var:L2})
-#'   \item Common variables abbreviated (e.g., \code{fin.prud}, \code{dig_conf})
+#'   \item Long variable names abbreviated for clarity
 #' }
 #'
 #' @section Dependencies:
@@ -87,7 +87,6 @@
 #' easytable(m1, m2, m3, control.var = c("species", "island"))
 #' }
 #'
-#' @seealso \code{\link{easy_table}} for the list-based interface
 #' @export
 easytable <- function(...,
                       model.names = NULL,
@@ -128,115 +127,9 @@ easytable <- function(...,
     model_names <- model.names
   }
 
-  # Create named list for easy_table
+  # Create named list
   names(models) <- model_names
-
-  # Call the existing easy_table function
-  easy_table(
-    model_list = models,
-    output = output,
-    csv = csv,
-    robust.se = robust.se,
-    control.var = control.var,
-    margins = margins,
-    highlight = highlight
-  )
-}
-
-#' Create publication-ready regression tables (list-based interface)
-#'
-#' Takes a named list of regression models and creates formatted tables for
-#' Word, Markdown, or LaTeX/PDF output. Supports robust standard errors,
-#' marginal effects, and control variable grouping.
-#'
-#' @param model_list A named list of statistical models (lm or glm objects).
-#'   Example: \code{list(Model1 = m1, Model2 = m2)}
-#' @param output Character string specifying output format. One of:
-#'   \itemize{
-#'     \item \code{"word"} - Microsoft Word via flextable (default)
-#'     \item \code{"markdown"} - Markdown for Quarto/RMarkdown
-#'     \item \code{"latex"} - LaTeX for PDF output
-#'   }
-#' @param csv Character string for CSV file export (without .csv extension).
-#'   If NULL (default), no CSV is created.
-#' @param robust.se Logical. Use robust standard errors (HC type)? Default FALSE.
-#'   Requires packages: lmtest, sandwich
-#' @param control.var Character vector of variable names to group as "control
-#'   variables". These will be collapsed into single rows showing "Y" for
-#'   presence instead of individual coefficients. Default NULL.
-#' @param margins Logical. Compute average marginal effects (AME)? Default FALSE.
-#'   Requires package: margins
-#' @param highlight Logical. Highlight significant coefficients (positive in green,
-#'   negative in red)? Default FALSE. Works best with Word output.
-#'
-#' @return
-#' Depends on \code{output}:
-#' \itemize{
-#'   \item \code{"word"} - A flextable object
-#'   \item \code{"markdown"} - Character string with markdown table
-#'   \item \code{"latex"} - Character string with LaTeX table code
-#' }
-#'
-#' @details
-#' The function extracts coefficients, standard errors, and p-values from each
-#' model, adds significance stars (*** p<.01, ** p<.05, * p<.1), and includes
-#' model fit statistics (N, R-squared, Adjusted R-squared, AIC).
-#'
-#' Control variables can be grouped to show presence/absence rather than
-#' individual coefficients for each factor level or transformation.
-#'
-#' @section Dependencies:
-#' \itemize{
-#'   \item Always required: broom, dplyr
-#'   \item Word output: flextable
-#'   \item Markdown/LaTeX: knitr, optionally kableExtra for enhanced formatting
-#'   \item Robust SE: lmtest, sandwich
-#'   \item Marginal effects: margins
-#' }
-#'
-#' @examples
-#' \dontrun{
-#' # Load example data
-#' library(palmerpenguins)
-#' data(penguins)
-#'
-#' # Fit models
-#' m1 <- lm(body_mass_g ~ flipper_length_mm, data = penguins)
-#' m2 <- lm(body_mass_g ~ flipper_length_mm + species, data = penguins)
-#' m3 <- lm(body_mass_g ~ flipper_length_mm + species + island, data = penguins)
-#' models <- list(Model1 = m1, Model2 = m2, Model3 = m3)
-#'
-#' # Word output (default)
-#' easy_table(models)
-#'
-#' # Markdown for Quarto/RMarkdown
-#' easy_table(models, output = "markdown")
-#'
-#' # LaTeX for PDF
-#' easy_table(models, output = "latex")
-#'
-#' # With robust standard errors
-#' easy_table(models, output = "word", robust.se = TRUE)
-#'
-#' # Group species and island as control variables
-#' easy_table(models, output = "markdown", control.var = c("species", "island"))
-#'
-#' # Highlight significant results
-#' easy_table(models, output = "word", highlight = TRUE)
-#'
-#' # Export to CSV as well
-#' easy_table(models, output = "latex", csv = "regression_results")
-#' }
-#'
-#' @seealso \code{\link{easytable}} for the stargazer-style interface
-#' @export
-easy_table <- function(model_list,
-                       output = "word",
-                       csv = NULL,
-                       robust.se = FALSE,
-                       control.var = NULL,
-                       margins = FALSE,
-                       highlight = FALSE) {
+  model_list <- models
 
   # Validate output parameter
   output <- match.arg(output, choices = c("word", "markdown", "latex"))

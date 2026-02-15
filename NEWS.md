@@ -2,7 +2,7 @@
 
 ## New Features
 
-* **Stargazer-style interface**: New `easytable()` function accepts model objects directly through dots, like `easytable(m1, m2, m3)`. This provides a more intuitive API similar to stargazer.
+* **Direct model interface**: New `easytable()` function accepts model objects directly through dots, like `easytable(m1, m2, m3)`. This provides a more intuitive API for multiple model input.
 
 * **Default model naming**: Model columns are now automatically named "Model 1", "Model 2", etc. when using the new `easytable()` interface.
 
