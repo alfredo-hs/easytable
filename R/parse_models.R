@@ -11,17 +11,13 @@
 #' @keywords internal
 parse_single_model <- function(model, robust.se = FALSE, margins = FALSE) {
 
-  # Extract coefficients based on options
-  if (robust.se == TRUE & margins == FALSE) {
+  if (isTRUE(robust.se) && !isTRUE(margins)) {
     m <- lmtest::coeftest(model, vcov = sandwich::vcovHC(model, type = "HC")) %>%
       broom::tidy()
-  }
-
-  if (robust.se == FALSE & margins == TRUE) {
-    m <- margins::margins(model) %>% broom::tidy()
-  }
-
-  if (robust.se == TRUE & margins == TRUE) {
+  } else if (!isTRUE(robust.se) && isTRUE(margins)) {
+    m <- margins::margins(model) %>%
+      broom::tidy()
+  } else if (isTRUE(robust.se) && isTRUE(margins)) {
     m1 <- lmtest::coeftest(model, vcov = sandwich::vcovHC(model, type = "HC")) %>%
       broom::tidy() %>%
       dplyr::filter(term != "(Intercept)") %>%
@@ -32,13 +28,11 @@ parse_single_model <- function(model, robust.se = FALSE, margins = FALSE) {
       dplyr::select(term, estimate)
 
     m <- dplyr::left_join(m1, m2, by = "term")
+  } else {
+    m <- broom::tidy(model)
   }
 
-  if (robust.se == FALSE & margins == FALSE) {
-    m <- model %>% broom::tidy()
-  }
-
-  return(m)
+  m
 }
 
 #' Format coefficients with significance stars and standard errors
@@ -95,7 +89,7 @@ extract_model_measures <- function(model) {
   measures$estimate <- round(measures$estimate, 2)
   measures$estimate <- as.character(measures$estimate)
 
-  return(measures)
+  measures
 }
 
 #' Parse a model and return formatted results
@@ -111,19 +105,11 @@ extract_model_measures <- function(model) {
 #' @keywords internal
 parse_model <- function(model, robust.se = FALSE, margins = FALSE) {
 
-  # Extract coefficients
   coef_data <- parse_single_model(model, robust.se, margins)
-
-  # Format coefficients with stars and SE
   mod.df <- format_coefficients(coef_data)
-
-  # Extract model measures
   measures <- extract_model_measures(model)
 
-  # Combine coefficients and measures
-  result <- dplyr::bind_rows(mod.df, measures)
-
-  return(result)
+  dplyr::bind_rows(mod.df, measures)
 }
 
 #' Parse multiple models into a combined table
@@ -138,20 +124,29 @@ parse_models <- function(model_list, robust.se = FALSE, margins = FALSE) {
 
   model_names <- names(model_list)
 
+  if (is.null(model_names) || any(!nzchar(model_names))) {
+    stop("model_list must be a named list of models.", call. = FALSE)
+  }
+
+  # Build factor-level map from model metadata for later label splitting
+  levels_map <- build_levels_map(model_list)
+
   # Parse first model
   result_table <- parse_model(model_list[[1]], robust.se, margins)
   names(result_table)[2] <- model_names[1]
 
-  # Parse remaining models if any
+  # Parse remaining models
   if (length(model_list) > 1) {
     for (i in 2:length(model_list)) {
-      model <- model_list[[i]]
-      model_table <- parse_model(model, robust.se, margins)
+      model_table <- parse_model(model_list[[i]], robust.se, margins)
       names(model_table)[2] <- model_names[i]
 
       result_table <- dplyr::full_join(result_table, model_table, by = "term")
     }
   }
 
-  return(result_table)
+  # Carry levels_map forward without changing return type
+  attr(result_table, "levels_map") <- levels_map
+
+  result_table
 }

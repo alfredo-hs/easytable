@@ -7,17 +7,18 @@
 
 [![R-CMD-check](https://img.shields.io/badge/R--CMD--check-passing-brightgreen)]()
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
+[![pkgdown](https://img.shields.io/badge/pkgdown-site-blue)](https://alfredo-hs.github.io/easytable/)
 
 ---
 ## Overview
 
 **easytable** creates beautiful, publication-ready regression tables from R statistical models. Export your results to:
 
-- **Microsoft Word** (via flextable)
+- **Microsoft Word** (via `flextable`)
 - **Markdown** (for Quarto/RMarkdown documents)
 - **LaTeX/PDF** (for academic papers)
 
-All from a single, simple function call.
+All from a single, simple function call `easytable::easytable()`.
 
 ## Features
 
@@ -37,6 +38,7 @@ Install the development version from GitHub:
 ```r
 # install.packages("devtools")
 devtools::install_github("alfredo-hs/easytable")
+
 ```
 
 ## Quick Start
@@ -55,6 +57,7 @@ easytable(m1, m2, m3)
 
 # Or with custom names
 easytable(m1, m2, m3, model.names = c("Baseline", "With Species", "Full Model"))
+
 ```
 
 ## Output Formats
@@ -65,6 +68,7 @@ Perfect for Microsoft Word documents:
 
 ```r
 easytable(m1, m2, m3, output = "word")
+
 ```
 
 Returns a `flextable` object that can be:
@@ -78,6 +82,7 @@ For Quarto and RMarkdown documents:
 
 ```r
 easytable(m1, m2, output = "markdown")
+
 ```
 
 Returns a markdown table that renders beautifully in `.qmd` and `.Rmd` files:

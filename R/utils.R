@@ -1,17 +1,10 @@
 #' Check if a package is available
-#'
-#' @param pkg Character string with package name
-#' @return Logical indicating if package is installed
 #' @keywords internal
 is_package_available <- function(pkg) {
   requireNamespace(pkg, quietly = TRUE)
 }
 
 #' Get measure row names
-#'
-#' Returns the standard names used for model fit measures
-#'
-#' @return Character vector of measure names
 #' @keywords internal
 get_measure_names <- function() {
   c("N", "R sq.", "Adj. R sq.", "AIC")
@@ -19,187 +12,207 @@ get_measure_names <- function() {
 
 #' Abbreviate variable name
 #'
-#' Abbreviates long variable names using either explicit mapping or
-#' a deterministic algorithm based on underscore-separated tokens.
+#' Deterministic abbreviation rules:
+#' - Short readable names remain unchanged
+#' - "_" and "." treated as token separators
+#' - Tokens shortened and joined with "."
+#' - Long single tokens truncated to stable prefix
+#' - Mixed alphanumeric IDs collapse to short prefix
 #'
-#' @param var_name Character string with variable name
-#' @return Abbreviated variable name
 #' @keywords internal
-abbreviate_var_name <- function(var_name) {
-  # Explicit mapping for known variables
-  abbrev_map <- c(
-    "financial_prudence" = "fin.prud",
-    "digital_confidence" = "dig_conf",
-    "advisor_confidence" = "adv_conf"
-  )
+abbreviate_var_name <- function(var_name,
+                                min_keep_len = 8,
+                                token_chars = 3,
+                                max_tokens = 2,
+                                id_prefix_chars = 4) {
 
-  # Check if variable is in explicit mapping
-  if (var_name %in% names(abbrev_map)) {
-    return(abbrev_map[[var_name]])
+  if (is.na(var_name) || !nzchar(var_name)) return(var_name)
+
+  n <- nchar(var_name)
+
+  # Keep short names unchanged
+  if (n <= min_keep_len) return(var_name)
+
+  take <- function(x, k) {
+    if (nchar(x) <= k) x else substring(x, 1, k)
   }
 
-  # For unmapped names, apply deterministic abbreviation
-  # Only abbreviate if variable name is long enough (>15 chars) and has underscores
-  if (nchar(var_name) > 15 && grepl("_", var_name)) {
-    # Split on underscore, take prefix of each token, join with underscore
-    tokens <- strsplit(var_name, "_")[[1]]
-    # Take first 3-4 characters of each token
-    abbreviated <- vapply(tokens, function(token) {
-      if (nchar(token) <= 4) {
-        return(token)
-      } else {
-        return(substring(token, 1, 4))
-      }
-    }, character(1))
-    return(paste(abbreviated, collapse = "_"))
+  # Tokenised names: snake_case or dot.case
+  if (grepl("[_.]", var_name, perl = TRUE)) {
+
+    tokens <- unlist(strsplit(var_name, "[_.]", perl = TRUE))
+    tokens <- tokens[tokens != ""]
+
+    if (length(tokens) == 0) return(var_name)
+
+    k <- min(length(tokens), max_tokens)
+
+    out_tokens <- vapply(tokens[seq_len(k)], take, character(1), k = token_chars)
+
+    return(paste(out_tokens, collapse = "."))
   }
 
-  # Return original name if no abbreviation applies
-  return(var_name)
+  # Mixed alphanumeric IDs
+  if (grepl("[0-9]", var_name)) {
+    return(take(var_name, id_prefix_chars))
+  }
+
+  # Long single alphabetic token
+  take(var_name, 9)
 }
 
-#' Detect and split factor level suffix
-#'
-#' Detects if a term has a factor level concatenated directly to variable name
-#' and splits it using a colon. Works for common factor levels and any
-#' lowercase alphabetic suffix.
-#'
-#' @param term Character string with potential factor level concatenation
-#' @return Character string with variable and level separated by colon
+#' Ensure labels are unique via numeric suffix
 #' @keywords internal
-split_factor_level <- function(term) {
-  # Common factor level patterns (not exhaustive, but covers typical cases)
-  # These are lowercase alphabetic strings that commonly appear as factor levels
-  common_levels <- c("low", "mid", "high", "yes", "no", "male", "female",
-                     "true", "false", "small", "medium", "large",
-                     "never", "sometimes", "always", "rarely", "often")
+make_unique_labels <- function(labels) {
 
-  # Check if term ends with a common level (without underscore before it)
-  for (level in common_levels) {
-    # Pattern: variable name + level directly concatenated
-    # Example: digital_confidencelow -> digital_confidence + low
-    #          occupationno -> occupation + no
-    # Important: level must NOT be preceded by underscore
-    pattern <- paste0("^(.+[^_])(", level, ")$")
-    if (grepl(pattern, term, perl = TRUE)) {
-      var_part <- gsub(pattern, "\\1", term, perl = TRUE)
-      # Split if either:
-      # 1. Variable part has underscores (e.g., advisor_confidencelow), OR
-      # 2. Variable part is reasonably long (>= 5 chars) to avoid splitting "varno"
-      if (grepl("_", var_part) || nchar(var_part) >= 5) {
-        replacement <- paste0(var_part, ":", level)
-        return(replacement)
-      }
+  if (!anyDuplicated(labels)) return(labels)
+
+  out <- labels
+  tab <- table(labels)
+  dup_names <- names(tab[tab > 1])
+
+  for (nm in dup_names) {
+    idx <- which(labels == nm)
+    if (length(idx) > 1) {
+      out[idx[-1]] <- paste0(nm, seq_along(idx)[-1])
     }
   }
 
-  # Return unchanged if no pattern matches
-  return(term)
+  out
+}
+
+#' Detect and split factor level suffix using model metadata
+#' @keywords internal
+split_factor_level <- function(term, levels_map = NULL) {
+
+  if (is.null(levels_map) || length(levels_map) == 0) return(term)
+  if (!nzchar(term) || is.na(term)) return(term)
+  if (grepl(":", term, fixed = TRUE)) return(term)
+
+  for (var in names(levels_map)) {
+
+    levs <- levels_map[[var]]
+    if (is.null(levs) || length(levs) == 0) next
+
+    if (!startsWith(term, var)) next
+
+    suffix <- substring(term, nchar(var) + 1)
+
+    if (suffix %in% levs) {
+      return(paste0(var, ":", suffix))
+    }
+  }
+
+  term
 }
 
 #' Format term labels for display
 #'
-#' Applies formatting transformations to term labels:
-#' 1. Convert polynomial suffixes to L indices (e.g., .Q -> :L1, .L -> :L2)
-#' 2. Convert interaction colons to asterisks (e.g., varA:varB -> varA * varB)
-#' 3. Separate factor levels with colon (e.g., advisor_confidencelow -> advisor_confidence:low)
-#' 4. Abbreviate long variable names
+#' Transformations:
+#' - Preserve polynomial suffixes (.L, .Q, .C, etc.)
+#' - Split factor levels using levels_map
+#' - Abbreviate only variable portion
+#' - Ensure uniqueness after abbreviation
 #'
-#' @param terms Character vector of term labels from models
-#' @return Character vector of formatted term labels
 #' @keywords internal
-format_term_labels <- function(terms) {
+format_term_labels <- function(terms, levels_map = NULL) {
+
   formatted <- terms
 
-  # Step 1: Convert polynomial contrast suffixes to L indices
-  # Map: .Q -> :L1, .L -> :L2, .C -> :L3
-  formatted <- gsub("\\.Q", ":L1", formatted, fixed = FALSE)
-  formatted <- gsub("\\.L", ":L2", formatted, fixed = FALSE)
-  formatted <- gsub("\\.C", ":L3", formatted, fixed = FALSE)
-
-  # Step 2: Convert interaction colons to asterisks with spaces
-  # But NOT the colons we just added for polynomial terms (:L1, :L2, etc.)
-  # Pattern: colon NOT followed by L and a digit
-  formatted <- gsub(":(?!L[0-9])", " * ", formatted, perl = TRUE)
-
-  # Step 3: Separate factor levels with colon
-  # Process both standalone terms and parts within interactions
+  # ---- Step 1: Split factor levels ----
   for (i in seq_along(formatted)) {
+
     term <- formatted[i]
 
-    # Check if this is an interaction (contains asterisk)
     if (grepl("\\*", term)) {
-      # Split by asterisk, process each part, then rejoin
+
       parts <- strsplit(term, " \\* ")[[1]]
+
       for (j in seq_along(parts)) {
+
         part <- trimws(parts[j])
-        # Skip if already has colon (polynomial or already split level)
-        if (!grepl(":", part)) {
-          parts[j] <- split_factor_level(part)
+
+        if (!grepl(":", part, fixed = TRUE)) {
+          parts[j] <- split_factor_level(part, levels_map)
         }
       }
+
       formatted[i] <- paste(parts, collapse = " * ")
+
     } else {
-      # Not an interaction, process the whole term
-      # Skip if already has colon (polynomial or already split level)
-      if (!grepl(":", term)) {
-        formatted[i] <- split_factor_level(term)
+
+      if (!grepl(":", term, fixed = TRUE)) {
+        formatted[i] <- split_factor_level(term, levels_map)
       }
     }
   }
 
-  # Step 4: Apply variable name abbreviations
-  # Do this last so abbreviations are applied consistently everywhere
+  # ---- Helper: abbreviate variable portion only ----
+  abbrev_piece <- function(piece) {
+
+    piece <- trimws(piece)
+
+    # Preserve polynomial suffixes like ".L", ".Q", ".^4"
+    if (grepl("\\.[A-Za-z^0-9]+$", piece)) {
+
+      base <- sub("(\\.[A-Za-z^0-9]+)$", "", piece)
+      suffix <- sub("^.*(\\.[A-Za-z^0-9]+)$", "\\1", piece)
+
+      return(paste0(abbreviate_var_name(base), suffix))
+    }
+
+    # Preserve factor level suffix after colon
+    if (grepl(":", piece, fixed = TRUE)) {
+
+      parts <- strsplit(piece, ":", fixed = TRUE)[[1]]
+      var_name <- parts[1]
+      rest <- paste(parts[-1], collapse = ":")
+
+      return(paste0(abbreviate_var_name(var_name), ":", rest))
+    }
+
+    abbreviate_var_name(piece)
+  }
+
+  # ---- Step 2: Apply abbreviations ----
   for (i in seq_along(formatted)) {
+
     term <- formatted[i]
 
-    # Extract all variable names from the term (before colons, around asterisks)
-    # Split by special markers to identify variable names
     if (grepl("\\*", term)) {
-      # Has interaction - process each part
+
       parts <- strsplit(term, " \\* ")[[1]]
-      for (j in seq_along(parts)) {
-        part <- trimws(parts[j])
-        # Get variable name (before colon if present)
-        if (grepl(":", part)) {
-          var_level <- strsplit(part, ":")[[1]]
-          var_name <- var_level[1]
-          rest <- paste(var_level[-1], collapse = ":")
-          abbrev <- abbreviate_var_name(var_name)
-          parts[j] <- paste0(abbrev, ":", rest)
-        } else {
-          # No colon, just abbreviate the whole thing
-          parts[j] <- abbreviate_var_name(part)
-        }
-      }
+      parts <- vapply(parts, abbrev_piece, character(1))
       formatted[i] <- paste(parts, collapse = " * ")
-    } else if (grepl(":", term)) {
-      # Has colon but no asterisk - likely var:level or var:L1
-      var_rest <- strsplit(term, ":")[[1]]
-      var_name <- var_rest[1]
-      rest <- paste(var_rest[-1], collapse = ":")
-      abbrev <- abbreviate_var_name(var_name)
-      formatted[i] <- paste0(abbrev, ":", rest)
+
     } else {
-      # Simple term, no special characters
-      formatted[i] <- abbreviate_var_name(term)
+
+      formatted[i] <- abbrev_piece(term)
     }
   }
 
-  return(formatted)
+  # ---- Step 3: Ensure uniqueness ----
+  formatted <- make_unique_labels(formatted)
+
+  formatted
 }
 
-#' Pipe operator
-#'
-#' See \code{magrittr::\link[magrittr:pipe]{\%>\%}} for details.
-#'
-#' @name %>%
-#' @rdname pipe
+build_levels_map <- function(model_list) {
+  out <- list()
+
+  for (m in model_list) {
+    xl <- m$xlevels
+    if (is.null(xl) || length(xl) == 0) next
+
+    for (nm in names(xl)) {
+      out[[nm]] <- unique(c(out[[nm]], xl[[nm]]))
+    }
+  }
+
+  out
+}
+
+#' Pipe operator import
 #' @keywords internal
-#' @export
 #' @importFrom magrittr %>%
-#' @usage lhs \%>\% rhs
-#' @param lhs A value or the magrittr placeholder.
-#' @param rhs A function call using the magrittr semantics.
-#' @return The result of calling `rhs(lhs)`.
 NULL

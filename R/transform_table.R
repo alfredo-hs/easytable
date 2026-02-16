@@ -16,12 +16,8 @@ collapse_control_vars <- function(table, control.var) {
   result <- table
 
   for (var in control.var) {
-    # Fix the greedy regex issue from original code
-    # Use word boundaries and more specific patterns to avoid matching
-    # variables like "hp" when looking for "h" or "hpq" when looking for "hp"
 
     # Pattern 1: factor(var)... (e.g., factor(species)Chinstrap)
-    # Use word boundaries to ensure exact variable name match
     pattern_factor <- sprintf("^factor\\(%s\\).*", var)
     result$term <- gsub(pattern_factor, var, result$term, perl = TRUE)
 
@@ -30,19 +26,15 @@ collapse_control_vars <- function(table, control.var) {
     result$term <- gsub(pattern_log, var, result$term, perl = TRUE)
 
     # Pattern 3: Variable name directly followed by level names (e.g., speciesChinstrap)
-    # This is the most common format from broom::tidy()
-    # Match var followed by an uppercase letter (factor level)
     pattern_level <- sprintf("^%s[A-Z].*", var)
     result$term <- gsub(pattern_level, var, result$term, perl = TRUE)
 
     # Pattern 4: Variable name with transformations or interactions
-    # Match var at start, followed by non-word character
-    # This prevents "hp" from matching "hpq"
     pattern_transform <- sprintf("^%s[^[:alnum:]_].*", var)
     result$term <- gsub(pattern_transform, var, result$term, perl = TRUE)
   }
 
-  return(result)
+  result
 }
 
 #' Mark control variables with 'Y' indicator
@@ -60,14 +52,13 @@ mark_control_vars <- function(table, control.var) {
     return(table)
   }
 
-  # For each model column (excluding the term column)
   for (col in names(table)[-1]) {
-    # Find rows where term is a control variable and cell is not empty
-    replace_indices <- table$term %in% control.var & !is.na(table[[col]])
+    # TRUE only when this row is a control var AND the cell has a value
+    replace_indices <- (table$term %in% control.var) & !is.na(table[[col]]) & (table[[col]] != "")
     table[replace_indices, col] <- "Y"
   }
 
-  return(table)
+  table
 }
 
 #' Remove duplicate control variable rows
@@ -80,21 +71,15 @@ mark_control_vars <- function(table, control.var) {
 #' @return A data frame with duplicates removed
 #' @keywords internal
 deduplicate_control_vars <- function(table) {
-  # Strategy: For each model column, remove duplicates where the value is "Y"
-  # Keep the first occurrence of each control variable
 
   result <- table
 
-  # Process each model column
   for (col in names(result)[-1]) {
-    # Identify rows that are duplicated AND have "Y" in this column
     duplicate_mask <- duplicated(result$term) & result[[col]] == "Y"
-
-    # Remove those rows
-    result <- result[!duplicate_mask, ]
+    result <- result[!duplicate_mask, , drop = FALSE]
   }
 
-  return(result)
+  result
 }
 
 #' Sort table with control variables last
@@ -107,13 +92,8 @@ deduplicate_control_vars <- function(table) {
 #' @return A sorted data frame
 #' @keywords internal
 sort_table <- function(table) {
-  # Calculate how many "Y"s each row has (indicating control var presence)
   y_count <- apply(table[, -1, drop = FALSE], 1, function(row) sum(row == "Y"))
-
-  # Sort by number of "Y"s (ascending, so regular vars come first)
-  table <- table[order(y_count, decreasing = FALSE), ]
-
-  return(table)
+  table[order(y_count, decreasing = FALSE), , drop = FALSE]
 }
 
 #' Separate measures from coefficients
@@ -126,21 +106,16 @@ sort_table <- function(table) {
 #' @return A data frame with measures at the bottom
 #' @keywords internal
 separate_measures <- function(table) {
-  measure_names <- c("N", "R sq.", "Adj. R sq.", "AIC")
+  measure_names <- get_measure_names()
 
-  # Extract measures
   measures <- table %>% dplyr::filter(term %in% measure_names)
 
   # Remove measure rows with no data (all empty except term)
-  measures <- measures[rowSums(measures[-1] != "") > 0, ]
+  measures <- measures[rowSums(measures[-1] != "") > 0, , drop = FALSE]
 
-  # Extract coefficients (everything else)
   coefficients <- table %>% dplyr::filter(!term %in% measure_names)
 
-  # Recombine with measures at bottom
-  result <- dplyr::bind_rows(coefficients, measures)
-
-  return(result)
+  dplyr::bind_rows(coefficients, measures)
 }
 
 #' Transform parsed model table
@@ -156,6 +131,9 @@ separate_measures <- function(table) {
 transform_table <- function(parsed_table, control.var = NULL) {
 
   result <- parsed_table
+
+  # Pull factor level map carried from parse_models()
+  levels_map <- attr(parsed_table, "levels_map")
 
   # Handle control variables if specified
   if (!is.null(control.var)) {
@@ -173,11 +151,14 @@ transform_table <- function(parsed_table, control.var = NULL) {
   # Separate measures and put them at the bottom
   result <- separate_measures(result)
 
-  # Format term labels for display (do this last, before formatting)
-  # Skip formatting for measure rows
-  measure_names <- c("N", "R sq.", "Adj. R sq.", "AIC")
+  # Format term labels for display (skip measure rows)
+  measure_names <- get_measure_names()
   non_measure_rows <- !result$term %in% measure_names
-  result$term[non_measure_rows] <- format_term_labels(result$term[non_measure_rows])
 
-  return(result)
+  result$term[non_measure_rows] <- format_term_labels(
+    result$term[non_measure_rows],
+    levels_map = levels_map
+  )
+
+  result
 }
