@@ -25,6 +25,14 @@ format_latex <- function(table,
     )
   }
 
+  # Replace underscores with periods for LaTeX compatibility
+  # Periods don't need escaping and avoid LaTeX special character issues
+  for (col in names(table)) {
+    if (is.character(table[[col]])) {
+      table[[col]] <- gsub("_", ".", table[[col]], fixed = TRUE)
+    }
+  }
+
   # Identify where measures start (for horizontal line)
   measure_names <- c("N", "R sq.", "Adj. R sq.", "AIC")
   first_measure_row <- which(table$term %in% measure_names)[1]
@@ -47,6 +55,37 @@ format_latex <- function(table,
   # Use kableExtra if available for better LaTeX formatting
   if (requireNamespace("kableExtra", quietly = TRUE)) {
 
+    # Apply cell-level highlighting if requested (before creating kbl)
+    if (highlight) {
+      # Only color coefficient columns (2+), not term column
+      for (j in 2:ncol(table)) {
+        for (i in 1:nrow(table)) {
+          cell_value <- table[i, j]
+          # Check if cell contains significance stars
+          if (grepl("\\*", cell_value)) {
+            # Check if negative (has minus sign before digits)
+            if (grepl("-\\d+(\\.\\d+)?\\s*\\*", cell_value)) {
+              # Negative significant: red background
+              table[i, j] <- kableExtra::cell_spec(
+                cell_value,
+                format = "latex",
+                background = "#ffcccc",
+                escape = FALSE
+              )
+            } else {
+              # Positive significant: green background
+              table[i, j] <- kableExtra::cell_spec(
+                cell_value,
+                format = "latex",
+                background = "#e6ffe6",
+                escape = FALSE
+              )
+            }
+          }
+        }
+      }
+    }
+
     kbl <- kableExtra::kbl(
       table,
       format = "latex",
@@ -56,7 +95,7 @@ format_latex <- function(table,
       align = c("l", rep("c", ncol(table) - 1))
     ) %>%
       kableExtra::kable_styling(
-        latex_options = c("striped", "hold_position")
+        latex_options = "hold_position"
       )
 
     # Add horizontal line before measures
@@ -66,35 +105,6 @@ format_latex <- function(table,
         first_measure_row - 1,
         hline_after = TRUE
       )
-    }
-
-    # Add highlighting if requested
-    if (highlight) {
-      # Highlight positive significant coefficients (green)
-      for (i in 1:nrow(table)) {
-        for (j in 2:ncol(table)) {
-          if (grepl("\\*", table[i, j]) && !grepl("-\\d+(\\.\\d+)? \\*", table[i, j])) {
-            kbl <- kableExtra::row_spec(
-              kbl,
-              row = i,
-              background = "#e6ffe6"
-            )
-          }
-        }
-      }
-
-      # Highlight negative significant coefficients (red)
-      for (i in 1:nrow(table)) {
-        for (j in 2:ncol(table)) {
-          if (grepl("-\\d+(\\.\\d+)? \\*", table[i, j])) {
-            kbl <- kableExtra::row_spec(
-              kbl,
-              row = i,
-              background = "#ffcccc"
-            )
-          }
-        }
-      }
     }
 
     # Add footnote

@@ -169,8 +169,11 @@ format_term_labels <- function(terms, levels_map = NULL, abbreviate = FALSE) {
       if (grepl(":", piece, fixed = TRUE)) {
         parts <- strsplit(piece, ":", fixed = TRUE)[[1]]
         var_name <- parts[1]
-        rest <- paste(parts[-1], collapse = ":")
-        return(paste0(abbreviate_var_name(var_name), ":", rest))
+        level_part <- paste(parts[-1], collapse = ":")
+        # Replace underscores with periods in level part, then abbreviate
+        level_part <- gsub("_", ".", level_part, fixed = TRUE)
+        level_part <- abbreviate_var_name(level_part)
+        return(paste0(abbreviate_var_name(var_name), ":", level_part))
       }
 
       abbreviate_var_name(piece)
