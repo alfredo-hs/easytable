@@ -19,7 +19,7 @@ m1 = lm(
     financial_knowledge +
     overconfidence +
     self_knowledge +
-    sahadsfbaoij5w4tfhsghsgsgfhsgfhsd +
+    financial_prudence +
     digital_confidence +
     advisor_confidence +
     gender +
@@ -33,7 +33,7 @@ m1 = lm(
 m2 = glm(
   crypto ~
     financial_knowledge +
-    sahadsfbaoij5w4tfhsghsgsgfhsgfhsd *
+    financial_prudence *
     digital_confidence +
     overconfidence +
     self_knowledge +

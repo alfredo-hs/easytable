@@ -13,52 +13,47 @@ get_measure_names <- function() {
 #' Abbreviate variable name
 #'
 #' Deterministic abbreviation rules:
-#' - Short readable names remain unchanged
-#' - "_" and "." treated as token separators
-#' - Tokens shortened and joined with "."
-#' - Long single tokens truncated to stable prefix
-#' - Mixed alphanumeric IDs collapse to short prefix
+#' - (Intercept) is preserved
+#' - Single-token names truncate to 6 characters
+#' - "_" and "." are treated as separators
+#' - Two-token names become token1[1:4] . token2[1:4]
+#' - Three-plus-token names become t1[1:2] . t2[1:2] . t3[1:2]
 #'
+#' @param var_name Character string
+#' @return Character string
 #' @keywords internal
-abbreviate_var_name <- function(var_name,
-                                min_keep_len = 8,
-                                token_chars = 3,
-                                max_tokens = 2,
-                                id_prefix_chars = 4) {
+abbreviate_var_name <- function(var_name) {
 
   if (is.na(var_name) || !nzchar(var_name)) return(var_name)
 
-  n <- nchar(var_name)
-
-  # Keep short names unchanged
-  if (n <= min_keep_len) return(var_name)
+  # Preserve intercept label
+  if (identical(var_name, "(Intercept)")) return(var_name)
 
   take <- function(x, k) {
     if (nchar(x) <= k) x else substring(x, 1, k)
   }
 
-  # Tokenised names: snake_case or dot.case
+  # Treat "_" and "." as separators for composite names
   if (grepl("[_.]", var_name, perl = TRUE)) {
 
     tokens <- unlist(strsplit(var_name, "[_.]", perl = TRUE))
     tokens <- tokens[tokens != ""]
 
-    if (length(tokens) == 0) return(var_name)
+    if (length(tokens) == 0) return(take(var_name, 6))
 
-    k <- min(length(tokens), max_tokens)
+    if (length(tokens) == 1) {
+      return(take(tokens[1], 6))
+    }
 
-    out_tokens <- vapply(tokens[seq_len(k)], take, character(1), k = token_chars)
+    if (length(tokens) == 2) {
+      return(paste0(take(tokens[1], 4), ".", take(tokens[2], 4)))
+    }
 
-    return(paste(out_tokens, collapse = "."))
+    return(paste0(take(tokens[1], 2), ".", take(tokens[2], 2), ".", take(tokens[3], 2)))
   }
 
-  # Mixed alphanumeric IDs
-  if (grepl("[0-9]", var_name)) {
-    return(take(var_name, id_prefix_chars))
-  }
-
-  # Long single alphabetic token
-  take(var_name, 9)
+  # Single-token name
+  take(var_name, 6)
 }
 
 #' Ensure labels are unique via numeric suffix
@@ -119,6 +114,12 @@ format_term_labels <- function(terms, levels_map = NULL) {
 
   formatted <- terms
 
+  # ---- Step 0: Normalize model interaction syntax ----
+  # broom encodes interactions as "var1:var2". Convert to "var1 * var2"
+  # before splitting factor levels. Factor levels are handled later via
+  # split_factor_level() and levels_map (they arrive concatenated, e.g., gendermale).
+  formatted <- gsub(":", " * ", formatted, fixed = TRUE)
+
   # ---- Step 1: Split factor levels ----
   for (i in seq_along(formatted)) {
 
@@ -152,22 +153,19 @@ format_term_labels <- function(terms, levels_map = NULL) {
 
     piece <- trimws(piece)
 
-    # Preserve polynomial suffixes like ".L", ".Q", ".^4"
-    if (grepl("\\.[A-Za-z^0-9]+$", piece)) {
+    if (identical(piece, "(Intercept)")) return(piece)
 
+    # Preserve polynomial suffixes like ".L", ".Q", ".C", ".^4"
+    if (grepl("\\.[A-Za-z^0-9]+$", piece)) {
       base <- sub("(\\.[A-Za-z^0-9]+)$", "", piece)
       suffix <- sub("^.*(\\.[A-Za-z^0-9]+)$", "\\1", piece)
-
       return(paste0(abbreviate_var_name(base), suffix))
     }
 
-    # Preserve factor level suffix after colon
     if (grepl(":", piece, fixed = TRUE)) {
-
       parts <- strsplit(piece, ":", fixed = TRUE)[[1]]
       var_name <- parts[1]
       rest <- paste(parts[-1], collapse = ":")
-
       return(paste0(abbreviate_var_name(var_name), ":", rest))
     }
 
