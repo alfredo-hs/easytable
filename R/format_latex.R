@@ -1,3 +1,4 @@
+
 #' Format table for LaTeX/PDF output
 #'
 #' Creates a LaTeX table suitable for PDF documents. Uses booktabs styling

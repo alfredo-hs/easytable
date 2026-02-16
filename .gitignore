@@ -9,3 +9,4 @@
 *.tar.gz
 inst/doc
 CLAUDE.md
+tests/xtest/
