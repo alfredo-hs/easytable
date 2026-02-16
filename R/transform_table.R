@@ -125,10 +125,11 @@ separate_measures <- function(table) {
 #'
 #' @param parsed_table A data frame from parse_models()
 #' @param control.var Character vector of control variable names
+#' @param abbreviate Logical. Abbreviate variable names? Default FALSE
 #'
 #' @return A transformed data frame ready for formatting
 #' @keywords internal
-transform_table <- function(parsed_table, control.var = NULL) {
+transform_table <- function(parsed_table, control.var = NULL, abbreviate = FALSE) {
 
   result <- parsed_table
 
@@ -157,7 +158,8 @@ transform_table <- function(parsed_table, control.var = NULL) {
 
   result$term[non_measure_rows] <- format_term_labels(
     result$term[non_measure_rows],
-    levels_map = levels_map
+    levels_map = levels_map,
+    abbreviate = abbreviate
   )
 
   result

@@ -26,6 +26,8 @@
 #'   Requires package: margins
 #' @param highlight Logical. Highlight significant coefficients (positive in green,
 #'   negative in red)? Default FALSE. Works best with Word output.
+#' @param abbreviate Logical. Abbreviate variable names for readability? Default FALSE.
+#'   When TRUE, long variable names are shortened using deterministic rules.
 #'
 #' @return
 #' Depends on \code{output}:
@@ -95,7 +97,8 @@ easytable <- function(...,
                       robust.se = FALSE,
                       control.var = NULL,
                       margins = FALSE,
-                      highlight = FALSE) {
+                      highlight = FALSE,
+                      abbreviate = FALSE) {
 
   # Capture models from dots
   models <- list(...)
@@ -149,7 +152,7 @@ easytable <- function(...,
   parsed <- parse_models(model_list, robust.se, margins)
 
   # Transform table (handle control vars, sort, organize)
-  transformed <- transform_table(parsed, control.var)
+  transformed <- transform_table(parsed, control.var, abbreviate)
 
   # Export to CSV if requested
   if (!is.null(csv)) {

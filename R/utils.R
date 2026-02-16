@@ -106,11 +106,12 @@ split_factor_level <- function(term, levels_map = NULL) {
 #' Transformations:
 #' - Preserve polynomial suffixes (.L, .Q, .C, etc.)
 #' - Split factor levels using levels_map
-#' - Abbreviate only variable portion
+#' - Abbreviate only variable portion (if abbreviate = TRUE)
 #' - Ensure uniqueness after abbreviation
 #'
+#' @param abbreviate Logical. Apply abbreviation? Default FALSE
 #' @keywords internal
-format_term_labels <- function(terms, levels_map = NULL) {
+format_term_labels <- function(terms, levels_map = NULL, abbreviate = FALSE) {
 
   formatted <- terms
 
@@ -148,49 +149,52 @@ format_term_labels <- function(terms, levels_map = NULL) {
     }
   }
 
-  # ---- Helper: abbreviate variable portion only ----
-  abbrev_piece <- function(piece) {
+  # ---- Step 2: Apply abbreviations (only if requested) ----
+  if (isTRUE(abbreviate)) {
 
-    piece <- trimws(piece)
+    # Helper: abbreviate variable portion only
+    abbrev_piece <- function(piece) {
 
-    if (identical(piece, "(Intercept)")) return(piece)
+      piece <- trimws(piece)
 
-    # Preserve polynomial suffixes like ".L", ".Q", ".C", ".^4"
-    if (grepl("\\.[A-Za-z^0-9]+$", piece)) {
-      base <- sub("(\\.[A-Za-z^0-9]+)$", "", piece)
-      suffix <- sub("^.*(\\.[A-Za-z^0-9]+)$", "\\1", piece)
-      return(paste0(abbreviate_var_name(base), suffix))
+      if (identical(piece, "(Intercept)")) return(piece)
+
+      # Preserve polynomial suffixes like ".L", ".Q", ".C", ".^4"
+      if (grepl("\\.[A-Za-z^0-9]+$", piece)) {
+        base <- sub("(\\.[A-Za-z^0-9]+)$", "", piece)
+        suffix <- sub("^.*(\\.[A-Za-z^0-9]+)$", "\\1", piece)
+        return(paste0(abbreviate_var_name(base), suffix))
+      }
+
+      if (grepl(":", piece, fixed = TRUE)) {
+        parts <- strsplit(piece, ":", fixed = TRUE)[[1]]
+        var_name <- parts[1]
+        rest <- paste(parts[-1], collapse = ":")
+        return(paste0(abbreviate_var_name(var_name), ":", rest))
+      }
+
+      abbreviate_var_name(piece)
     }
 
-    if (grepl(":", piece, fixed = TRUE)) {
-      parts <- strsplit(piece, ":", fixed = TRUE)[[1]]
-      var_name <- parts[1]
-      rest <- paste(parts[-1], collapse = ":")
-      return(paste0(abbreviate_var_name(var_name), ":", rest))
+    for (i in seq_along(formatted)) {
+
+      term <- formatted[i]
+
+      if (grepl("\\*", term)) {
+
+        parts <- strsplit(term, " \\* ")[[1]]
+        parts <- vapply(parts, abbrev_piece, character(1))
+        formatted[i] <- paste(parts, collapse = " * ")
+
+      } else {
+
+        formatted[i] <- abbrev_piece(term)
+      }
     }
 
-    abbreviate_var_name(piece)
+    # ---- Step 3: Ensure uniqueness ----
+    formatted <- make_unique_labels(formatted)
   }
-
-  # ---- Step 2: Apply abbreviations ----
-  for (i in seq_along(formatted)) {
-
-    term <- formatted[i]
-
-    if (grepl("\\*", term)) {
-
-      parts <- strsplit(term, " \\* ")[[1]]
-      parts <- vapply(parts, abbrev_piece, character(1))
-      formatted[i] <- paste(parts, collapse = " * ")
-
-    } else {
-
-      formatted[i] <- abbrev_piece(term)
-    }
-  }
-
-  # ---- Step 3: Ensure uniqueness ----
-  formatted <- make_unique_labels(formatted)
 
   formatted
 }
