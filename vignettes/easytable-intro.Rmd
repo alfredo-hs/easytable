@@ -1,359 +1,74 @@
 ---
-title: "Introduction to easytable"
-author: "Alfredo Hernandez Sanchez"
-date: "`r Sys.Date()`"
+title: "easytable: Quick Start"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Introduction to easytable}
+  %\VignetteIndexEntry{easytable: Quick Start}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.width = 7,
-  fig.height = 5
-)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
-## Overview
+`easytable` is built around one promise:
 
-The **easytable** package creates publication-ready regression tables in multiple formats from a single function call. This vignette demonstrates the key features using the Palmer Penguins dataset.
+1. Easy to use.
+2. Easy to read.
 
-## Installation
+## Minimal Example
 
-```{r eval=FALSE}
-# Install from GitHub
-devtools::install_github("alfredo-hs/easytable")
-```
-
-## Setup
-
-```{r message=FALSE}
+```{r}
 library(easytable)
-library(palmerpenguins)
-data(penguins)
+
+m1 <- lm(mpg ~ wt, data = mtcars)
+m2 <- lm(mpg ~ wt + hp, data = mtcars)
+
+easytable(m1, m2)
 ```
 
-## Basic Usage
+## Output Formats
 
-Let's start with a simple example using the Palmer Penguins dataset. We'll model penguin body mass as a function of flipper length, species, and island.
+### Word / HTML path (default)
 
 ```{r}
-# Fit three nested models
-m1 <- lm(body_mass_g ~ flipper_length_mm, data = penguins)
-m2 <- lm(body_mass_g ~ flipper_length_mm + species, data = penguins)
-m3 <- lm(body_mass_g ~ flipper_length_mm + species + island, data = penguins)
-
-# Create named list
-models <- list(
-  "Model 1" = m1,
-  "Model 2" = m2,
-  "Model 3" = m3
-)
+easytable(m1, m2, output = "word")
 ```
 
-### Word Output (Default)
-
-The default output format is Word, using the flextable package:
-
-```{r eval=FALSE}
-easytable(models)
-```
-
-This creates a formatted table that can be:
-- Viewed in RStudio
-- Saved to Word with `flextable::save_as_docx()`
-- Included in R Markdown Word documents
-
-### HTML Output (via Word renderer)
-
-For Quarto and R Markdown HTML/PDF documents, use the default Word renderer (`flextable`), which also prints to HTML:
+### LaTeX / PDF path
 
 ```{r}
-easytable(models, output = "word")
+easytable(m1, m2, output = "latex")
 ```
 
-### LaTeX Output
-
-For academic papers and LaTeX documents:
+## Common Options
 
 ```{r}
-easytable(models, output = "latex")
-```
-
-## Robust Standard Errors
-
-Use heteroskedasticity-consistent standard errors with the `robust.se` parameter:
-
-```{r eval=FALSE}
-easytable(models, output = "word", robust.se = TRUE)
-```
-
-This automatically uses HC-robust standard errors via the `lmtest` and `sandwich` packages. The output includes a note indicating robust SEs were used.
-
-**When to use robust SE:**
-- Heteroskedasticity is suspected or detected
-- Large sample sizes where asymptotic properties apply
-- Published standards in your field require it
-
-## Marginal Effects
-
-Instead of raw coefficients, you can report average marginal effects (AME):
-
-```{r eval=FALSE}
-# Marginal effects (note: requires margins package)
-easytable(models[2:3], output = "word", margins = TRUE)
-```
-
-**Important notes about marginal effects:**
-- Intercept is excluded (not meaningful for AME)
-- Use Model 2+ (need at least one covariate beyond constant)
-- Interpretation: unit change in X → change in E[Y]
-
-## Combining Robust SE and Margins
-
-You can use both together:
-
-```{r eval=FALSE}
 easytable(
-  models[2:3],
-  output = "word",
-  robust.se = TRUE,
-  margins = TRUE
+  m1, m2,
+  model.names = c("Baseline", "With Controls"),
+  highlight = TRUE
 )
 ```
-
-This computes marginal effects with robust standard errors.
-
-## Control Variables
-
-When you have many control variables (e.g., many factor levels), you can group them to show presence/absence rather than individual coefficients:
 
 ```{r}
-# Add more controls
-m4 <- lm(body_mass_g ~ flipper_length_mm + bill_length_mm, data = penguins)
-m5 <- lm(body_mass_g ~ flipper_length_mm + bill_length_mm + species + island,
-         data = penguins)
-
-models_controls <- list(
-  "Baseline" = m4,
-  "With Controls" = m5
-)
-
-# Group species and island as control variables
 easytable(
-  models_controls,
-  output = "word",
-  control.var = c("species", "island")
+  m1, m2,
+  robust.se = TRUE
 )
 ```
 
-Instead of showing:
-- `speciesChinstrap`
-- `speciesGentoo`
-- `islandDream`
-- `islandTorgersen`
+## Export Files
 
-The table shows:
-- `species: Y` (indicating presence)
-- `island: Y` (indicating presence)
-
-This is especially useful with:
-- Factor variables with many levels
-- Time or location fixed effects
-- Any variable where you want to indicate presence without showing all coefficients
-
-## Highlighting Significant Results
-
-You can color-code significant results (works best with Word output):
-
-```{r eval=FALSE}
-easytable(models, output = "word", highlight = TRUE)
-```
-
-- **Green background**: Positive significant coefficients
-- **Red background**: Negative significant coefficients
-
-## GLM Models
-
-The package also supports generalized linear models:
-
-```{r}
-# Logistic regression for sex (remove NAs first)
-penguins_complete <- na.omit(penguins)
-
-g1 <- glm(sex ~ body_mass_g, data = penguins_complete, family = binomial)
-g2 <- glm(sex ~ body_mass_g + species, data = penguins_complete, family = binomial)
-
-glm_models <- list(
-  "Bivariate" = g1,
-  "With Species" = g2
-)
-
-easytable(glm_models, output = "word")
-```
-
-## Exporting to Word and CSV
-
-You can export both a Word table and the underlying CSV table:
-
-```{r eval=FALSE}
+```{r eval = FALSE}
 easytable(
-  models,
-  output = "word",
-  export.word = "penguin_regression_results.docx",
-  export.csv = "penguin_regression_results.csv"
-)
-# Creates: penguin_regression_results.docx and penguin_regression_results.csv
-```
-
-This is useful for:
-- Archiving raw results
-- Further processing in other software
-- Sharing with collaborators who need raw numbers
-
-## Complete Example
-
-Here's a comprehensive example combining all features:
-
-```{r eval=FALSE}
-# Fit models with controls
-m_baseline <- lm(body_mass_g ~ flipper_length_mm + bill_length_mm,
-                 data = penguins)
-
-m_full <- lm(body_mass_g ~ flipper_length_mm + bill_length_mm +
-               species + island + sex,
-             data = na.omit(penguins))
-
-models_full <- list(
-  "Baseline" = m_baseline,
-  "Full Model" = m_full
-)
-
-# Create publication-ready table
-easytable(
-  models_full,
-  output = "word",
-  robust.se = TRUE,
-  control.var = c("species", "island", "sex"),
-  highlight = TRUE,
-  export.word = "final_results.docx",
-  export.csv = "final_results.csv"
+  m1, m2,
+  export.word = "table.docx",
+  export.csv = "table.csv"
 )
 ```
-
-## Interpretation Guide
-
-### Reading the Output
-
-Each cell shows:
-```
-Estimate ***
-(Std. Error)
-```
-
-Where:
-- `***` = p < 0.01
-- `**` = p < 0.05
-- `*` = p < 0.1
-- (blank) = p > 0.1
-
-### Model Fit Statistics
-
-At the bottom of each table:
-- **N**: Number of observations
-- **R sq.**: R-squared (proportion of variance explained)
-- **Adj. R sq.**: Adjusted R-squared (penalized for number of predictors)
-- **AIC**: Akaike Information Criterion (lower is better; for model comparison)
-
-## Comparison of Output Formats
-
-| Format | Best For | Pros | Cons |
-|--------|----------|------|------|
-| **Word/HTML** | MS Word docs, Quarto/RMarkdown HTML | Beautiful formatting, easy to customize | Requires flextable |
-| **LaTeX** | Academic papers, journals | Professional typesetting, journal standards | Requires LaTeX knowledge |
-
-## Tips and Best Practices
-
-### Model Naming
-
-Use descriptive model names:
-
-```{r}
-# Good
-models_named <- list(
-  "Baseline" = m1,
-  "Add Species" = m2,
-  "Full Model" = m3
-)
-
-# Less clear
-models_numbered <- list(
-  "Model1" = m1,
-  "Model2" = m2,
-  "Model3" = m3
-)
-```
-
-### When to Use Control Variables
-
-Use `control.var` when:
-- You have many factor levels (e.g., 50 states, 100 countries)
-- Including fixed effects (time, location)
-- Control variables aren't your main focus
-- You want a more compact table
-
-Don't use `control.var` when:
-- You want to show specific coefficient estimates
-- You have only 2-3 levels
-- The variable is a key predictor of interest
-
-### Robust Standard Errors
-
-In general, use `robust.se = TRUE` when:
-- You have cross-sectional data with potential heteroskedasticity
-- Sample size is reasonably large (n > 30)
-- You want to be conservative
-
-Don't use when:
-- You've explicitly modeled heteroskedasticity (e.g., WLS)
-- Small sample sizes (asymptotic properties may not hold)
-- Time series data (use HAC errors instead, not currently supported)
-
-## Troubleshooting
-
-### Missing Package Errors
-
-If you get an error like:
-```
-Package 'flextable' is required for Word output.
-  Install it with: install.packages('flextable')
-```
-
-Simply install the suggested package:
-```{r eval=FALSE}
-install.packages("flextable")
-```
-
-### Model Compatibility
-
-Currently supported:
-- `lm()` - linear regression
-- `glm()` - generalized linear models
-
-Coming soon: `plm`, `fixest`, and other model types.
 
 ## Next Steps
 
-- See `?easy_table` for complete function documentation
-- Check [GitHub](https://github.com/alfredo-hs/easytable) for latest updates
-- Report issues or request features on GitHub Issues
-
-## References
-
-- Horst AM, Hill AP, Gorman KB (2020). palmerpenguins: Palmer Archipelago (Antarctica) penguin data. R package version 0.1.0.
-- Leeper TJ (2021). margins: Marginal Effects for Model Objects. R package.
-- Zeileis A (2004). "Econometric Computing with HC and HAC Covariance Matrix Estimators." Journal of Statistical Software, 11(10), 1-17.
+- Full end-to-end walkthrough: `vignette("penguins-tutorial", package = "easytable")`
+- Developer API and architecture plan: `vignette("developer-roadmap", package = "easytable")`

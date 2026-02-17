@@ -4,12 +4,14 @@
 \alias{transform_table}
 \title{Transform parsed model table}
 \usage{
-transform_table(parsed_table, control.var = NULL)
+transform_table(parsed_table, control.var = NULL, abbreviate = FALSE)
 }
 \arguments{
 \item{parsed_table}{A data frame from parse_models()}
 
 \item{control.var}{Character vector of control variable names}
+
+\item{abbreviate}{Logical. Abbreviate variable names? Default FALSE}
 }
 \value{
 A transformed data frame ready for formatting

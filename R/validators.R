@@ -6,20 +6,25 @@
 validate_model_list <- function(model_list) {
   if (!is.list(model_list)) {
     stop(
-      "model_list must be a list of statistical models.\n",
-      "  You provided: ", class(model_list)[1],
+      "Please provide models as a list.\n",
+      "Example: list(Model 1 = m1, Model 2 = m2)\n",
+      "You supplied an object of class: ", class(model_list)[1],
       call. = FALSE
     )
   }
 
   if (length(model_list) == 0) {
-    stop("model_list cannot be empty.", call. = FALSE)
+    stop(
+      "No models were found.\n",
+      "Please pass at least one model object, for example: easytable(m1)",
+      call. = FALSE
+    )
   }
 
   if (is.null(names(model_list)) || any(names(model_list) == "")) {
     stop(
-      "model_list must be a named list.\n",
-      "  Example: list(Model1 = m1, Model2 = m2)",
+      "Each model needs a name before processing.\n",
+      "Example: list(Model 1 = m1, Model 2 = m2)",
       call. = FALSE
     )
   }
@@ -48,9 +53,9 @@ validate_model_types <- function(model_list) {
 
     if (!is_supported_model(model)) {
       stop(
-        "Model '", model_name, "' is not a supported type.\n",
-        "  Model class: ", paste(class(model), collapse = ", "), "\n",
-        "  Supported types: lm, glm",
+        "Model '", model_name, "' is not supported yet.\n",
+        "Detected class: ", paste(class(model), collapse = ", "), "\n",
+        "easytable currently supports: lm, glm",
         call. = FALSE
       )
     }
@@ -72,8 +77,9 @@ validate_control_vars <- function(model_list, control.var) {
 
   if (!is.character(control.var)) {
     stop(
-      "control.var must be a character vector.\n",
-      "  You provided: ", class(control.var)[1],
+      "`control.var` should be a character vector.\n",
+      "Example: control.var = c(\"island\", \"species\")\n",
+      "Detected type: ", class(control.var)[1],
       call. = FALSE
     )
   }
@@ -95,8 +101,8 @@ validate_control_vars <- function(model_list, control.var) {
 
     if (!var_found) {
       warning(
-        "Control variable '", var, "' not found in any model.\n",
-        "  This variable will be ignored.",
+        "Control variable '", var, "' was not found in the supplied model formulas.\n",
+        "This variable will be ignored for this table.",
         call. = FALSE,
         immediate. = TRUE
       )
@@ -117,40 +123,71 @@ validate_control_vars <- function(model_list, control.var) {
 #' @return Invisible TRUE if valid, otherwise stops with error
 #' @keywords internal
 validate_parameters <- function(robust.se, margins, highlight, export.word, export.csv, output) {
-  if (!is.logical(robust.se) || length(robust.se) != 1) {
-    stop("robust.se must be TRUE or FALSE.", call. = FALSE)
+  is_scalar_flag <- function(x) {
+    is.logical(x) && length(x) == 1 && !is.na(x)
   }
 
-  if (!is.logical(margins) || length(margins) != 1) {
-    stop("margins must be TRUE or FALSE.", call. = FALSE)
+  if (!is_scalar_flag(robust.se)) {
+    stop("`robust.se` must be either TRUE or FALSE.", call. = FALSE)
   }
 
-  if (!is.logical(highlight) || length(highlight) != 1) {
-    stop("highlight must be TRUE or FALSE.", call. = FALSE)
+  if (!is_scalar_flag(margins)) {
+    stop("`margins` must be either TRUE or FALSE.", call. = FALSE)
+  }
+
+  if (!is_scalar_flag(highlight)) {
+    stop("`highlight` must be either TRUE or FALSE.", call. = FALSE)
   }
 
   if (!is.null(export.word)) {
     if (!is.character(export.word) || length(export.word) != 1 || !nzchar(export.word)) {
-      stop("export.word must be a non-empty character string or NULL.", call. = FALSE)
+      stop("`export.word` must be a single file path string ending in .docx, or NULL.", call. = FALSE)
     }
     if (!grepl("\\.docx$", export.word, ignore.case = TRUE)) {
-      stop("export.word must end in '.docx'.", call. = FALSE)
+      stop("`export.word` must end in '.docx'. Example: export.word = \"mytable.docx\".", call. = FALSE)
     }
     if (output != "word") {
-      stop("export.word is only supported when output = \"word\".", call. = FALSE)
+      stop("`export.word` is available only when output = \"word\".", call. = FALSE)
     }
   }
 
   if (!is.null(export.csv)) {
     if (!is.character(export.csv) || length(export.csv) != 1 || !nzchar(export.csv)) {
-      stop("export.csv must be a non-empty character string or NULL.", call. = FALSE)
+      stop("`export.csv` must be a single file path string ending in .csv, or NULL.", call. = FALSE)
     }
     if (!grepl("\\.csv$", export.csv, ignore.case = TRUE)) {
-      stop("export.csv must end in '.csv'.", call. = FALSE)
+      stop("`export.csv` must end in '.csv'. Example: export.csv = \"mytable.csv\".", call. = FALSE)
     }
   }
 
   invisible(TRUE)
+}
+
+#' Validate output format
+#'
+#' @param output Character string specifying output format
+#' @return A normalized output string
+#' @keywords internal
+validate_output_format <- function(output) {
+  if (!is.character(output) || length(output) != 1 || !nzchar(output)) {
+    stop(
+      "`output` must be one value: \"word\" or \"latex\".",
+      call. = FALSE
+    )
+  }
+
+  output <- tolower(output)
+  valid <- c("word", "latex")
+
+  if (!output %in% valid) {
+    stop(
+      "Unknown output format: '", output, "'.\n",
+      "Please use output = \"word\" or output = \"latex\".",
+      call. = FALSE
+    )
+  }
+
+  output
 }
 
 #' Check format-specific dependencies
@@ -162,8 +199,8 @@ check_format_dependencies <- function(output) {
   if (output == "word") {
     if (!requireNamespace("flextable", quietly = TRUE)) {
       stop(
-        "Package 'flextable' is required for Word output.\n",
-        "  Install it with: install.packages('flextable')",
+        "Word output requires the 'flextable' package.\n",
+        "Install it with: install.packages('flextable')",
         call. = FALSE
       )
     }
@@ -172,8 +209,8 @@ check_format_dependencies <- function(output) {
   if (output == "latex") {
     if (!requireNamespace("knitr", quietly = TRUE)) {
       stop(
-        "Package 'knitr' is required for latex output.\n",
-        "  Install it with: install.packages('knitr')",
+        "LaTeX output requires the 'knitr' package.\n",
+        "Install it with: install.packages('knitr')",
         call. = FALSE
       )
     }
@@ -201,9 +238,9 @@ check_robust_dependencies <- function(robust.se) {
 
     if (length(missing_pkgs) > 0) {
       stop(
-        "Packages required for robust standard errors are missing: ",
+        "Robust standard errors need additional packages: ",
         paste(missing_pkgs, collapse = ", "), "\n",
-        "  Install them with: install.packages(c('",
+        "Install them with: install.packages(c('",
         paste(missing_pkgs, collapse = "', '"), "'))",
         call. = FALSE
       )
@@ -222,8 +259,8 @@ check_margins_dependencies <- function(margins) {
   if (margins) {
     if (!requireNamespace("margins", quietly = TRUE)) {
       stop(
-        "Package 'margins' is required for marginal effects.\n",
-        "  Install it with: install.packages('margins')",
+        "Marginal effects require the 'margins' package.\n",
+        "Install it with: install.packages('margins')",
         call. = FALSE
       )
     }
@@ -241,19 +278,23 @@ check_margins_dependencies <- function(margins) {
 validate_table_size <- function(table_size, output) {
   valid_sizes <- c("tiny", "small", "normalsize", "scriptsize")
 
+  if (!is.character(table_size) || length(table_size) != 1 || !nzchar(table_size)) {
+    stop("`table_size` must be one value: tiny, small, normalsize, or scriptsize.", call. = FALSE)
+  }
+
   if (!table_size %in% valid_sizes) {
     stop(
-      "'table_size' must be one of: ", paste(valid_sizes, collapse = ", "), "\n",
-      "  You provided: ", table_size,
+      "`table_size` must be one of: ", paste(valid_sizes, collapse = ", "), ".\n",
+      "You provided: ", table_size,
       call. = FALSE
     )
   }
 
   if (table_size != "normalsize" && output != "latex") {
     stop(
-      "The 'table_size' parameter only works for LaTeX output.\n",
-      "  Current output format: ", output, "\n",
-      "  To use 'table_size', set output = \"latex\"",
+      "`table_size` is only used for LaTeX tables.\n",
+      "Current output: ", output, "\n",
+      "To use table_size, set output = \"latex\".",
       call. = FALSE
     )
   }

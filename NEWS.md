@@ -1,3 +1,32 @@
+# easytable 2.1.1
+
+## Documentation
+
+* Rewrote `README.md` around a clearer user promise: easy to use, easy to read.
+* Added a dedicated penguins tutorial vignette: `penguins-tutorial`.
+* Added a developer roadmap vignette: `developer-roadmap`.
+* Added architecture and maintenance guides:
+  * `DESIGN_PHILOSOPHY.md`
+  * `API_REWORK_PLAN.md`
+  * `ADAPTER_COMPATIBILITY.md`
+* Reorganized `_pkgdown.yml` navigation and article structure.
+
+## Testing Infrastructure
+
+* Added `tests/README.md` with explicit protocol separating:
+  * committed deterministic tests (`tests/testthat`)
+  * user-owned sandbox tests (`tests/xtest`)
+* Added `tests/run-tests.R` with layered profiles (`core`, `full`).
+* Added `tests/testthat/helper-testing-profiles.R` for environment-aware test skipping.
+* Added `tests/testthat/test-design-invariants.R` to lock key table invariants.
+
+## API and Validation UX
+
+* Added `validate_output_format()` to provide friendly, explicit output-format validation.
+* Reworded key validation errors to be more beginner-friendly and actionable.
+
+---
+
 # easytable 2.1.0
 
 ## Breaking Changes

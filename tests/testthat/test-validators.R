@@ -2,19 +2,19 @@ test_that("validate_model_list catches invalid inputs", {
   # Not a list
   expect_error(
     validate_model_list("not a list"),
-    "model_list must be a list"
+    "provide models as a list"
   )
 
   # Unnamed list
   expect_error(
     validate_model_list(list(test_m1, test_m2)),
-    "model_list must be a named list"
+    "needs a name"
   )
 
   # Empty list
   expect_error(
     validate_model_list(list()),
-    "model_list cannot be empty"
+    "No models were found"
   )
 
   # Valid list passes
@@ -26,7 +26,7 @@ test_that("validate_model_types catches unsupported models", {
   bad_model <- structure(list(), class = "unsupported_model")
   expect_error(
     validate_model_types(list(BadModel = bad_model)),
-    "not a supported type"
+    "not supported yet"
   )
 
   # Valid models pass
@@ -38,7 +38,7 @@ test_that("validate_control_vars warns about missing variables", {
   # Should warn for non-existent variable
   expect_warning(
     validate_control_vars(test_models_lm, "nonexistent_var"),
-    "not found in any model"
+    "was not found"
   )
 
   # Should not warn for existing variable (hp exists in test_m2 and test_m3)
@@ -49,7 +49,7 @@ test_that("validate_control_vars warns about missing variables", {
   # Should warn for another missing variable
   expect_warning(
     validate_control_vars(test_models_lm, "not_a_var"),
-    "not found in any model"
+    "was not found"
   )
 
   # NULL control.var is valid
@@ -60,25 +60,25 @@ test_that("validate_parameters checks parameter types", {
   # Invalid robust.se
   expect_error(
     validate_parameters("yes", FALSE, FALSE, NULL, NULL, "word"),
-    "robust.se must be TRUE or FALSE"
+    "robust.se.*TRUE or FALSE"
   )
 
   # Invalid margins
   expect_error(
     validate_parameters(FALSE, "yes", FALSE, NULL, NULL, "word"),
-    "margins must be TRUE or FALSE"
+    "margins.*TRUE or FALSE"
   )
 
   # Invalid highlight
   expect_error(
     validate_parameters(FALSE, FALSE, 1, NULL, NULL, "word"),
-    "highlight must be TRUE or FALSE"
+    "highlight.*TRUE or FALSE"
   )
 
   # Invalid export.csv
   expect_error(
     validate_parameters(FALSE, FALSE, FALSE, NULL, 123, "word"),
-    "export.csv must be a non-empty character string or NULL"
+    "export.csv.*file path string"
   )
 
   # Invalid export.word extension
@@ -90,7 +90,7 @@ test_that("validate_parameters checks parameter types", {
   # export.word only with word output
   expect_error(
     validate_parameters(FALSE, FALSE, FALSE, "table.docx", NULL, "latex"),
-    "only supported when output = \"word\""
+    "available only when output = \"word\""
   )
 
   # Valid parameters pass
@@ -101,7 +101,7 @@ test_that("validate_parameters checks parameter types", {
 
 test_that("check_format_dependencies detects missing packages", {
   # Word format needs flextable
-  skip_if_not_installed("flextable")
+  skip_if_word_tests_unavailable()
   expect_invisible(check_format_dependencies("word"))
 
   # LaTeX needs knitr
@@ -124,4 +124,19 @@ test_that("check_margins_dependencies detects missing packages", {
 
   # FALSE should always pass
   expect_invisible(check_margins_dependencies(FALSE))
+})
+
+test_that("validate_output_format normalizes and validates output strings", {
+  expect_identical(validate_output_format("word"), "word")
+  expect_identical(validate_output_format("LaTeX"), "latex")
+
+  expect_error(
+    validate_output_format("markdown"),
+    "Unknown output format"
+  )
+
+  expect_error(
+    validate_output_format(c("word", "latex")),
+    "must be one value"
+  )
 })

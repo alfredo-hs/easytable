@@ -6,12 +6,6 @@
 \usage{
 is_package_available(pkg)
 }
-\arguments{
-\item{pkg}{Character string with package name}
-}
-\value{
-Logical indicating if package is installed
-}
 \description{
 Check if a package is available
 }

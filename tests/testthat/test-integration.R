@@ -1,5 +1,5 @@
 test_that("easytable works with Word output (default)", {
-  skip_if_not_installed("flextable")
+  skip_if_word_tests_unavailable()
 
   result <- easytable(test_m1)
 
@@ -9,7 +9,7 @@ test_that("easytable works with Word output (default)", {
 test_that("easytable rejects markdown output", {
   expect_error(
     easytable(test_m1, output = "markdown"),
-    "arg should be one of"
+    "Unknown output format"
   )
 })
 
@@ -23,7 +23,7 @@ test_that("easytable works with latex output", {
 })
 
 test_that("easytable handles multiple lm models", {
-  skip_if_not_installed("flextable")
+  skip_if_word_tests_unavailable()
 
   result <- easytable(test_m1, test_m2, test_m3, output = "word")
 
@@ -31,7 +31,7 @@ test_that("easytable handles multiple lm models", {
 })
 
 test_that("easytable handles glm models", {
-  skip_if_not_installed("flextable")
+  skip_if_word_tests_unavailable()
 
   result <- easytable(test_g1, test_g2, output = "word")
 
@@ -39,7 +39,7 @@ test_that("easytable handles glm models", {
 })
 
 test_that("easytable with robust standard errors", {
-  skip_if_not_installed("flextable")
+  skip_if_word_tests_unavailable()
   skip_if_not_installed("lmtest")
   skip_if_not_installed("sandwich")
 
@@ -49,7 +49,7 @@ test_that("easytable with robust standard errors", {
 })
 
 test_that("easytable with marginal effects", {
-  skip_if_not_installed("flextable")
+  skip_if_word_tests_unavailable()
   skip_if_not_installed("margins")
 
   result <- easytable(test_m1, output = "word", margins = TRUE)
@@ -58,7 +58,7 @@ test_that("easytable with marginal effects", {
 })
 
 test_that("easytable with robust SE and margins", {
-  skip_if_not_installed("flextable")
+  skip_if_word_tests_unavailable()
   skip_if_not_installed("lmtest")
   skip_if_not_installed("sandwich")
   skip_if_not_installed("margins")
@@ -69,7 +69,7 @@ test_that("easytable with robust SE and margins", {
 })
 
 test_that("easytable with control variables", {
-  skip_if_not_installed("flextable")
+  skip_if_word_tests_unavailable()
 
   result <- easytable(
     test_m1, test_m2, test_m3,
@@ -81,7 +81,7 @@ test_that("easytable with control variables", {
 })
 
 test_that("easytable full pipeline with all features", {
-  skip_if_not_installed("flextable")
+  skip_if_word_tests_unavailable()
   skip_if_not_installed("lmtest")
   skip_if_not_installed("sandwich")
 
@@ -117,7 +117,7 @@ test_that("easytable latex pipeline with control vars", {
 })
 
 test_that("penguins dataset end-to-end test", {
-  skip_if_not_installed("flextable")
+  skip_if_word_tests_unavailable()
   skip_if_not_installed("palmerpenguins")
 
   penguins <- palmerpenguins::penguins

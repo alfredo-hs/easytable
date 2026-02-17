@@ -6,10 +6,7 @@
 \usage{
 get_measure_names()
 }
-\value{
-Character vector of measure names
-}
 \description{
-Returns the standard names used for model fit measures
+Get measure row names
 }
 \keyword{internal}

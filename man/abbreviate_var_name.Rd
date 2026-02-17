@@ -7,13 +7,19 @@
 abbreviate_var_name(var_name)
 }
 \arguments{
-\item{var_name}{Character string with variable name}
+\item{var_name}{Character string}
 }
 \value{
-Abbreviated variable name
+Character string
 }
 \description{
-Abbreviates long variable names using either explicit mapping or
-a deterministic algorithm based on underscore-separated tokens.
+Deterministic abbreviation rules:
+\itemize{
+\item (Intercept) is preserved
+\item Single-token names truncate to 6 characters
+\item "_" and "." are treated as separators
+\item Two-token names become \verb{token1[1:4] . token2[1:4]}
+\item Three-plus-token names become \verb{t1[1:2] . t2[1:2] . t3[1:2]}
+}
 }
 \keyword{internal}

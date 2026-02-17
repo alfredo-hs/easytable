@@ -1,5 +1,5 @@
 test_that("format_word creates flextable object", {
-  skip_if_not_installed("flextable")
+  skip_if_word_tests_unavailable()
 
   parsed <- parse_models(test_single_model, robust.se = FALSE, margins = FALSE)
   transformed <- transform_table(parsed, control.var = NULL)
@@ -10,7 +10,7 @@ test_that("format_word creates flextable object", {
 })
 
 test_that("format_word includes significance footnote", {
-  skip_if_not_installed("flextable")
+  skip_if_word_tests_unavailable()
 
   parsed <- parse_models(test_single_model, robust.se = FALSE, margins = FALSE)
   transformed <- transform_table(parsed, control.var = NULL)
@@ -22,7 +22,7 @@ test_that("format_word includes significance footnote", {
 })
 
 test_that("format_word adds robust SE note", {
-  skip_if_not_installed("flextable")
+  skip_if_word_tests_unavailable()
   skip_if_not_installed("lmtest")
   skip_if_not_installed("sandwich")
 
@@ -35,7 +35,7 @@ test_that("format_word adds robust SE note", {
 })
 
 test_that("format_word adds margins note", {
-  skip_if_not_installed("flextable")
+  skip_if_word_tests_unavailable()
   skip_if_not_installed("margins")
 
   parsed <- parse_models(test_single_model, robust.se = FALSE, margins = TRUE)
@@ -47,7 +47,7 @@ test_that("format_word adds margins note", {
 })
 
 test_that("format_word handles highlighting", {
-  skip_if_not_installed("flextable")
+  skip_if_word_tests_unavailable()
 
   parsed <- parse_models(test_single_model, robust.se = FALSE, margins = FALSE)
   transformed <- transform_table(parsed, control.var = NULL)

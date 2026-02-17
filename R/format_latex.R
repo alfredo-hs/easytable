@@ -30,6 +30,37 @@ format_latex <- function(table,
   table <- as.data.frame(table, stringsAsFactors = FALSE)
   table$term <- wrap_interaction_terms(table$term)
 
+  # Identify where model-stat rows start (before LaTeX-safe term normalization)
+  first_measure_row <- get_first_measure_row(table)
+
+  insert_measure_divider <- function(result, table, first_measure_row) {
+    if (is.na(first_measure_row) || first_measure_row <= 1) {
+      return(result)
+    }
+
+    first_measure_term <- table$term[first_measure_row]
+    lines <- strsplit(result, "\n", fixed = TRUE)[[1]]
+    measure_prefix <- paste0(first_measure_term, " &")
+    measure_line_idx <- which(startsWith(lines, measure_prefix))[1]
+
+    if (is.na(measure_line_idx)) {
+      return(result)
+    }
+
+    # Remove default kable spacing row immediately before the measure block.
+    if (measure_line_idx > 1 && identical(lines[measure_line_idx - 1], "\\addlinespace")) {
+      lines <- lines[-(measure_line_idx - 1)]
+      measure_line_idx <- measure_line_idx - 1
+    }
+
+    if (measure_line_idx > 1 && identical(lines[measure_line_idx - 1], "\\midrule")) {
+      return(paste(lines, collapse = "\n"))
+    }
+
+    lines <- append(lines, "\\midrule", after = measure_line_idx - 1)
+    paste(lines, collapse = "\n")
+  }
+
   # Replace underscores with periods for LaTeX compatibility
   # Periods don't need escaping and avoid LaTeX special character issues
   for (col in names(table)) {
@@ -51,9 +82,6 @@ format_latex <- function(table,
     }
   }
 
-  # Identify where measures start (for horizontal line)
-  first_measure_row <- get_first_measure_row(table)
-
   # Build footnote text
   footnote_text <- "Significance: ***p < .01; **p < .05; *p < .1"
 
@@ -69,36 +97,68 @@ format_latex <- function(table,
     footnote_text <- paste0(footnote_text, ". Note: Marginal Effects and Robust Standard Errors")
   }
 
+  # Determine coefficient rows and zebra parity (controls excluded from stripe count)
+  coef_row_indices <- if (!is.na(first_measure_row) && first_measure_row > 1) {
+    seq_len(first_measure_row - 1)
+  } else {
+    seq_len(nrow(table))
+  }
+
+  striped_row <- rep(FALSE, nrow(table))
+  stripe_count <- 0
+  if (length(coef_row_indices) > 0) {
+    for (row_idx in coef_row_indices) {
+      is_control <- any(grepl("^Y$", table[row_idx, 2:ncol(table)]))
+      if (!is_control) {
+        stripe_count <- stripe_count + 1
+        striped_row[row_idx] <- (stripe_count %% 2 == 0)
+      }
+    }
+  }
+
   # Use kableExtra if available for better LaTeX formatting
   if (requireNamespace("kableExtra", quietly = TRUE)) {
 
-    # Apply cell-level highlighting if requested (before creating kbl)
-    if (highlight) {
-      # Only color coefficient columns (2+), not term column
-      for (j in 2:ncol(table)) {
-        for (i in 1:nrow(table)) {
+    # Apply cell-level styling so zebra and highlight can coexist.
+    if (length(coef_row_indices) > 0) {
+      for (i in coef_row_indices) {
+        is_striped <- striped_row[i]
+
+        # Style term column only for zebra rows
+        if (is_striped) {
+          table[i, 1] <- kableExtra::cell_spec(
+            table[i, 1],
+            format = "latex",
+            background = "#f0f0f0",
+            escape = FALSE
+          )
+        }
+
+        for (j in 2:ncol(table)) {
           cell_value <- table[i, j]
-          # Check if cell contains significance stars
-          if (grepl("\\*", cell_value)) {
-            # Check if negative (has minus sign before digits)
-            if (grepl("-\\d+(\\.\\d+)?\\s*\\*", cell_value)) {
-              # Negative significant: red background
-              table[i, j] <- kableExtra::cell_spec(
-                cell_value,
-                format = "latex",
-                background = "#ffcccc",
-                escape = FALSE
-              )
+          is_sig <- isTRUE(highlight) && grepl("\\*", cell_value)
+
+          if (!is_striped && !is_sig) {
+            next
+          }
+
+          bg_color <- if (is_striped) "#f0f0f0" else "white"
+
+          if (is_sig) {
+            is_negative <- grepl("-\\d+(\\.\\d+)?\\s*\\*", cell_value)
+            bg_color <- if (is_negative) {
+              if (is_striped) "#f0b8b8" else "#ffcccc"
             } else {
-              # Positive significant: green background
-              table[i, j] <- kableExtra::cell_spec(
-                cell_value,
-                format = "latex",
-                background = "#e6ffe6",
-                escape = FALSE
-              )
+              if (is_striped) "#cfeacf" else "#e6ffe6"
             }
           }
+
+          table[i, j] <- kableExtra::cell_spec(
+            cell_value,
+            format = "latex",
+            background = bg_color,
+            escape = FALSE
+          )
         }
       }
     }
@@ -115,78 +175,46 @@ format_latex <- function(table,
     kbl <- kableExtra::kbl(
       table,
       format = "latex",
+      longtable = TRUE,
       booktabs = TRUE,
+      linesep = "",
       escape = FALSE,
       col.names = names(table),
       align = c("l", rep("c", ncol(table) - 1))
     ) %>%
       kableExtra::kable_styling(
-        latex_options = "hold_position",
+        latex_options = c("repeat_header"),
         font_size = font_size_pt
       )
-
-    # Add zebra striping for coefficient rows only (skip control variable rows)
-    if (!is.na(first_measure_row) && first_measure_row > 1) {
-      stripe_count <- 0
-      for (row_idx in 1:(first_measure_row - 1)) {
-        # Check if this is a control row (contains "Y" in any model column)
-        is_control <- any(grepl("^Y$", table[row_idx, 2:ncol(table)]))
-
-        if (!is_control) {
-          stripe_count <- stripe_count + 1
-          # Apply gray background to every other coefficient row
-          if (stripe_count %% 2 == 0) {
-            kbl <- kableExtra::row_spec(
-              kbl,
-              row_idx,
-              background = "#f0f0f0"  # light gray
-            )
-          }
-        }
-      }
-    }
-
-    # Add horizontal line before measures
-    if (!is.na(first_measure_row) && first_measure_row > 1) {
-      kbl <- kableExtra::row_spec(
-        kbl,
-        first_measure_row - 1,
-        hline_after = TRUE
-      )
-    }
 
     # Add footnote
     kbl <- kableExtra::footnote(
       kbl,
       general = footnote_text,
       general_title = "",
-      threeparttable = TRUE
+      threeparttable = FALSE
     )
 
-    result <- kbl
+    result <- as.character(kbl)
+
+    # Add one clean divider line between coefficient and model-stat blocks
+    result <- insert_measure_divider(result, table, first_measure_row)
 
   } else {
     # Fallback to basic knitr::kable
     result <- knitr::kable(
       table,
       format = "latex",
+      longtable = TRUE,
       booktabs = TRUE,
+      linesep = "",
       escape = FALSE,
       col.names = names(table),
       align = c("l", rep("c", ncol(table) - 1))
     )
 
     # Add one divider line between coefficient and model-stat blocks
-    if (!is.na(first_measure_row) && first_measure_row > 1) {
-      lines <- strsplit(result, "\n", fixed = TRUE)[[1]]
-      midrule_idx <- which(grepl("\\\\midrule", lines))[1]
-
-      if (!is.na(midrule_idx)) {
-        insert_after <- midrule_idx + (first_measure_row - 1)
-        lines <- append(lines, "\\midrule", after = insert_after)
-        result <- paste(lines, collapse = "\n")
-      }
-    }
+    result <- insert_measure_divider(result, table, first_measure_row)
 
     # Add footnote manually
     result <- paste0(
@@ -204,5 +232,5 @@ format_latex <- function(table,
     }
   }
 
-  return(result)
+  return(knitr::asis_output(result))
 }

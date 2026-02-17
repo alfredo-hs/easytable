@@ -48,12 +48,12 @@ test_that("easytable validates model.names length", {
   # Should error when length mismatch
   expect_error(
     easytable(m1, m2, model.names = c("Only One")),
-    "Length of model.names.*must match"
+    "model.names.*supplied.*model"
   )
 
   expect_error(
     easytable(m1, m2, model.names = c("One", "Two", "Three")),
-    "Length of model.names.*must match"
+    "model.names.*supplied.*model"
   )
 })
 
@@ -76,7 +76,7 @@ test_that("easytable ignores named arguments in dots", {
 test_that("easytable errors with no models", {
   expect_error(
     easytable(output = "latex"),
-    "No models provided"
+    "No models were provided"
   )
 })
 
@@ -145,8 +145,8 @@ test_that("interaction with contrast and factor displays as var:L2 * other:level
   m1 <- lm(y ~ financial_prudence * digital_confidence, data = test_data)
   result <- easytable(m1, output = "latex")
 
-  # Should have polynomial contrast terms like fin.prud:L1 or fin.prud:L2
-  expect_true(grepl(":L[12]", result))
+  # Should have polynomial contrast labels from ordered factors
+  expect_true(grepl("financial\\.prudence\\.(L|Q|C)", result))
 
   # Should have interaction with asterisk
   expect_true(grepl("\\*", result))

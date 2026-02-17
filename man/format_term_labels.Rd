@@ -4,21 +4,18 @@
 \alias{format_term_labels}
 \title{Format term labels for display}
 \usage{
-format_term_labels(terms)
+format_term_labels(terms, levels_map = NULL, abbreviate = FALSE)
 }
 \arguments{
-\item{terms}{Character vector of term labels from models}
-}
-\value{
-Character vector of formatted term labels
+\item{abbreviate}{Logical. Apply abbreviation? Default FALSE}
 }
 \description{
-Applies formatting transformations to term labels:
-\enumerate{
-\item Convert polynomial suffixes to L indices (e.g., .Q -> :L1, .L -> :L2)
-\item Convert interaction colons to asterisks (e.g., varA:varB -> varA * varB)
-\item Separate factor levels with colon (e.g., advisor_confidencelow -> advisor_confidence:low)
-\item Abbreviate long variable names
+Transformations:
+\itemize{
+\item Preserve polynomial suffixes (.L, .Q, .C, etc.)
+\item Split factor levels using levels_map
+\item Abbreviate only variable portion (if abbreviate = TRUE)
+\item Ensure uniqueness after abbreviation
 }
 }
 \keyword{internal}

@@ -4,16 +4,50 @@ template:
 
 home:
   title: easytable
-  description: Create publication-ready regression tables in Word/HTML and LaTeX.
+  description: Easy to use, easy to read regression tables for lm/glm workflows.
+  links:
+    - text: Design Philosophy
+      href: https://github.com/alfredo-hs/easytable/blob/main/DESIGN_PHILOSOPHY.md
+    - text: Source Code
+      href: https://github.com/alfredo-hs/easytable
 
 navbar:
   structure:
-    left:  [intro, reference, articles, news]
+    left: [intro, getstarted, reference, articles, development, news]
     right: [github]
+  components:
+    getstarted:
+      text: Get Started
+      href: articles/penguins-tutorial.html
+    development:
+      text: Development
+      menu:
+        - text: API Roadmap
+          href: articles/developer-roadmap.html
+        - text: Design Philosophy (Repo)
+          href: https://github.com/alfredo-hs/easytable/blob/main/DESIGN_PHILOSOPHY.md
 
 news: []
 
-articles:
-  - title: Articles
+reference:
+  - title: Main Function
     contents:
+      - easytable
+  - title: Renderer Helpers
+    contents:
+      - format_word
+      - format_latex
+  - title: Internal Functions
+    contents:
+      - has_keyword("internal")
+
+articles:
+  - title: Tutorials
+    desc: Learn easytable end-to-end with practical model workflows.
+    contents:
+      - penguins-tutorial
       - easytable-intro
+  - title: Development
+    desc: Design decisions, API plan, and renderer-compatibility guidance.
+    contents:
+      - developer-roadmap

@@ -2,19 +2,11 @@
 % Please edit documentation in R/utils.R
 \name{split_factor_level}
 \alias{split_factor_level}
-\title{Detect and split factor level suffix}
+\title{Detect and split factor level suffix using model metadata}
 \usage{
-split_factor_level(term)
-}
-\arguments{
-\item{term}{Character string with potential factor level concatenation}
-}
-\value{
-Character string with variable and level separated by colon
+split_factor_level(term, levels_map = NULL)
 }
 \description{
-Detects if a term has a factor level concatenated directly to variable name
-and splits it using a colon. Works for common factor levels and any
-lowercase alphabetic suffix.
+Detect and split factor level suffix using model metadata
 }
 \keyword{internal}

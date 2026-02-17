@@ -1,244 +1,180 @@
 # easytable <img src="man/figures/logo.png" align="right" width="190"/>
 
-**Create publication-ready regression tables in multiple formats**
+Create regression tables that are easy to use and easy to read.
 
-**Authors:** [Alfredo Hernandez Sanchez](https://alfredohs.com) <br>
-**License:** [MIT](https://opensource.org/licenses/MIT)
+`easytable` is a workhorse table package for `lm` and `glm` models with predictable defaults across Word/HTML and LaTeX/PDF outputs.
 
-[![R-CMD-check](https://img.shields.io/badge/R--CMD--check-passing-brightgreen)]()
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 [![pkgdown](https://img.shields.io/badge/pkgdown-site-blue)](https://alfredo-hs.github.io/easytable/)
 
----
-## Overview
+## Why easytable
 
-**easytable** creates beautiful, publication-ready regression tables from R statistical models. Export your results to:
+- One main function: `easytable()`
+- Two-line coefficient cells by default:
+  - line 1: estimate + stars
+  - line 2: `(SE)`
+- Coherent output style across formats
+- Optional export to `.docx` and `.csv`
+- Control-variable indicators for compact model specifications
 
-- **Microsoft Word** (via `flextable`)
-- **HTML** (via `flextable` in Quarto/RMarkdown)
-- **LaTeX/PDF** (for academic papers)
-
-All from a single, simple function call `easytable::easytable()`.
-
-## Features
-
-- 📊 **Multi-format output**: Word/HTML and LaTeX
-- ⭐ **Automatic significance stars**: \*\*\*p < .01, \*\*p < .05, \*p < .1
-- 🔒 **Robust standard errors**: HC robust SEs with lmtest/sandwich
-- 📈 **Marginal effects**: Average marginal effects (AME) with margins package
-- 🎯 **Control variables**: Group control variables for cleaner tables
-- 🎨 **Highlighting**: Color-code significant results (green positive, red negative)
-- 📁 **CSV export**: Save raw data alongside formatted tables
-- ✅ **Model support**: Linear models (lm) and generalized linear models (glm)
-
-## Installation
-
-Install the development version from GitHub:
+## Install
 
 ```r
 # install.packages("devtools")
 devtools::install_github("alfredo-hs/easytable")
-
 ```
 
-## Quick Start
+## Quick Start (Penguins)
 
 ```r
 library(easytable)
 library(palmerpenguins)
 
-# Fit models
 m1 <- lm(body_mass_g ~ flipper_length_mm, data = penguins)
 m2 <- lm(body_mass_g ~ flipper_length_mm + species, data = penguins)
 m3 <- lm(body_mass_g ~ flipper_length_mm + species + island, data = penguins)
 
-# Create table with default names (Model 1, Model 2, Model 3)
+# Default output is Word/flextable (also prints in HTML contexts)
 easytable(m1, m2, m3)
-
-# Or with custom names
-easytable(m1, m2, m3, model.names = c("Baseline", "With Species", "Full Model"))
-
 ```
 
-## Output Formats
+## Core Usage Patterns
 
-### Word (Default)
-
-Perfect for Microsoft Word documents:
+### 1) Basic table
 
 ```r
-easytable(m1, m2, m3, output = "word")
-
+easytable(m1, m2, m3)
 ```
 
-Returns a `flextable` object that can be:
-- Viewed in RStudio Viewer
-- Saved with `flextable::save_as_docx()`
-- Inserted into R Markdown Word documents
-
-### LaTeX
-
-For academic papers and PDF output:
-
-```r
-easytable(m1, m2, output = "latex")
-```
-
-Returns LaTeX table code with booktabs styling, perfect for academic journals.
-
-## Advanced Features
-
-### Robust Standard Errors
-
-Use heteroskedasticity-consistent (HC) standard errors:
-
-```r
-easytable(m1, m2, output = "word", robust.se = TRUE)
-```
-
-*Requires: `lmtest`, `sandwich` packages*
-
-### Marginal Effects
-
-Compute average marginal effects instead of raw coefficients:
-
-```r
-easytable(m1, m2, output = "word", margins = TRUE)
-```
-
-*Requires: `margins` package*
-
-### Both Together
-
-Combine robust SEs with marginal effects:
-
-```r
-easytable(m1, m2, output = "latex",
-          robust.se = TRUE,
-          margins = TRUE)
-```
-
-### Control Variables
-
-Group control variables to show presence/absence rather than individual coefficients:
-
-```r
-easytable(m1, m2, m3, output = "word",
-          control.var = c("species", "island"))
-```
-
-Instead of showing separate rows for `speciesChinstrap`, `speciesGentoo`, etc., the table shows a single "species" row marked with "Y" for models that include it.
-
-### Custom Model Names
-
-Provide meaningful names for your model columns:
-
-```r
-easytable(m1, m2, m3,
-          model.names = c("Baseline", "With Controls", "Full Model"))
-```
-
-### Highlighting
-
-Color-code significant results (positive = green, negative = red):
-
-```r
-easytable(m1, m2, output = "word", highlight = TRUE)
-```
-
-*Works best with Word output*
-
-### Export Word and CSV
-
-Export the underlying data table alongside your formatted output:
+### 2) Custom model names
 
 ```r
 easytable(
-  m1, m2,
-  output = "word",
-  export.word = "results.docx",
-  export.csv = "results.csv"
+  m1, m2, m3,
+  model.names = c("Baseline", "With Species", "Full Model")
 )
 ```
 
-## Full Example
-
-Combine all features:
+### 3) Control indicators
 
 ```r
-library(easytable)
-library(palmerpenguins)
-
-# Fit models with controls
-m1 <- lm(body_mass_g ~ flipper_length_mm, data = penguins)
-m2 <- lm(body_mass_g ~ flipper_length_mm + species + island + sex,
-         data = na.omit(penguins))
-
-# Create publication-ready table
 easytable(
-  m1, m2,
-  model.names = c("Baseline", "Full Model"),
-  output = "word",
-  robust.se = TRUE,
-  control.var = c("species", "island", "sex"),
-  highlight = TRUE,
-  export.word = "regression_results.docx",
-  export.csv = "regression_results.csv"
+  m1, m2, m3,
+  control.var = c("species", "island")
 )
 ```
 
-## Model Support
+### 4) Highlight significant coefficients
 
-Currently supports:
-- `lm()` - Linear regression
-- `glm()` - Generalized linear models
+```r
+easytable(
+  m1, m2, m3,
+  highlight = TRUE
+)
+```
 
-Coming soon:
-- `plm` - Panel data models
-- `fixest` - Fixed effects models
-- Additional model types (survival, mixed effects, etc.)
+### 5) LaTeX output
 
-## Dependencies
+```r
+easytable(
+  m1, m2, m3,
+  output = "latex"
+)
+```
 
-**Always required:**
-- broom
-- dplyr
+### 6) Export files
 
-**Output format specific:**
-- Word: flextable
-- LaTeX: knitr, kableExtra (optional, for enhanced formatting)
+```r
+easytable(
+  m1, m2, m3,
+  export.word = "mytable.docx",
+  export.csv = "mytable.csv"
+)
+```
 
-**Feature specific:**
-- Robust SE: lmtest, sandwich
-- Marginal effects: margins
+## Advanced Options
 
-Missing packages will trigger informative error messages with installation instructions.
+### Robust standard errors
+
+```r
+easytable(m1, m2, robust.se = TRUE)
+```
+
+### Marginal effects
+
+```r
+easytable(m1, m2, margins = TRUE)
+```
+
+### Robust SE + marginal effects
+
+```r
+easytable(m1, m2, robust.se = TRUE, margins = TRUE)
+```
+
+## Supported Model Classes
+
+Current stable scope:
+
+- `lm`
+- `glm`
+
+Planned later:
+
+- `plm` and other model classes
+
+## Design Invariants
+
+`easytable` enforces these defaults:
+
+1. Coefficient and SE share one cell with a real line break.
+2. Zebra striping applies only to coefficient rows.
+3. No per-coefficient horizontal rules.
+4. Exactly one divider between coefficient rows and model-stat rows.
+5. Control indicators belong to the model-stat block.
+
+See `DESIGN_PHILOSOPHY.md` for the full contributor policy.
 
 ## Documentation
 
-- **Quick start**: You're reading it!
-- **Vignette**: `vignette("easytable-intro")`
-- **Function reference**: `?easytable` or `?easy_table`
-- **Developer docs**: See `CLAUDE.md` for architecture details
+- Package site: <https://alfredo-hs.github.io/easytable/>
+- Function help: `?easytable`
+- Tutorial article: `vignette("penguins-tutorial", package = "easytable")`
+- Developer roadmap: `vignette("developer-roadmap", package = "easytable")`
+- API rework plan: `API_REWORK_PLAN.md`
+- Adapter compatibility guide: `ADAPTER_COMPATIBILITY.md`
+- Testing protocol: `tests/README.md`
 
-## Getting Help
+## Testing
 
-- **Bug reports**: [GitHub Issues](https://github.com/alfredo-hs/easytable/issues)
-- **Questions**: [GitHub Discussions](https://github.com/alfredo-hs/easytable/discussions)
+Run committed tests:
+
+```r
+devtools::test()
+```
+
+In constrained environments (skip Word tests):
+
+```sh
+EASYTABLE_SKIP_WORD_TESTS=true Rscript -e "devtools::test()"
+```
+
+Run layered test profiles:
+
+```sh
+Rscript tests/run-tests.R core
+Rscript tests/run-tests.R full
+```
+
+`tests/xtest` stays a user-owned sandbox and is not required for CI.
 
 ## Citation
 
-If you use easytable in your research, please cite:
-
-```
+```text
 Hernandez Sanchez, A. (2026). easytable: Create Multi-Format Regression Tables.
 R package version 2.0.1. https://github.com/alfredo-hs/easytable
 ```
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) file for details.
-
-## Changelog
-
-See [NEWS.md](NEWS.md) for version history and migration guide from 0.1.0 to 2.0.0.
+MIT License. See `LICENSE`.

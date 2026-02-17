@@ -2,18 +2,20 @@
 % Please edit documentation in R/transform_table.R
 \name{separate_measures}
 \alias{separate_measures}
-\title{Separate measures from coefficients}
+\title{Separate model statistics from coefficients}
 \usage{
-separate_measures(table)
+separate_measures(table, control.var = NULL)
 }
 \arguments{
 \item{table}{A data frame with regression results}
+
+\item{control.var}{Character vector of control variable names}
 }
 \value{
 A data frame with measures at the bottom
 }
 \description{
-Splits the table into coefficient rows and measure rows (N, R sq., etc.),
-removes empty measure rows, then recombines with measures at the bottom.
+Splits the table into coefficient rows and model-stat rows (control indicators,
+N, R sq., etc.), removes empty stat rows, then recombines with stats at the bottom.
 }
 \keyword{internal}

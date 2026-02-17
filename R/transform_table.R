@@ -76,6 +76,7 @@ deduplicate_control_vars <- function(table) {
 
   for (col in names(result)[-1]) {
     duplicate_mask <- duplicated(result$term) & result[[col]] == "Y"
+    duplicate_mask[is.na(duplicate_mask)] <- FALSE
     result <- result[!duplicate_mask, , drop = FALSE]
   }
 
@@ -96,26 +97,35 @@ sort_table <- function(table) {
   table[order(y_count, decreasing = FALSE), , drop = FALSE]
 }
 
-#' Separate measures from coefficients
+#' Separate model statistics from coefficients
 #'
-#' Splits the table into coefficient rows and measure rows (N, R sq., etc.),
-#' removes empty measure rows, then recombines with measures at the bottom.
+#' Splits the table into coefficient rows and model-stat rows (control indicators,
+#' N, R sq., etc.), removes empty stat rows, then recombines with stats at the bottom.
 #'
 #' @param table A data frame with regression results
+#' @param control.var Character vector of control variable names
 #'
 #' @return A data frame with measures at the bottom
 #' @keywords internal
-separate_measures <- function(table) {
+separate_measures <- function(table, control.var = NULL) {
   measure_names <- get_measure_names()
+  control_names <- if (is.null(control.var)) character(0) else control.var
+  stat_terms <- unique(c(control_names, measure_names))
 
-  measures <- table %>% dplyr::filter(term %in% measure_names)
+  stats <- table %>% dplyr::filter(term %in% stat_terms)
 
-  # Remove measure rows with no data (all empty except term)
-  measures <- measures[rowSums(measures[-1] != "") > 0, , drop = FALSE]
+  # Remove stat rows with no data (all empty except term)
+  stats <- stats[rowSums(stats[-1] != "") > 0, , drop = FALSE]
+  if (nrow(stats) > 0) {
+    stats_order <- match(stats$term, stat_terms)
+    stats <- stats[order(stats_order), , drop = FALSE]
+  }
 
-  coefficients <- table %>% dplyr::filter(!term %in% measure_names)
+  coefficients <- table %>% dplyr::filter(!term %in% stat_terms)
 
-  dplyr::bind_rows(coefficients, measures)
+  result <- dplyr::bind_rows(coefficients, stats)
+  attr(result, "stat_terms") <- stat_terms
+  result
 }
 
 #' Transform parsed model table
@@ -146,21 +156,31 @@ transform_table <- function(parsed_table, control.var = NULL, abbreviate = FALSE
   # Replace NA with empty string
   result[is.na(result)] <- ""
 
+  # Drop rows that are fully empty artifacts (empty term and no model values)
+  is_empty_row <- (result$term == "") &
+    (rowSums(result[, -1, drop = FALSE] != "") == 0)
+  result <- result[!is_empty_row, , drop = FALSE]
+
   # Sort table (control vars last)
   result <- sort_table(result)
 
-  # Separate measures and put them at the bottom
-  result <- separate_measures(result)
+  # Separate model-stat rows and put them at the bottom
+  result <- separate_measures(result, control.var)
 
-  # Format term labels for display (skip measure rows)
-  measure_names <- get_measure_names()
-  non_measure_rows <- !result$term %in% measure_names
+  # Format term labels for display (skip model-stat rows)
+  stat_terms <- attr(result, "stat_terms")
+  if (is.null(stat_terms) || length(stat_terms) == 0) {
+    stat_terms <- get_measure_names()
+  }
+  non_measure_rows <- !result$term %in% stat_terms
 
   result$term[non_measure_rows] <- format_term_labels(
     result$term[non_measure_rows],
     levels_map = levels_map,
     abbreviate = abbreviate
   )
+
+  attr(result, "stat_terms") <- stat_terms
 
   result
 }

@@ -13,7 +13,13 @@ get_measure_names <- function() {
 #' Get indices of model statistic rows
 #' @keywords internal
 get_measure_row_indices <- function(table) {
-  which(table$term %in% get_measure_names())
+  stat_terms <- attr(table, "stat_terms")
+
+  if (is.null(stat_terms) || length(stat_terms) == 0) {
+    stat_terms <- get_measure_names()
+  }
+
+  which(table$term %in% stat_terms)
 }
 
 #' Get first model statistic row index
@@ -28,7 +34,7 @@ get_first_measure_row <- function(table) {
 
 #' Wrap interaction terms to reduce term-column width
 #'
-#' Example: "x1 * x2" -> "x1 *\nx2"
+#' Example: `"x1 * x2" -> "x1 *\\nx2"`
 #'
 #' @keywords internal
 wrap_interaction_terms <- function(terms) {
@@ -41,8 +47,8 @@ wrap_interaction_terms <- function(terms) {
 #' - (Intercept) is preserved
 #' - Single-token names truncate to 6 characters
 #' - "_" and "." are treated as separators
-#' - Two-token names become token1[1:4] . token2[1:4]
-#' - Three-plus-token names become t1[1:2] . t2[1:2] . t3[1:2]
+#' - Two-token names become `token1[1:4] . token2[1:4]`
+#' - Three-plus-token names become `t1[1:2] . t2[1:2] . t3[1:2]`
 #'
 #' @param var_name Character string
 #' @return Character string
@@ -241,8 +247,3 @@ build_levels_map <- function(model_list) {
 
   out
 }
-
-#' Pipe operator import
-#' @keywords internal
-#' @importFrom magrittr %>%
-NULL

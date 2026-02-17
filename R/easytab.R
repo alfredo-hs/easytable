@@ -113,7 +113,7 @@ easytable <- function(...,
 
   # Validate that we have at least one model
   if (length(models) == 0) {
-    stop("No models provided. Pass model objects like: easytable(m1, m2, m3)",
+    stop("No models were provided. Try: easytable(m1, m2, m3)",
          call. = FALSE)
   }
 
@@ -124,12 +124,12 @@ easytable <- function(...,
   } else {
     # Validate user-provided names
     if (!is.character(model.names)) {
-      stop("model.names must be a character vector", call. = FALSE)
+      stop("`model.names` must be a character vector, for example c(\"Model 1\", \"Model 2\").", call. = FALSE)
     }
     if (length(model.names) != length(models)) {
       stop(
         sprintf(
-          "Length of model.names (%d) must match number of models (%d)",
+          "`model.names` has %d value(s), but you supplied %d model(s).",
           length(model.names), length(models)
         ),
         call. = FALSE
@@ -142,8 +142,8 @@ easytable <- function(...,
   names(models) <- model_names
   model_list <- models
 
-  # Validate output parameter
-  output <- match.arg(output, choices = c("word", "latex"))
+  # Validate and normalize output parameter
+  output <- validate_output_format(output)
 
   # Validate inputs
   validate_model_list(model_list)
@@ -165,8 +165,14 @@ easytable <- function(...,
 
   # Export to CSV if requested
   if (!is.null(export.csv)) {
+    csv_table <- transformed
+    for (col in names(csv_table)) {
+      if (is.character(csv_table[[col]])) {
+        csv_table[[col]] <- gsub("\n", " ", csv_table[[col]], fixed = TRUE)
+      }
+    }
     write.csv(
-      transformed,
+      csv_table,
       file = export.csv,
       row.names = FALSE
     )

@@ -79,6 +79,20 @@ test_that("deduplicate_control_vars removes duplicate Y rows", {
   expect_equal(sum(result$term == "species"), 1)
 })
 
+test_that("deduplicate_control_vars does not create NA artifact rows", {
+  test_table <- data.frame(
+    term = c("island", "island"),
+    Model1 = c(NA, NA),
+    Model2 = c(NA, NA),
+    Model3 = c("Y", "Y")
+  )
+
+  result <- deduplicate_control_vars(test_table)
+
+  expect_equal(nrow(result), 1)
+  expect_false(any(is.na(result$term)))
+})
+
 test_that("sort_table puts control variables last", {
   test_table <- data.frame(
     term = c("x1", "species", "island", "x2"),
