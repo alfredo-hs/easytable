@@ -2,7 +2,12 @@
 ^\.Rproj\.user$
 ^\.github$
 ^CLAUDE\.md$
+^claude\.md$
 ^LICENSE\.md$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^\.claude$
+^AI_NOTES\.md$
+^DESIGN_PHILOSOPHY\.md$
+^tests/xtest($|/)
