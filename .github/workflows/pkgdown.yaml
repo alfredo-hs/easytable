@@ -42,6 +42,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -64,11 +66,16 @@ jobs:
             any::palmerpenguins
             local::.
 
+      - name: Configure git user
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
       - name: Build pkgdown site
         run: pkgdown::build_site(new_process = FALSE, install = TRUE, examples = FALSE)
         shell: Rscript {0}
 
       - name: Deploy to gh-pages
         if: github.event_name != 'pull_request'
-        run: pkgdown::deploy_to_branch(new_process = FALSE)
+        run: pkgdown::deploy_to_branch(new_process = FALSE, commit_message = "Deploy pkgdown site")
         shell: Rscript {0}
