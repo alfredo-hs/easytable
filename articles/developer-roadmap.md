@@ -1,0 +1,98 @@
+# Developer Roadmap: API Clarity and Renderer Stability
+
+This document is the implementation plan for keeping `easytable` simple
+for beginners while making internals safer for long-term maintenance.
+
+## Current State
+
+[`easytable()`](https://alfredo-hs.github.io/easytable/reference/easytable.md)
+currently does three jobs at once:
+
+1.  Parse and transform model results.
+2.  Render to output-specific objects (`flextable` or LaTeX string).
+3.  Optionally write files (`export.word`, `export.csv`).
+
+This is convenient, but can be unclear for new users and harder to
+maintain.
+
+## API Rework Plan (Phased)
+
+### Phase 1: Keep behavior, improve clarity (current target)
+
+1.  Keep
+    [`easytable()`](https://alfredo-hs.github.io/easytable/reference/easytable.md)
+    as main user entry point.
+2.  Improve parameter validation and friendly errors.
+3.  Document side effects (`export.word`, `export.csv`) explicitly.
+
+### Phase 2: Introduce explicit workflow functions
+
+Add clearly separated helpers:
+
+1.  `easytable_build()`:
+    - takes models
+    - returns backend-agnostic table spec (display strings + style map)
+2.  `easytable_render()`:
+    - takes spec
+    - returns renderer object (`flextable`, LaTeX)
+3.  `easytable_export()`:
+    - takes rendered object/spec
+    - writes files
+
+[`easytable()`](https://alfredo-hs.github.io/easytable/reference/easytable.md)
+remains a convenience wrapper that calls the three steps.
+
+### Phase 3: Deprecation policy and migration
+
+1.  Keep wrapper stable for beginners.
+2.  Mark low-level transitions with soft deprecation warnings.
+3.  Provide migration examples in release notes.
+
+## Beginner Navigation Plan
+
+Beginner path should always be:
+
+1.  Fit models.
+2.  Call `easytable(...)`.
+3.  Optionally add one argument at a time (`highlight`, `control.var`,
+    `output`, exports).
+
+Avoid requiring beginners to understand renderer internals or object
+classes.
+
+## Renderer Adapter Contract
+
+To reduce drift between Word/HTML and LaTeX:
+
+1.  Core transformation must own row semantics:
+    - coefficient vs model-stat rows
+    - control indicator placement
+2.  Core must own finalized display strings:
+    - estimate + stars + `(SE)` line breaks
+3.  Renderers must only map style tokens to backend syntax.
+
+## External Dependency Change Strategy (example: flextable)
+
+When dependencies evolve:
+
+1.  Pin a compatibility floor in `DESCRIPTION`.
+2.  Maintain adapter-focused tests in `tests/testthat`.
+3.  Avoid deep reliance on undocumented object internals.
+4.  Keep fallback behavior documented (for missing optional packages).
+
+## Compatibility Checklist for Releases
+
+Before each release:
+
+1.  Run core tests with `devtools::test()`.
+2.  Run constrained profile:
+    - `EASYTABLE_SKIP_WORD_TESTS=true Rscript -e "devtools::test()"`
+3.  Spot-check parity on key invariants:
+    - two-line coefficient cells
+    - zebra only on coefficient rows
+    - one coefficient/stat divider
+
+## Design Reference
+
+For design language and contributor guardrails, see
+`DESIGN_PHILOSOPHY.md` in the repository root.
