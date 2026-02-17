@@ -60,7 +60,7 @@ models <- list(
 The default output format is Word, using the flextable package:
 
 ```{r eval=FALSE}
-easy_table(models)
+easytable(models)
 ```
 
 This creates a formatted table that can be:
@@ -68,12 +68,12 @@ This creates a formatted table that can be:
 - Saved to Word with `flextable::save_as_docx()`
 - Included in R Markdown Word documents
 
-### Markdown Output
+### HTML Output (via Word renderer)
 
-For Quarto and R Markdown HTML/PDF documents:
+For Quarto and R Markdown HTML/PDF documents, use the default Word renderer (`flextable`), which also prints to HTML:
 
 ```{r}
-easy_table(models, output = "markdown")
+easytable(models, output = "word")
 ```
 
 ### LaTeX Output
@@ -81,7 +81,7 @@ easy_table(models, output = "markdown")
 For academic papers and LaTeX documents:
 
 ```{r}
-easy_table(models, output = "latex")
+easytable(models, output = "latex")
 ```
 
 ## Robust Standard Errors
@@ -89,7 +89,7 @@ easy_table(models, output = "latex")
 Use heteroskedasticity-consistent standard errors with the `robust.se` parameter:
 
 ```{r eval=FALSE}
-easy_table(models, output = "markdown", robust.se = TRUE)
+easytable(models, output = "word", robust.se = TRUE)
 ```
 
 This automatically uses HC-robust standard errors via the `lmtest` and `sandwich` packages. The output includes a note indicating robust SEs were used.
@@ -105,7 +105,7 @@ Instead of raw coefficients, you can report average marginal effects (AME):
 
 ```{r eval=FALSE}
 # Marginal effects (note: requires margins package)
-easy_table(models[2:3], output = "markdown", margins = TRUE)
+easytable(models[2:3], output = "word", margins = TRUE)
 ```
 
 **Important notes about marginal effects:**
@@ -118,9 +118,9 @@ easy_table(models[2:3], output = "markdown", margins = TRUE)
 You can use both together:
 
 ```{r eval=FALSE}
-easy_table(
+easytable(
   models[2:3],
-  output = "markdown",
+  output = "word",
   robust.se = TRUE,
   margins = TRUE
 )
@@ -144,9 +144,9 @@ models_controls <- list(
 )
 
 # Group species and island as control variables
-easy_table(
+easytable(
   models_controls,
-  output = "markdown",
+  output = "word",
   control.var = c("species", "island")
 )
 ```
@@ -171,7 +171,7 @@ This is especially useful with:
 You can color-code significant results (works best with Word output):
 
 ```{r eval=FALSE}
-easy_table(models, output = "word", highlight = TRUE)
+easytable(models, output = "word", highlight = TRUE)
 ```
 
 - **Green background**: Positive significant coefficients
@@ -193,20 +193,21 @@ glm_models <- list(
   "With Species" = g2
 )
 
-easy_table(glm_models, output = "markdown")
+easytable(glm_models, output = "word")
 ```
 
-## Exporting to CSV
+## Exporting to Word and CSV
 
-You can export the underlying data table to CSV:
+You can export both a Word table and the underlying CSV table:
 
 ```{r eval=FALSE}
-easy_table(
+easytable(
   models,
   output = "word",
-  csv = "penguin_regression_results"
+  export.word = "penguin_regression_results.docx",
+  export.csv = "penguin_regression_results.csv"
 )
-# Creates: penguin_regression_results.csv
+# Creates: penguin_regression_results.docx and penguin_regression_results.csv
 ```
 
 This is useful for:
@@ -233,13 +234,14 @@ models_full <- list(
 )
 
 # Create publication-ready table
-easy_table(
+easytable(
   models_full,
   output = "word",
   robust.se = TRUE,
   control.var = c("species", "island", "sex"),
   highlight = TRUE,
-  csv = "final_results"
+  export.word = "final_results.docx",
+  export.csv = "final_results.csv"
 )
 ```
 
@@ -271,8 +273,7 @@ At the bottom of each table:
 
 | Format | Best For | Pros | Cons |
 |--------|----------|------|------|
-| **Word** | MS Word docs, presentations | Beautiful formatting, easy to customize | Requires flextable |
-| **Markdown** | Quarto/RMarkdown reports | Plain text, version control friendly | Basic formatting |
+| **Word/HTML** | MS Word docs, Quarto/RMarkdown HTML | Beautiful formatting, easy to customize | Requires flextable |
 | **LaTeX** | Academic papers, journals | Professional typesetting, journal standards | Requires LaTeX knowledge |
 
 ## Tips and Best Practices

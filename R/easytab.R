@@ -1,7 +1,7 @@
 #' Create publication-ready regression tables
 #'
 #' Takes model objects as arguments and creates formatted tables for
-#' Word, Markdown, or LaTeX/PDF output. Supports robust standard errors,
+#' Word or LaTeX/PDF output. Supports robust standard errors,
 #' marginal effects, and control variable grouping.
 #'
 #' @param ... Statistical model objects (lm or glm). Pass models directly
@@ -12,11 +12,12 @@
 #' @param output Character string specifying output format. One of:
 #'   \itemize{
 #'     \item \code{"word"} - Microsoft Word via flextable (default)
-#'     \item \code{"markdown"} - Markdown for Quarto/RMarkdown
 #'     \item \code{"latex"} - LaTeX for PDF output
 #'   }
-#' @param csv Character string for CSV file export (without .csv extension).
-#'   If NULL (default), no CSV is created.
+#' @param export.word Character string ending in \code{.docx} for Word file export.
+#'   Only supported when \code{output = "word"}. If NULL (default), no file is written.
+#' @param export.csv Character string ending in \code{.csv} for CSV export.
+#'   If NULL (default), no CSV file is written.
 #' @param robust.se Logical. Use robust standard errors (HC type)? Default FALSE.
 #'   Requires packages: lmtest, sandwich
 #' @param control.var Character vector of variable names to group as "control
@@ -28,12 +29,14 @@
 #'   negative in red)? Default FALSE. Works best with Word output.
 #' @param abbreviate Logical. Abbreviate variable names for readability? Default FALSE.
 #'   When TRUE, long variable names are shortened using deterministic rules.
+#' @param table_size Character string specifying LaTeX table size. Only works with
+#'   \code{output = "latex"}. Options: "tiny", "small", "normalsize", "scriptsize".
+#'   Default "normalsize". Error if used with Word output.
 #'
 #' @return
 #' Depends on \code{output}:
 #' \itemize{
 #'   \item \code{"word"} - A flextable object
-#'   \item \code{"markdown"} - Character string with markdown table
 #'   \item \code{"latex"} - Character string with LaTeX table code
 #' }
 #'
@@ -57,7 +60,7 @@
 #' \itemize{
 #'   \item Always required: broom, dplyr
 #'   \item Word output: flextable
-#'   \item Markdown/LaTeX: knitr, optionally kableExtra for enhanced formatting
+#'   \item LaTeX output: knitr, optionally kableExtra for enhanced formatting
 #'   \item Robust SE: lmtest, sandwich
 #'   \item Marginal effects: margins
 #' }
@@ -79,26 +82,31 @@
 #' # Custom model names
 #' easytable(m1, m2, m3, model.names = c("Baseline", "With Species", "Full"))
 #'
-#' # Markdown output
-#' easytable(m1, m2, output = "markdown")
+#' # LaTeX output
+#' easytable(m1, m2, output = "latex")
 #'
 #' # With robust standard errors
 #' easytable(m1, m2, robust.se = TRUE)
 #'
 #' # Group species and island as control variables
 #' easytable(m1, m2, m3, control.var = c("species", "island"))
+#'
+#' # Export to Word and CSV
+#' easytable(m1, m2, export.word = "mytable.docx", export.csv = "mytable.csv")
 #' }
 #'
 #' @export
 easytable <- function(...,
                       model.names = NULL,
                       output = "word",
-                      csv = NULL,
+                      export.word = NULL,
+                      export.csv = NULL,
                       robust.se = FALSE,
                       control.var = NULL,
                       margins = FALSE,
                       highlight = FALSE,
-                      abbreviate = FALSE) {
+                      abbreviate = FALSE,
+                      table_size = "normalsize") {
 
   # Capture models from dots
   models <- list(...)
@@ -135,13 +143,14 @@ easytable <- function(...,
   model_list <- models
 
   # Validate output parameter
-  output <- match.arg(output, choices = c("word", "markdown", "latex"))
+  output <- match.arg(output, choices = c("word", "latex"))
 
   # Validate inputs
   validate_model_list(model_list)
   validate_model_types(model_list)
   validate_control_vars(model_list, control.var)
-  validate_parameters(robust.se, margins, highlight, csv)
+  validate_parameters(robust.se, margins, highlight, export.word, export.csv, output)
+  validate_table_size(table_size, output)
 
   # Check feature dependencies
   check_robust_dependencies(robust.se)
@@ -155,10 +164,10 @@ easytable <- function(...,
   transformed <- transform_table(parsed, control.var, abbreviate)
 
   # Export to CSV if requested
-  if (!is.null(csv)) {
+  if (!is.null(export.csv)) {
     write.csv(
       transformed,
-      file = paste0(csv, ".csv"),
+      file = export.csv,
       row.names = FALSE
     )
   }
@@ -167,9 +176,13 @@ easytable <- function(...,
   result <- switch(
     output,
     word = format_word(transformed, robust.se, margins, highlight),
-    markdown = format_markdown(transformed, robust.se, margins, highlight),
-    latex = format_latex(transformed, robust.se, margins, highlight)
+    latex = format_latex(transformed, robust.se, margins, highlight, table_size)
   )
+
+  # Export Word file if requested
+  if (!is.null(export.word)) {
+    flextable::save_as_docx(`Regression Table` = result, path = export.word)
+  }
 
   return(result)
 }

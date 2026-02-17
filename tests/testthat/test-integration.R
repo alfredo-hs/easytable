@@ -6,13 +6,11 @@ test_that("easytable works with Word output (default)", {
   expect_s3_class(result, "flextable")
 })
 
-test_that("easytable works with markdown output", {
-  skip_if_not_installed("knitr")
-
-  result <- easytable(test_m1, output = "markdown")
-
-  expect_type(result, "character")
-  expect_true(grepl("\\|", result))
+test_that("easytable rejects markdown output", {
+  expect_error(
+    easytable(test_m1, output = "markdown"),
+    "arg should be one of"
+  )
 })
 
 test_that("easytable works with latex output", {
@@ -92,7 +90,7 @@ test_that("easytable full pipeline with all features", {
   result <- easytable(
     test_m1, test_m2, test_m3,
     output = "word",
-    csv = temp_csv,
+    export.csv = paste0(temp_csv, ".csv"),
     robust.se = TRUE,
     control.var = c("hp", "am"),
     highlight = TRUE
@@ -104,12 +102,12 @@ test_that("easytable full pipeline with all features", {
   unlink(paste0(temp_csv, ".csv"))
 })
 
-test_that("easytable markdown pipeline with control vars", {
+test_that("easytable latex pipeline with control vars", {
   skip_if_not_installed("knitr")
 
   result <- easytable(
     test_m1, test_m2, test_m3,
-    output = "markdown",
+    output = "latex",
     control.var = c("hp", "am")
   )
 

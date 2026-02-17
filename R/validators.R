@@ -111,10 +111,12 @@ validate_control_vars <- function(model_list, control.var) {
 #' @param robust.se Logical for robust standard errors
 #' @param margins Logical for marginal effects
 #' @param highlight Logical for highlighting
-#' @param csv Character or NULL for CSV export
+#' @param export.word Character or NULL for Word export path
+#' @param export.csv Character or NULL for CSV export path
+#' @param output Character string specifying output format
 #' @return Invisible TRUE if valid, otherwise stops with error
 #' @keywords internal
-validate_parameters <- function(robust.se, margins, highlight, csv) {
+validate_parameters <- function(robust.se, margins, highlight, export.word, export.csv, output) {
   if (!is.logical(robust.se) || length(robust.se) != 1) {
     stop("robust.se must be TRUE or FALSE.", call. = FALSE)
   }
@@ -127,8 +129,25 @@ validate_parameters <- function(robust.se, margins, highlight, csv) {
     stop("highlight must be TRUE or FALSE.", call. = FALSE)
   }
 
-  if (!is.null(csv) && !is.character(csv)) {
-    stop("csv must be a character string or NULL.", call. = FALSE)
+  if (!is.null(export.word)) {
+    if (!is.character(export.word) || length(export.word) != 1 || !nzchar(export.word)) {
+      stop("export.word must be a non-empty character string or NULL.", call. = FALSE)
+    }
+    if (!grepl("\\.docx$", export.word, ignore.case = TRUE)) {
+      stop("export.word must end in '.docx'.", call. = FALSE)
+    }
+    if (output != "word") {
+      stop("export.word is only supported when output = \"word\".", call. = FALSE)
+    }
+  }
+
+  if (!is.null(export.csv)) {
+    if (!is.character(export.csv) || length(export.csv) != 1 || !nzchar(export.csv)) {
+      stop("export.csv must be a non-empty character string or NULL.", call. = FALSE)
+    }
+    if (!grepl("\\.csv$", export.csv, ignore.case = TRUE)) {
+      stop("export.csv must end in '.csv'.", call. = FALSE)
+    }
   }
 
   invisible(TRUE)
@@ -136,7 +155,7 @@ validate_parameters <- function(robust.se, margins, highlight, csv) {
 
 #' Check format-specific dependencies
 #'
-#' @param output Output format ("word", "markdown", or "latex")
+#' @param output Output format ("word" or "latex")
 #' @return Invisible TRUE if dependencies available, otherwise stops with error
 #' @keywords internal
 check_format_dependencies <- function(output) {
@@ -150,10 +169,10 @@ check_format_dependencies <- function(output) {
     }
   }
 
-  if (output %in% c("markdown", "latex")) {
+  if (output == "latex") {
     if (!requireNamespace("knitr", quietly = TRUE)) {
       stop(
-        "Package 'knitr' is required for ", output, " output.\n",
+        "Package 'knitr' is required for latex output.\n",
         "  Install it with: install.packages('knitr')",
         call. = FALSE
       )
@@ -208,6 +227,35 @@ check_margins_dependencies <- function(margins) {
         call. = FALSE
       )
     }
+  }
+
+  invisible(TRUE)
+}
+
+#' Validate table_size parameter
+#'
+#' @param table_size Character string specifying LaTeX table size
+#' @param output Character string specifying output format
+#' @return Invisible TRUE if valid, otherwise stops with error
+#' @keywords internal
+validate_table_size <- function(table_size, output) {
+  valid_sizes <- c("tiny", "small", "normalsize", "scriptsize")
+
+  if (!table_size %in% valid_sizes) {
+    stop(
+      "'table_size' must be one of: ", paste(valid_sizes, collapse = ", "), "\n",
+      "  You provided: ", table_size,
+      call. = FALSE
+    )
+  }
+
+  if (table_size != "normalsize" && output != "latex") {
+    stop(
+      "The 'table_size' parameter only works for LaTeX output.\n",
+      "  Current output format: ", output, "\n",
+      "  To use 'table_size', set output = \"latex\"",
+      call. = FALSE
+    )
   }
 
   invisible(TRUE)

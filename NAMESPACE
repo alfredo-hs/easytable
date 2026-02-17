@@ -3,7 +3,6 @@
 export("%>%")
 export(easytable)
 export(format_latex)
-export(format_markdown)
 export(format_word)
 importFrom(broom,tidy)
 importFrom(dplyr,.data)

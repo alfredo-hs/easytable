@@ -7,7 +7,7 @@ test_that("easytable accepts model objects through dots", {
 
   # Should work without error
   expect_no_error(
-    easytable(m1, m2, output = "markdown")
+    easytable(m1, m2, output = "latex")
   )
 })
 
@@ -16,7 +16,7 @@ test_that("easytable uses default Model N naming", {
   m2 <- lm(mpg ~ wt + hp, data = mtcars)
   m3 <- lm(mpg ~ wt + hp + qsec, data = mtcars)
 
-  result <- easytable(m1, m2, m3, output = "markdown")
+  result <- easytable(m1, m2, m3, output = "latex")
 
   # Check that result contains "Model 1", "Model 2", "Model 3"
   expect_true(grepl("Model 1", result))
@@ -30,7 +30,7 @@ test_that("easytable respects custom model.names", {
 
   result <- easytable(m1, m2,
                       model.names = c("Baseline", "Full"),
-                      output = "markdown")
+                      output = "latex")
 
   # Check that custom names appear in output
   expect_true(grepl("Baseline", result))
@@ -62,7 +62,7 @@ test_that("easytable ignores named arguments in dots", {
   m2 <- lm(mpg ~ wt + hp, data = mtcars)
 
   # Even with named arguments, should use default Model N naming
-  result <- easytable(Logit = m1, Probit = m2, output = "markdown")
+  result <- easytable(Logit = m1, Probit = m2, output = "latex")
 
   # Should still use Model 1, Model 2
   expect_true(grepl("Model 1", result))
@@ -75,7 +75,7 @@ test_that("easytable ignores named arguments in dots", {
 
 test_that("easytable errors with no models", {
   expect_error(
-    easytable(output = "markdown"),
+    easytable(output = "latex"),
     "No models provided"
   )
 })
@@ -83,7 +83,7 @@ test_that("easytable errors with no models", {
 test_that("easytable works with single model", {
   m1 <- lm(mpg ~ wt, data = mtcars)
 
-  result <- easytable(m1, output = "markdown")
+  result <- easytable(m1, output = "latex")
 
   expect_true(grepl("Model 1", result))
 })
@@ -93,7 +93,7 @@ test_that("easytable works with lm models", {
   m2 <- lm(mpg ~ wt + hp, data = mtcars)
 
   expect_no_error(
-    easytable(m1, m2, output = "markdown")
+    easytable(m1, m2, output = "latex")
   )
 })
 
@@ -106,7 +106,7 @@ test_that("easytable works with glm models", {
   m2 <- glm(am_binary ~ wt + hp, data = mtcars_bin, family = binomial)
 
   expect_no_error(
-    easytable(m1, m2, output = "markdown")
+    easytable(m1, m2, output = "latex")
   )
 })
 
@@ -121,7 +121,7 @@ test_that("factor terms display as var:level not varlevel", {
   )
 
   m1 <- lm(y ~ x + advisor_confidence, data = test_data)
-  result <- easytable(m1, output = "markdown")
+  result <- easytable(m1, output = "latex")
 
   # Should contain "adv_conf:low" or "advisor_confidence:low" (depending on abbreviation)
   # but NOT "advisor_confidencelow" (concatenated)
@@ -143,7 +143,7 @@ test_that("interaction with contrast and factor displays as var:L2 * other:level
   )
 
   m1 <- lm(y ~ financial_prudence * digital_confidence, data = test_data)
-  result <- easytable(m1, output = "markdown")
+  result <- easytable(m1, output = "latex")
 
   # Should have polynomial contrast terms like fin.prud:L1 or fin.prud:L2
   expect_true(grepl(":L[12]", result))

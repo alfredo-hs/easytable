@@ -6,10 +6,10 @@ Authors@R: person("Alfredo", "Hernandez Sanchez",
     email = "alhdzsz@gmail.com",
     role = c("aut", "cre"))
 Description: Create publication-ready regression tables in multiple formats
-    (Word, Markdown, LaTeX/PDF) from statistical models. Supports lm and glm
+    (Word/HTML and LaTeX/PDF) from statistical models. Supports lm and glm
     models with options for robust standard errors, marginal effects, and
-    control variable grouping. Tables can be exported to Word via flextable,
-    Markdown for Quarto/RMarkdown documents, or LaTeX for PDF output.
+    control variable grouping. Tables can be exported to Word via flextable
+    or LaTeX for PDF output.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

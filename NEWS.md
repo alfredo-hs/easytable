@@ -1,3 +1,29 @@
+# easytable 2.1.0
+
+## Breaking Changes
+
+* **Removed markdown output mode** from `easytable()`. Supported outputs are now `"word"` (default) and `"latex"`.
+
+* **Renamed CSV export argument**:
+  * Old: `csv`
+  * New: `export.csv` (must end with `.csv`)
+
+## New Features
+
+* **Direct Word file export** with new `export.word` argument (must end with `.docx`).
+  * Example: `easytable(m1, m2, export.word = "mytable.docx")`
+
+* **Interaction term wrapping in term column**: interaction labels now wrap after `*` to reduce table width (e.g., `x1 *` on one line, `x2` on the next line).
+
+## Formatting and Consistency
+
+* **Word/HTML and LaTeX alignment improved**:
+  * Shared measure-row detection for divider placement
+  * Single divider between coefficient block and model-stat block
+  * Zebra striping constrained to coefficient block only
+
+---
+
 # easytable 2.0.1
 
 ## New Features

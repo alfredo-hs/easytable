@@ -8,11 +8,14 @@ easytable(
   ...,
   model.names = NULL,
   output = "word",
-  csv = NULL,
+  export.word = NULL,
+  export.csv = NULL,
   robust.se = FALSE,
   control.var = NULL,
   margins = FALSE,
-  highlight = FALSE
+  highlight = FALSE,
+  abbreviate = FALSE,
+  table_size = "normalsize"
 )
 }
 \arguments{
@@ -26,12 +29,14 @@ Length must match number of models.}
 \item{output}{Character string specifying output format. One of:
 \itemize{
 \item \code{"word"} - Microsoft Word via flextable (default)
-\item \code{"markdown"} - Markdown for Quarto/RMarkdown
 \item \code{"latex"} - LaTeX for PDF output
 }}
 
-\item{csv}{Character string for CSV file export (without .csv extension).
-If NULL (default), no CSV is created.}
+\item{export.word}{Character string ending in \code{.docx} for Word file export.
+Only supported when \code{output = "word"}. If NULL (default), no file is written.}
+
+\item{export.csv}{Character string ending in \code{.csv} for CSV export.
+If NULL (default), no CSV file is written.}
 
 \item{robust.se}{Logical. Use robust standard errors (HC type)? Default FALSE.
 Requires packages: lmtest, sandwich}
@@ -45,18 +50,24 @@ Requires package: margins}
 
 \item{highlight}{Logical. Highlight significant coefficients (positive in green,
 negative in red)? Default FALSE. Works best with Word output.}
+
+\item{abbreviate}{Logical. Abbreviate variable names for readability? Default FALSE.
+When TRUE, long variable names are shortened using deterministic rules.}
+
+\item{table_size}{Character string specifying LaTeX table size. Only works with
+\code{output = "latex"}. Options: "tiny", "small", "normalsize", "scriptsize".
+Default "normalsize". Error if used with Word output.}
 }
 \value{
 Depends on \code{output}:
 \itemize{
 \item \code{"word"} - A flextable object
-\item \code{"markdown"} - Character string with markdown table
 \item \code{"latex"} - Character string with LaTeX table code
 }
 }
 \description{
 Takes model objects as arguments and creates formatted tables for
-Word, Markdown, or LaTeX/PDF output. Supports robust standard errors,
+Word or LaTeX/PDF output. Supports robust standard errors,
 marginal effects, and control variable grouping.
 }
 \details{
@@ -80,7 +91,7 @@ Term labels are automatically formatted for readability:
 \itemize{
 \item Always required: broom, dplyr
 \item Word output: flextable
-\item Markdown/LaTeX: knitr, optionally kableExtra for enhanced formatting
+\item LaTeX output: knitr, optionally kableExtra for enhanced formatting
 \item Robust SE: lmtest, sandwich
 \item Marginal effects: margins
 }
@@ -103,14 +114,17 @@ easytable(m1, m2, m3)
 # Custom model names
 easytable(m1, m2, m3, model.names = c("Baseline", "With Species", "Full"))
 
-# Markdown output
-easytable(m1, m2, output = "markdown")
+# LaTeX output
+easytable(m1, m2, output = "latex")
 
 # With robust standard errors
 easytable(m1, m2, robust.se = TRUE)
 
 # Group species and island as control variables
 easytable(m1, m2, m3, control.var = c("species", "island"))
+
+# Export to Word and CSV
+easytable(m1, m2, export.word = "mytable.docx", export.csv = "mytable.csv")
 }
 
 }

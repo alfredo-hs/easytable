@@ -15,14 +15,14 @@
 **easytable** creates beautiful, publication-ready regression tables from R statistical models. Export your results to:
 
 - **Microsoft Word** (via `flextable`)
-- **Markdown** (for Quarto/RMarkdown documents)
+- **HTML** (via `flextable` in Quarto/RMarkdown)
 - **LaTeX/PDF** (for academic papers)
 
 All from a single, simple function call `easytable::easytable()`.
 
 ## Features
 
-- 📊 **Multi-format output**: Word, Markdown, or LaTeX
+- 📊 **Multi-format output**: Word/HTML and LaTeX
 - ⭐ **Automatic significance stars**: \*\*\*p < .01, \*\*p < .05, \*p < .1
 - 🔒 **Robust standard errors**: HC robust SEs with lmtest/sandwich
 - 📈 **Marginal effects**: Average marginal effects (AME) with margins package
@@ -76,30 +76,6 @@ Returns a `flextable` object that can be:
 - Saved with `flextable::save_as_docx()`
 - Inserted into R Markdown Word documents
 
-### Markdown
-
-For Quarto and RMarkdown documents:
-
-```r
-easytable(m1, m2, output = "markdown")
-
-```
-
-Returns a markdown table that renders beautifully in `.qmd` and `.Rmd` files:
-
-```r
----
-title: "My Analysis"
-format: html
----
-
-```{r}
-#| echo: false
-library(easytable)
-easytable(m1, m2, output = "markdown")
-```
-```
-
 ### LaTeX
 
 For academic papers and PDF output:
@@ -127,7 +103,7 @@ easytable(m1, m2, output = "word", robust.se = TRUE)
 Compute average marginal effects instead of raw coefficients:
 
 ```r
-easytable(m1, m2, output = "markdown", margins = TRUE)
+easytable(m1, m2, output = "word", margins = TRUE)
 ```
 
 *Requires: `margins` package*
@@ -172,13 +148,17 @@ easytable(m1, m2, output = "word", highlight = TRUE)
 
 *Works best with Word output*
 
-### CSV Export
+### Export Word and CSV
 
 Export the underlying data table alongside your formatted output:
 
 ```r
-easytable(m1, m2, output = "latex", csv = "results")
-# Creates results.csv
+easytable(
+  m1, m2,
+  output = "word",
+  export.word = "results.docx",
+  export.csv = "results.csv"
+)
 ```
 
 ## Full Example
@@ -202,7 +182,8 @@ easytable(
   robust.se = TRUE,
   control.var = c("species", "island", "sex"),
   highlight = TRUE,
-  csv = "regression_results"
+  export.word = "regression_results.docx",
+  export.csv = "regression_results.csv"
 )
 ```
 
@@ -225,7 +206,7 @@ Coming soon:
 
 **Output format specific:**
 - Word: flextable
-- Markdown/LaTeX: knitr, kableExtra (optional, for enhanced formatting)
+- LaTeX: knitr, kableExtra (optional, for enhanced formatting)
 
 **Feature specific:**
 - Robust SE: lmtest, sandwich

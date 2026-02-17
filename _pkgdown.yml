@@ -4,7 +4,7 @@ template:
 
 home:
   title: easytable
-  description: Create publication-ready regression tables in Word, Markdown, and LaTeX.
+  description: Create publication-ready regression tables in Word/HTML and LaTeX.
 
 navbar:
   structure:

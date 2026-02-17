@@ -4,7 +4,13 @@
 \alias{format_latex}
 \title{Format table for LaTeX/PDF output}
 \usage{
-format_latex(table, robust.se = FALSE, margins = FALSE, highlight = FALSE)
+format_latex(
+  table,
+  robust.se = FALSE,
+  margins = FALSE,
+  highlight = FALSE,
+  table_size = "normalsize"
+)
 }
 \arguments{
 \item{table}{A transformed data frame from transform_table()}
@@ -14,6 +20,8 @@ format_latex(table, robust.se = FALSE, margins = FALSE, highlight = FALSE)
 \item{margins}{Logical indicating if marginal effects were computed}
 
 \item{highlight}{Logical indicating whether to highlight significant results}
+
+\item{table_size}{LaTeX size command: "tiny", "small", "normalsize", "scriptsize"}
 }
 \value{
 A character string containing the LaTeX table code

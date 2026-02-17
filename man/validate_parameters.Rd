@@ -4,7 +4,14 @@
 \alias{validate_parameters}
 \title{Validate parameter types}
 \usage{
-validate_parameters(robust.se, margins, highlight, csv)
+validate_parameters(
+  robust.se,
+  margins,
+  highlight,
+  export.word,
+  export.csv,
+  output
+)
 }
 \arguments{
 \item{robust.se}{Logical for robust standard errors}
@@ -13,7 +20,11 @@ validate_parameters(robust.se, margins, highlight, csv)
 
 \item{highlight}{Logical for highlighting}
 
-\item{csv}{Character or NULL for CSV export}
+\item{export.word}{Character or NULL for Word export path}
+
+\item{export.csv}{Character or NULL for CSV export path}
+
+\item{output}{Character string specifying output format}
 }
 \value{
 Invisible TRUE if valid, otherwise stops with error

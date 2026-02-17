@@ -10,6 +10,31 @@ get_measure_names <- function() {
   c("N", "R sq.", "Adj. R sq.", "AIC")
 }
 
+#' Get indices of model statistic rows
+#' @keywords internal
+get_measure_row_indices <- function(table) {
+  which(table$term %in% get_measure_names())
+}
+
+#' Get first model statistic row index
+#' @keywords internal
+get_first_measure_row <- function(table) {
+  idx <- get_measure_row_indices(table)
+  if (length(idx) == 0) {
+    return(NA_integer_)
+  }
+  min(idx)
+}
+
+#' Wrap interaction terms to reduce term-column width
+#'
+#' Example: "x1 * x2" -> "x1 *\nx2"
+#'
+#' @keywords internal
+wrap_interaction_terms <- function(terms) {
+  gsub(" * ", " *\n", terms, fixed = TRUE)
+}
+
 #' Abbreviate variable name
 #'
 #' Deterministic abbreviation rules:

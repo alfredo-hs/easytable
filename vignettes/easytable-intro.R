@@ -33,30 +33,30 @@ models <- list(
 
 
 ## ----eval=FALSE---------------------------------------------------------------
-# easy_table(models)
+# easytable(models)
 
 
 ## -----------------------------------------------------------------------------
-easy_table(models, output = "markdown")
+easytable(models, output = "word")
 
 
 ## -----------------------------------------------------------------------------
-easy_table(models, output = "latex")
+easytable(models, output = "latex")
 
 
 ## ----eval=FALSE---------------------------------------------------------------
-# easy_table(models, output = "markdown", robust.se = TRUE)
+# easytable(models, output = "word", robust.se = TRUE)
 
 
 ## ----eval=FALSE---------------------------------------------------------------
 # # Marginal effects (note: requires margins package)
-# easy_table(models[2:3], output = "markdown", margins = TRUE)
+# easytable(models[2:3], output = "word", margins = TRUE)
 
 
 ## ----eval=FALSE---------------------------------------------------------------
-# easy_table(
+# easytable(
 #   models[2:3],
-#   output = "markdown",
+#   output = "word",
 #   robust.se = TRUE,
 #   margins = TRUE
 # )
@@ -74,15 +74,15 @@ models_controls <- list(
 )
 
 # Group species and island as control variables
-easy_table(
+easytable(
   models_controls,
-  output = "markdown",
+  output = "word",
   control.var = c("species", "island")
 )
 
 
 ## ----eval=FALSE---------------------------------------------------------------
-# easy_table(models, output = "word", highlight = TRUE)
+# easytable(models, output = "word", highlight = TRUE)
 
 
 ## -----------------------------------------------------------------------------
@@ -97,16 +97,17 @@ glm_models <- list(
   "With Species" = g2
 )
 
-easy_table(glm_models, output = "markdown")
+easytable(glm_models, output = "word")
 
 
 ## ----eval=FALSE---------------------------------------------------------------
-# easy_table(
+# easytable(
 #   models,
 #   output = "word",
-#   csv = "penguin_regression_results"
+#   export.word = "penguin_regression_results.docx",
+#   export.csv = "penguin_regression_results.csv"
 # )
-# # Creates: penguin_regression_results.csv
+# # Creates: penguin_regression_results.docx and penguin_regression_results.csv
 
 
 ## ----eval=FALSE---------------------------------------------------------------
@@ -124,13 +125,14 @@ easy_table(glm_models, output = "markdown")
 # )
 # 
 # # Create publication-ready table
-# easy_table(
+# easytable(
 #   models_full,
 #   output = "word",
 #   robust.se = TRUE,
 #   control.var = c("species", "island", "sex"),
 #   highlight = TRUE,
-#   csv = "final_results"
+#   export.word = "final_results.docx",
+#   export.csv = "final_results.csv"
 # )
 
 
@@ -152,4 +154,3 @@ models_numbered <- list(
 
 ## ----eval=FALSE---------------------------------------------------------------
 # install.packages("flextable")
-

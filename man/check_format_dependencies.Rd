@@ -7,7 +7,7 @@
 check_format_dependencies(output)
 }
 \arguments{
-\item{output}{Output format ("word", "markdown", or "latex")}
+\item{output}{Output format ("word" or "latex")}
 }
 \value{
 Invisible TRUE if dependencies available, otherwise stops with error
