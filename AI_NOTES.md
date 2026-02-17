@@ -100,6 +100,8 @@ Deployment:
 3. Prefer small, auditable changes.
 4. Update docs/tests when behavior changes.
 5. If design tradeoffs are ambiguous, choose consistency with LaTeX reference style.
+6. Do not create unnecessary workspace clutter (temporary logs, check folders, tarballs, scratch notes).
+7. If temporary files are needed for debugging, remove them before finishing unless they are required for package functionality.
 
 ## 9) Quick Pre-PR Checklist
 
@@ -108,3 +110,4 @@ Deployment:
 3. README and vignette examples run with current API.
 4. `_pkgdown.yml` links resolve to existing pages.
 5. No IDE artifacts are staged (`.Rproj.user`, etc.).
+6. No temporary artifacts remain (`*.Rcheck/`, `*.tar.gz`, stray scratch files).
