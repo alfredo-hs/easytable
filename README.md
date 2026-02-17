@@ -157,8 +157,4 @@ R package version 2.1.0. https://github.com/alfredo-hs/easytable
 
 ## Acknowledgements
 
-The development of this package was assisted by AI coding tools such as Claude `4.5 Sonnet` and GPT `5.3 Codex` for code debugging, documentation updates, and package restructuring.
-
-## License
-
-MIT License. See `LICENSE.md` (and `LICENSE` for R package metadata).
+The development of this package was assisted by AI coding tools such as Claude `4.5 Sonnet` and ChatGPT `5.3 Codex` for code debugging, documentation updates, and package restructuring.
