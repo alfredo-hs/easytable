@@ -4,7 +4,7 @@ Create regression tables that are easy to use and easy to read.
 
 `easytable` is a workhorse table package for `lm` and `glm` models with predictable defaults across Word/HTML and LaTeX/PDF outputs.
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE.md)
+[![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 [![pkgdown](https://img.shields.io/badge/pkgdown-site-blue)](https://alfredo-hs.github.io/easytable/)
 
 ## Why easytable

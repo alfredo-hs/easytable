@@ -1,20 +1,20 @@
 # easytable
 
-`easytable` helps you create publication-ready tables with clear defaults and minimal code. Its [Design Philosophy](https://github.com/alfredo-hs/easytable/blob/main/DESIGN_PHILOSOPHY.md) is very simple, it should be:
+`easytable` helps you create publication-ready tables with clear defaults and minimal code. Its [Design Philosophy](https://github.com/alfredo-hs/easytable/blob/main/DESIGN_PHILOSOPHY.md) is simple:
 
 1. Easy to use.
 2. Easy to read.
 
 ## Basic Function and Installation
 
-To install `easytable` you need to have `devtools` installed. 
+To install `easytable`, you need `devtools` installed.
 
 ```r
 # install.packages("devtools")
 devtools::install_github("alfredo-hs/easytable")
 ```
 
-After this, everything is **easy**! 
+After installation, everything is **easy**.
 
 ```r
 library(easytable)
@@ -24,7 +24,7 @@ model <- lm(mpg ~ wt, data = mtcars)
 easytable(model)
 ```
 
-For more information about the functions in the package consult the [Penguins Tutorial](articles/penguins-tutorial.html). 
+For more information about package functions, see the [Penguins Tutorial](articles/penguins-tutorial.html).
 
 ## What You Get
 
@@ -35,16 +35,16 @@ For more information about the functions in the package consult the [Penguins Tu
 
 ## On what can I use it?
 
-Since `easytable` is a workhorse package, it currently supports the bread and butter of Rstats:
+As a workhorse package, `easytable` currently supports the bread-and-butter classes in R:
 
 - `lm`
 - `glm`
 
-Other model classes (including `plm`) will be integrated in later releases. 
+Other model classes (including `plm`) will be added in later releases.
 
 ## For Contributors
 
-Please feel free to contribute to this project by forking the GitHub repo and trying out the package! 
+Please feel free to contribute by forking the GitHub repository and trying the package.
 - [Design Philosophy](https://github.com/alfredo-hs/easytable/blob/main/DESIGN_PHILOSOPHY.md)
 - [Developer Roadmap](articles/developer-roadmap.html)
 - [Testing Protocol](https://github.com/alfredo-hs/easytable/blob/main/tests/README.md)
