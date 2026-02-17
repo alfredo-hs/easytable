@@ -45,6 +45,7 @@ Other model classes (including `plm`) will be added in later releases.
 ## For Contributors
 
 Please feel free to contribute by forking the GitHub repository and trying the package.
+
 - [Design Philosophy](https://github.com/alfredo-hs/easytable/blob/main/DESIGN_PHILOSOPHY.md)
 - [Developer Roadmap](articles/developer-roadmap.html)
 - [Testing Protocol](https://github.com/alfredo-hs/easytable/blob/main/tests/README.md)

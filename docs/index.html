@@ -85,19 +85,26 @@
 <img src="logo.png" class="logo" alt=""><h1 id="easytable">easytable<a class="anchor" aria-label="anchor" href="#easytable"></a>
 </h1>
 </div>
-<p><code>easytable</code> helps you move from fitted models to publication-ready tables with clear defaults and minimal code.</p>
-<p>Main promise:</p>
+<p><code>easytable</code> helps you create publication-ready tables with clear defaults and minimal code. Its <a href="https://github.com/alfredo-hs/easytable/blob/main/DESIGN_PHILOSOPHY.md" class="external-link">Design Philosophy</a> is simple:</p>
 <ol style="list-style-type: decimal">
 <li>Easy to use.</li>
 <li>Easy to read.</li>
 </ol>
 <div class="section level2">
-<h2 id="start-here">Start Here<a class="anchor" aria-label="anchor" href="#start-here"></a>
+<h2 id="basic-function-and-installation">Basic Function and Installation<a class="anchor" aria-label="anchor" href="#basic-function-and-installation"></a>
 </h2>
-<ul>
-<li><a href="articles/penguins-tutorial.html">Penguins Tutorial</a></li>
-<li><a href="reference/index.html">Function Reference</a></li>
-</ul>
+<p>To install <code>easytable</code>, you need <code>devtools</code> installed.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"alfredo-hs/easytable"</span><span class="op">)</span></span></code></pre></div>
+<p>After installation, everything is <strong>easy</strong>.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/alfredo-hs/easytable" class="external-link">easytable</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">wt</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/easytable.html">easytable</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span></code></pre></div>
+<p>For more information about package functions, see the <a href="articles/penguins-tutorial.html">Penguins Tutorial</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="what-you-get">What You Get<a class="anchor" aria-label="anchor" href="#what-you-get"></a>
@@ -106,25 +113,25 @@
 <li>One function for routine workflows: <code><a href="reference/easytable.html">easytable()</a></code>
 </li>
 <li>Word/HTML and LaTeX output paths</li>
-<li>Two-line coefficient cells (<code>estimate + stars</code>, then <code>(SE)</code>)</li>
-<li>Control-variable indicators for compact model specifications</li>
+<li>Control-variable indicators (STATA-like)</li>
 <li>Optional export to <code>.docx</code> and <code>.csv</code>
 </li>
 </ul>
 </div>
 <div class="section level2">
-<h2 id="stable-scope">Stable Scope<a class="anchor" aria-label="anchor" href="#stable-scope"></a>
+<h2 id="on-what-can-i-use-it">On what can I use it?<a class="anchor" aria-label="anchor" href="#on-what-can-i-use-it"></a>
 </h2>
-<p>Current stable classes:</p>
+<p>As a workhorse package, <code>easytable</code> currently supports the bread-and-butter classes in R:</p>
 <ul>
 <li><code>lm</code></li>
 <li><code>glm</code></li>
 </ul>
-<p>Other model classes (including <code>plm</code>) are intentionally deferred until core API and renderer contracts are finalized.</p>
+<p>Other model classes (including <code>plm</code>) will be added in later releases.</p>
 </div>
 <div class="section level2">
 <h2 id="for-contributors">For Contributors<a class="anchor" aria-label="anchor" href="#for-contributors"></a>
 </h2>
+<p>Please feel free to contribute by forking the GitHub repository and trying the package.</p>
 <ul>
 <li><a href="https://github.com/alfredo-hs/easytable/blob/main/DESIGN_PHILOSOPHY.md" class="external-link">Design Philosophy</a></li>
 <li><a href="articles/developer-roadmap.html">Developer Roadmap</a></li>
@@ -138,7 +145,6 @@
 <li><a href="https://github.com/alfredo-hs/easytable/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/alfredo-hs/easytable/issues" class="external-link">Report a bug</a></li>
 <li><a href="https://github.com/alfredo-hs/easytable/blob/main/DESIGN_PHILOSOPHY.md" class="external-link">Design Philosophy</a></li>
-<li><a href="https://github.com/alfredo-hs/easytable/blob/main/LICENSE.md" class="external-link">MIT License</a></li>
 <li><a href="https://github.com/alfredo-hs/easytable" class="external-link">Source Code</a></li>
 </ul>
 </div>
@@ -146,8 +152,9 @@
 <div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li><a href="LICENSE.html">Full license</a></li>
-<li><small><a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
+<li>
+<a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
+</li>
 </ul>
 </div>
 
