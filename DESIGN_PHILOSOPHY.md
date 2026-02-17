@@ -6,13 +6,13 @@ This document is the contributor guide for humans and AI agents working on `easy
 
 `easytable` should be easy to use and easy to read.
 
-- Easy to use: one clear path from model objects to publication-ready table.
+- Easy to use: one clear path from model objects to a publication-ready table.
 - Easy to read: strong visual defaults and predictable output across formats.
 
 ## Source of Truth
 
 The LaTeX table style is the visual reference.  
-Word and HTML should converge toward the same language.
+Word and HTML should converge toward the same design language.
 
 ## Non-Negotiable Table Invariants
 
@@ -42,9 +42,8 @@ Target architecture:
 Before merging:
 
 1. Validate invariants in `tests/testthat`.
-2. Keep `tests/xtest` sandbox untouched unless explicitly requested.
-3. Prefer adding tests before or with behavior changes.
-4. Avoid renderer-only fixes that silently diverge from other formats.
+2. Prefer adding tests before or with behavior changes.
+3. Avoid renderer-only fixes that silently diverge from other formats.
 
 ## AI Agent Protocol
 
@@ -52,8 +51,7 @@ If you are an AI coding agent:
 
 1. Read `tests/README.md` before changing tests.
 2. Keep changes deterministic in `tests/testthat`.
-3. Treat `tests/xtest` as manual, user-owned workspace.
-4. Document any design decision in `CLAUDE.md` with timestamp + next step.
+3. Document any design decision in `AI_NOTES.md` with timestamp + next step.
 
 ## Release Quality Standard
 

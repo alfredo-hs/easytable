@@ -2,7 +2,7 @@
 title: "Developer Roadmap: API Clarity and Renderer Stability"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Developer Roadmap}
+  %\VignetteIndexEntry{Developer Roadmap: API Clarity and Renderer Stability}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -90,9 +90,7 @@ Before each release:
 1. Run core tests with `devtools::test()`.
 2. Run constrained profile:
    - `EASYTABLE_SKIP_WORD_TESTS=true Rscript -e "devtools::test()"`
-3. Optionally run sandbox profile:
-   - `EASYTABLE_RUN_XTEST=true Rscript tests/run-tests.R full`
-4. Spot-check parity on key invariants:
+3. Spot-check parity on key invariants:
    - two-line coefficient cells
    - zebra only on coefficient rows
    - one coefficient/stat divider

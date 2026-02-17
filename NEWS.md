@@ -1,32 +1,3 @@
-# easytable 2.1.1
-
-## Documentation
-
-* Rewrote `README.md` around a clearer user promise: easy to use, easy to read.
-* Added a dedicated penguins tutorial vignette: `penguins-tutorial`.
-* Added a developer roadmap vignette: `developer-roadmap`.
-* Added architecture and maintenance guides:
-  * `DESIGN_PHILOSOPHY.md`
-  * `API_REWORK_PLAN.md`
-  * `ADAPTER_COMPATIBILITY.md`
-* Reorganized `_pkgdown.yml` navigation and article structure.
-
-## Testing Infrastructure
-
-* Added `tests/README.md` with explicit protocol separating:
-  * committed deterministic tests (`tests/testthat`)
-  * user-owned sandbox tests (`tests/xtest`)
-* Added `tests/run-tests.R` with layered profiles (`core`, `full`).
-* Added `tests/testthat/helper-testing-profiles.R` for environment-aware test skipping.
-* Added `tests/testthat/test-design-invariants.R` to lock key table invariants.
-
-## API and Validation UX
-
-* Added `validate_output_format()` to provide friendly, explicit output-format validation.
-* Reworded key validation errors to be more beginner-friendly and actionable.
-
----
-
 # easytable 2.1.0
 
 ## Breaking Changes
@@ -50,6 +21,29 @@
   * Shared measure-row detection for divider placement
   * Single divider between coefficient block and model-stat block
   * Zebra striping constrained to coefficient block only
+
+## Documentation
+
+* Rewrote `README.md` around a clearer user promise: easy to use, easy to read.
+* Added a dedicated penguins tutorial vignette: `penguins-tutorial`.
+* Added a developer roadmap vignette: `developer-roadmap`.
+* Added architecture and maintenance guides:
+  * `DESIGN_PHILOSOPHY.md`
+  * `AI_NOTES.md`
+* Reorganized `_pkgdown.yml` navigation and article structure.
+* Added `LICENSE.md` so the MIT license text is human-readable in the repository.
+
+## Testing Infrastructure
+
+* Added `tests/README.md` with a deterministic, CI-safe testing protocol.
+* Added `tests/run-tests.R` with a committed `core` profile.
+* Added `tests/testthat/helper-testing-profiles.R` for environment-aware test skipping.
+* Added `tests/testthat/test-design-invariants.R` to lock key table invariants.
+
+## API and Validation UX
+
+* Added `validate_output_format()` to provide friendly, explicit output-format validation.
+* Reworded key validation errors to be more beginner-friendly and actionable.
 
 ---
 
@@ -163,7 +157,7 @@ This is a complete rewrite of easytable with breaking changes. Version 2.0.0 mod
 * **Comprehensive README**: Installation, quick start, and feature overview
 * **Detailed vignette**: `vignette("easytable-intro")` with working examples
 * **Function documentation**: Complete roxygen2 documentation with examples
-* **Developer guide**: `CLAUDE.md` with architecture and contribution guidelines
+* **Developer guide**: `AI_NOTES.md` with architecture and contributor guidelines
 
 ### Testing
 

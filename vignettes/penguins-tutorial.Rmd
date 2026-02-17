@@ -2,7 +2,7 @@
 title: "Penguins Tutorial: Easy to Use, Easy to Read"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Penguins Tutorial}
+  %\VignetteIndexEntry{Penguins Tutorial: Easy to Use, Easy to Read}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

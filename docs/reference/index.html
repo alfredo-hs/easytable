@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">easytable</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,11 +18,21 @@
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item">
+      <ul class="navbar-nav me-auto"><li class="nav-item">
+  <a class="nav-link" href="../articles/penguins-tutorial.html">Get Started</a>
+</li>
+<li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="../articles/index.html">Articles</a>
+</li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-development">Development</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-development">
+    <a class="dropdown-item" href="../articles/developer-roadmap.html">API Roadmap</a>
+    <a class="external-link dropdown-item" href="https://github.com/alfredo-hs/easytable/blob/main/DESIGN_PHILOSOPHY.md">Design Philosophy (Repo)</a>
+  </div>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
@@ -47,7 +57,7 @@
     </div>
 
     <div class="section level2">
-      <h2 id="all-functions">All functions<a class="anchor" aria-label="anchor" href="#all-functions"></a></h2>
+      <h2 id="main-function">Main Function<a class="anchor" aria-label="anchor" href="#main-function"></a></h2>
       
       
 
@@ -59,21 +69,204 @@
 
       <dl><dt>
           
-          <code><a href="easy_table.html">easy_table()</a></code> 
+          <code><a href="easytable.html">easytable()</a></code> 
         </dt>
-        <dd>Create publication-ready regression tables in multiple formats</dd>
+        <dd>Create publication-ready regression tables</dd>
+      </dl></div><div class="section level2">
+      <h2 id="renderer-helpers">Renderer Helpers<a class="anchor" aria-label="anchor" href="#renderer-helpers"></a></h2>
+      
+      
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="format_word.html">format_word()</a></code> 
+        </dt>
+        <dd>Format table for Word output</dd>
       </dl><dl><dt>
           
           <code><a href="format_latex.html">format_latex()</a></code> 
         </dt>
         <dd>Format table for LaTeX/PDF output</dd>
+      </dl></div><div class="section level2">
+      <h2 id="internal-functions">Internal Functions<a class="anchor" aria-label="anchor" href="#internal-functions"></a></h2>
+      
+      
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="abbreviate_var_name.html">abbreviate_var_name()</a></code> 
+        </dt>
+        <dd>Abbreviate variable name</dd>
       </dl><dl><dt>
           
-          <code><a href="format_word.html">format_word()</a></code> 
+          <code><a href="check_format_dependencies.html">check_format_dependencies()</a></code> 
         </dt>
-        <dd>Format table for Word output</dd>
+        <dd>Check format-specific dependencies</dd>
+      </dl><dl><dt>
+          
+          <code><a href="check_margins_dependencies.html">check_margins_dependencies()</a></code> 
+        </dt>
+        <dd>Check margins dependencies</dd>
+      </dl><dl><dt>
+          
+          <code><a href="check_robust_dependencies.html">check_robust_dependencies()</a></code> 
+        </dt>
+        <dd>Check robust SE dependencies</dd>
+      </dl><dl><dt>
+          
+          <code><a href="collapse_control_vars.html">collapse_control_vars()</a></code> 
+        </dt>
+        <dd>Collapse control variable rows</dd>
+      </dl><dl><dt>
+          
+          <code><a href="deduplicate_control_vars.html">deduplicate_control_vars()</a></code> 
+        </dt>
+        <dd>Remove duplicate control variable rows</dd>
+      </dl><dl><dt>
+          
+          <code><a href="easytable-package.html">easytable-package</a></code> 
+        </dt>
+        <dd>easytable: Create Multi-Format Regression Tables</dd>
+      </dl><dl><dt>
+          
+          <code><a href="extract_model_measures.html">extract_model_measures()</a></code> 
+        </dt>
+        <dd>Extract goodness-of-fit measures from a model</dd>
+      </dl><dl><dt>
+          
+          <code><a href="format_coefficients.html">format_coefficients()</a></code> 
+        </dt>
+        <dd>Format coefficients with significance stars and standard errors</dd>
+      </dl><dl><dt>
+          
+          <code><a href="format_term_labels.html">format_term_labels()</a></code> 
+        </dt>
+        <dd>Format term labels for display</dd>
+      </dl><dl><dt>
+          
+          <code><a href="get_first_measure_row.html">get_first_measure_row()</a></code> 
+        </dt>
+        <dd>Get first model statistic row index</dd>
+      </dl><dl><dt>
+          
+          <code><a href="get_measure_names.html">get_measure_names()</a></code> 
+        </dt>
+        <dd>Get measure row names</dd>
+      </dl><dl><dt>
+          
+          <code><a href="get_measure_row_indices.html">get_measure_row_indices()</a></code> 
+        </dt>
+        <dd>Get indices of model statistic rows</dd>
+      </dl><dl><dt>
+          
+          <code><a href="is_package_available.html">is_package_available()</a></code> 
+        </dt>
+        <dd>Check if a package is available</dd>
+      </dl><dl><dt>
+          
+          <code><a href="is_supported_model.html">is_supported_model()</a></code> 
+        </dt>
+        <dd>Check if model is supported type</dd>
+      </dl><dl><dt>
+          
+          <code><a href="make_unique_labels.html">make_unique_labels()</a></code> 
+        </dt>
+        <dd>Ensure labels are unique via numeric suffix</dd>
+      </dl><dl><dt>
+          
+          <code><a href="mark_control_vars.html">mark_control_vars()</a></code> 
+        </dt>
+        <dd>Mark control variables with 'Y' indicator</dd>
+      </dl><dl><dt>
+          
+          <code><a href="parse_model.html">parse_model()</a></code> 
+        </dt>
+        <dd>Parse a model and return formatted results</dd>
+      </dl><dl><dt>
+          
+          <code><a href="parse_models.html">parse_models()</a></code> 
+        </dt>
+        <dd>Parse multiple models into a combined table</dd>
+      </dl><dl><dt>
+          
+          <code><a href="parse_single_model.html">parse_single_model()</a></code> 
+        </dt>
+        <dd>Parse a single statistical model</dd>
+      </dl><dl><dt>
+          
+          <code><a href="pipe.html">`%&gt;%`</a></code> 
+        </dt>
+        <dd>Pipe Operator</dd>
+      </dl><dl><dt>
+          
+          <code><a href="separate_measures.html">separate_measures()</a></code> 
+        </dt>
+        <dd>Separate model statistics from coefficients</dd>
+      </dl><dl><dt>
+          
+          <code><a href="sort_table.html">sort_table()</a></code> 
+        </dt>
+        <dd>Sort table with control variables last</dd>
+      </dl><dl><dt>
+          
+          <code><a href="split_factor_level.html">split_factor_level()</a></code> 
+        </dt>
+        <dd>Detect and split factor level suffix using model metadata</dd>
+      </dl><dl><dt>
+          
+          <code><a href="transform_table.html">transform_table()</a></code> 
+        </dt>
+        <dd>Transform parsed model table</dd>
+      </dl><dl><dt>
+          
+          <code><a href="validate_control_vars.html">validate_control_vars()</a></code> 
+        </dt>
+        <dd>Validate control variables exist in models</dd>
+      </dl><dl><dt>
+          
+          <code><a href="validate_model_list.html">validate_model_list()</a></code> 
+        </dt>
+        <dd>Validate model list input</dd>
+      </dl><dl><dt>
+          
+          <code><a href="validate_model_types.html">validate_model_types()</a></code> 
+        </dt>
+        <dd>Validate all models in list are supported types</dd>
+      </dl><dl><dt>
+          
+          <code><a href="validate_output_format.html">validate_output_format()</a></code> 
+        </dt>
+        <dd>Validate output format</dd>
+      </dl><dl><dt>
+          
+          <code><a href="validate_parameters.html">validate_parameters()</a></code> 
+        </dt>
+        <dd>Validate parameter types</dd>
+      </dl><dl><dt>
+          
+          <code><a href="validate_table_size.html">validate_table_size()</a></code> 
+        </dt>
+        <dd>Validate table_size parameter</dd>
+      </dl><dl><dt>
+          
+          <code><a href="wrap_interaction_terms.html">wrap_interaction_terms()</a></code> 
+        </dt>
+        <dd>Wrap interaction terms to reduce term-column width</dd>
       </dl></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
@@ -91,3 +284,4 @@
   
 
   </body></html>
+

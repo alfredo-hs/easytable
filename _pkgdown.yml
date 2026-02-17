@@ -8,6 +8,8 @@ home:
   links:
     - text: Design Philosophy
       href: https://github.com/alfredo-hs/easytable/blob/main/DESIGN_PHILOSOPHY.md
+    - text: MIT License
+      href: https://github.com/alfredo-hs/easytable/blob/main/LICENSE.md
     - text: Source Code
       href: https://github.com/alfredo-hs/easytable
 

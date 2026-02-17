@@ -4,18 +4,16 @@ Create regression tables that are easy to use and easy to read.
 
 `easytable` is a workhorse table package for `lm` and `glm` models with predictable defaults across Word/HTML and LaTeX/PDF outputs.
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE.md)
 [![pkgdown](https://img.shields.io/badge/pkgdown-site-blue)](https://alfredo-hs.github.io/easytable/)
 
 ## Why easytable
 
 - One main function: `easytable()`
-- Two-line coefficient cells by default:
-  - line 1: estimate + stars
-  - line 2: `(SE)`
+- Code that is easy to use and tables that are easy to read
 - Coherent output style across formats
 - Optional export to `.docx` and `.csv`
-- Control-variable indicators for compact model specifications
+- Control-variable indicators (like Stata)
 
 ## Install
 
@@ -141,40 +139,26 @@ See `DESIGN_PHILOSOPHY.md` for the full contributor policy.
 - Function help: `?easytable`
 - Tutorial article: `vignette("penguins-tutorial", package = "easytable")`
 - Developer roadmap: `vignette("developer-roadmap", package = "easytable")`
-- API rework plan: `API_REWORK_PLAN.md`
-- Adapter compatibility guide: `ADAPTER_COMPATIBILITY.md`
+- Agent handoff notes: `AI_NOTES.md`
 - Testing protocol: `tests/README.md`
 
-## Testing
+## Website Deployment
 
-Run committed tests:
-
-```r
-devtools::test()
-```
-
-In constrained environments (skip Word tests):
-
-```sh
-EASYTABLE_SKIP_WORD_TESTS=true Rscript -e "devtools::test()"
-```
-
-Run layered test profiles:
-
-```sh
-Rscript tests/run-tests.R core
-Rscript tests/run-tests.R full
-```
-
-`tests/xtest` stays a user-owned sandbox and is not required for CI.
+- pkgdown source is defined in `_pkgdown.yml`, `pkgdown/index.md`, and `vignettes/`.
+- Automated build/deploy runs through `.github/workflows/pkgdown.yaml`.
+- Recommended GitHub Pages source is the `gh-pages` branch root.
 
 ## Citation
 
 ```text
 Hernandez Sanchez, A. (2026). easytable: Create Multi-Format Regression Tables.
-R package version 2.0.1. https://github.com/alfredo-hs/easytable
+R package version 2.1.0. https://github.com/alfredo-hs/easytable
 ```
+
+## Acknowledgements
+
+The development of this package was assisted by AI coding tools such as Claude `4.5 Sonnet` and GPT `5.3 Codex` for code debugging, documentation updates, and package restructuring.
 
 ## License
 
-MIT License. See `LICENSE`.
+MIT License. See `LICENSE.md` (and `LICENSE` for R package metadata).

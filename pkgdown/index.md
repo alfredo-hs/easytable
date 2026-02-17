@@ -17,7 +17,7 @@ Main promise:
 - One function for routine workflows: `easytable()`
 - Word/HTML and LaTeX output paths
 - Two-line coefficient cells (`estimate + stars`, then `(SE)`)
-- Control-variable indicators for compact model specs
+- Control-variable indicators for compact model specifications
 - Optional export to `.docx` and `.csv`
 
 ## Stable Scope

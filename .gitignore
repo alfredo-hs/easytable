@@ -1,12 +1,10 @@
-.Rproj.user
+.Rproj.user/
 .Rhistory
 .RData
 .Ruserdata
 .DS_Store
-*.csv
 *.log
 *.Rcheck/
 *.tar.gz
-inst/doc
-CLAUDE.md
+inst/doc/
 tests/xtest/

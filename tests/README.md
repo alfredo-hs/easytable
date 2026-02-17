@@ -1,17 +1,13 @@
 # Testing Protocol
 
-This directory has two different test tracks:
+This directory contains committed, deterministic package tests.
 
-1. `tests/testthat/` (committed, deterministic, CI-safe)
-2. `tests/xtest/` (user sandbox, exploratory, intentionally not part of CI)
+## Scope
 
-## Non-Negotiable Separation
+- Main test suite: `tests/testthat/`
+- Goal: stable CI behavior and reproducible validation
 
-- Do not move sandbox files from `tests/xtest/` into `tests/testthat/`.
-- Do not assume `tests/xtest/` exists in forks or CI.
-- Keep `tests/xtest/` available for manual rendering checks (`.qmd`, `.pdf`, `.docx`, large models).
-
-## How To Run Tests
+## How to Run Tests
 
 ### Core package tests
 
@@ -19,7 +15,7 @@ This directory has two different test tracks:
 devtools::test()
 ```
 
-### In constrained environments (for example, headless AI sandboxes)
+### In constrained environments (for example, headless AI sessions)
 
 Word rendering tests can be skipped:
 
@@ -27,22 +23,15 @@ Word rendering tests can be skipped:
 EASYTABLE_SKIP_WORD_TESTS=true Rscript -e "devtools::test()"
 ```
 
-### Optional sandbox checks
-
-Sandbox checks are opt-in and are not required for CI:
+### Optional helper script
 
 ```sh
-EASYTABLE_RUN_XTEST=true Rscript tests/run-tests.R full
+Rscript tests/run-tests.R core
 ```
-
-## Test Layers
-
-- `core`: `tests/testthat/` only.
-- `full`: `tests/testthat/` + optional `tests/xtest/test-api-and-layout.R` when explicitly enabled.
 
 ## What Must Stay Stable
 
 - Coefficient cell format: two lines (estimate + stars, then `(SE)`).
-- Zebra striping only in coefficient block.
+- Zebra striping only in the coefficient block.
 - One divider line between coefficient block and model-stat block.
 - Control indicators (`control.var`) are model-stat rows, not coefficient rows.
