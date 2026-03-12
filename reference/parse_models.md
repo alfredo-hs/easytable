@@ -5,7 +5,7 @@ Parse multiple models into a combined table
 ## Usage
 
 ``` r
-parse_models(model_list, robust.se = FALSE, margins = FALSE)
+parse_models(model_list, robust.se = FALSE, margins = FALSE, digits = 2)
 ```
 
 ## Arguments
@@ -21,6 +21,10 @@ parse_models(model_list, robust.se = FALSE, margins = FALSE)
 - margins:
 
   Logical indicating whether to compute marginal effects
+
+- digits:
+
+  Integer number of decimal places for coefficients and SEs
 
 ## Value
 

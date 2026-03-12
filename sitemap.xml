@@ -8,7 +8,6 @@
 <url><loc>https://alfredo-hs.github.io/easytable/articles/index.html</loc></url>
 <url><loc>https://alfredo-hs.github.io/easytable/articles/penguins-tutorial.html</loc></url>
 <url><loc>https://alfredo-hs.github.io/easytable/authors.html</loc></url>
-<url><loc>https://alfredo-hs.github.io/easytable/claude.html</loc></url>
 <url><loc>https://alfredo-hs.github.io/easytable/index.html</loc></url>
 <url><loc>https://alfredo-hs.github.io/easytable/news/index.html</loc></url>
 <url><loc>https://alfredo-hs.github.io/easytable/reference/abbreviate_var_name.html</loc></url>
@@ -39,8 +38,13 @@
 <url><loc>https://alfredo-hs.github.io/easytable/reference/separate_measures.html</loc></url>
 <url><loc>https://alfredo-hs.github.io/easytable/reference/sort_table.html</loc></url>
 <url><loc>https://alfredo-hs.github.io/easytable/reference/split_factor_level.html</loc></url>
+<url><loc>https://alfredo-hs.github.io/easytable/reference/tidy_coeftest.html</loc></url>
+<url><loc>https://alfredo-hs.github.io/easytable/reference/tidy_margins.html</loc></url>
+<url><loc>https://alfredo-hs.github.io/easytable/reference/tidy_model.html</loc></url>
 <url><loc>https://alfredo-hs.github.io/easytable/reference/transform_table.html</loc></url>
 <url><loc>https://alfredo-hs.github.io/easytable/reference/validate_control_vars.html</loc></url>
+<url><loc>https://alfredo-hs.github.io/easytable/reference/validate_custom_row.html</loc></url>
+<url><loc>https://alfredo-hs.github.io/easytable/reference/validate_digits.html</loc></url>
 <url><loc>https://alfredo-hs.github.io/easytable/reference/validate_model_list.html</loc></url>
 <url><loc>https://alfredo-hs.github.io/easytable/reference/validate_model_types.html</loc></url>
 <url><loc>https://alfredo-hs.github.io/easytable/reference/validate_output_format.html</loc></url>

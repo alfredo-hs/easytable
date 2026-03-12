@@ -6,7 +6,7 @@ and measure calculation.
 ## Usage
 
 ``` r
-parse_model(model, robust.se = FALSE, margins = FALSE)
+parse_model(model, robust.se = FALSE, margins = FALSE, digits = 2)
 ```
 
 ## Arguments
@@ -22,6 +22,10 @@ parse_model(model, robust.se = FALSE, margins = FALSE)
 - margins:
 
   Logical indicating whether to compute marginal effects
+
+- digits:
+
+  Integer number of decimal places for coefficients and SEs
 
 ## Value
 

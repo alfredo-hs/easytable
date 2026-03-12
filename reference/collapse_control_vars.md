@@ -6,7 +6,7 @@ and transformations) into a single row per control variable.
 ## Usage
 
 ``` r
-collapse_control_vars(table, control.var)
+collapse_control_vars(table, control.var, levels_map = NULL)
 ```
 
 ## Arguments

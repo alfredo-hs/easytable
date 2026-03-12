@@ -18,7 +18,9 @@ easytable(
   margins = FALSE,
   highlight = FALSE,
   abbreviate = FALSE,
-  table_size = "normalsize"
+  table_size = "normalsize",
+  digits = 2,
+  custom.row = NULL
 )
 ```
 
@@ -87,6 +89,19 @@ easytable(
   `output = "latex"`. Options: "tiny", "small", "normalsize",
   "scriptsize". Default "normalsize". Error if used with Word output.
 
+- digits:
+
+  Number of decimal places for coefficients and standard errors. Default
+  2.
+
+- custom.row:
+
+  Optional character vector for an additional row placed at the bottom
+  of the statistics block. The first element is the row label and each
+  subsequent element is the value for the corresponding model column.
+  The vector must have exactly one more element than the number of
+  models. Default NULL (no extra row).
+
 ## Value
 
 Depends on `output`:
@@ -117,7 +132,7 @@ Term labels are automatically formatted for readability:
 
 ## Dependencies
 
-- Always required: broom, dplyr
+- Always required: dplyr
 
 - Word output: flextable
 
@@ -154,6 +169,9 @@ easytable(m1, m2, robust.se = TRUE)
 
 # Group species and island as control variables
 easytable(m1, m2, m3, control.var = c("species", "island"))
+
+# Add a custom row below the model statistics block
+easytable(m1, m2, custom.row = c("Row label", "value 1", "value 2"))
 
 # Export to Word and CSV
 easytable(m1, m2, export.word = "mytable.docx", export.csv = "mytable.csv")
