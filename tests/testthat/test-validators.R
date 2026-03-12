@@ -140,3 +140,54 @@ test_that("validate_output_format normalizes and validates output strings", {
     "must be one value"
   )
 })
+
+test_that("validate_custom_row accepts NULL", {
+  expect_invisible(validate_custom_row(NULL, 2L))
+})
+
+test_that("validate_custom_row accepts correct length vector", {
+  expect_invisible(validate_custom_row(c("F. Statistic", ".004", ".3"), 2L))
+  expect_invisible(validate_custom_row(c("F. Statistic", ".004"), 1L))
+})
+
+test_that("validate_custom_row errors when too few elements", {
+  expect_error(
+    validate_custom_row(c("F. Statistic", ".004"), 2L),
+    "must have 3 elements"
+  )
+})
+
+test_that("validate_custom_row errors when too many elements", {
+  expect_error(
+    validate_custom_row(c("F. Statistic", ".004", ".3", ".5"), 2L),
+    "must have 3 elements"
+  )
+})
+
+test_that("validate_custom_row error message contains example", {
+  expect_error(
+    validate_custom_row(c("F. Statistic"), 2L),
+    "Example:"
+  )
+})
+
+test_that("validate_custom_row errors on non-character input", {
+  expect_error(
+    validate_custom_row(c(1, 2, 3), 2L),
+    "character vector"
+  )
+})
+
+test_that("validate_digits accepts valid integers", {
+  expect_invisible(validate_digits(2))
+  expect_invisible(validate_digits(0))
+  expect_invisible(validate_digits(4))
+})
+
+test_that("validate_digits rejects non-integer and negative values", {
+  expect_error(validate_digits(1.5),  "non-negative integer")
+  expect_error(validate_digits(-1),   "non-negative integer")
+  expect_error(validate_digits("2"),  "non-negative integer")
+  expect_error(validate_digits(NA),   "non-negative integer")
+  expect_error(validate_digits(c(2, 3)), "non-negative integer")
+})

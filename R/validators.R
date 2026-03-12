@@ -269,6 +269,65 @@ check_margins_dependencies <- function(margins) {
   invisible(TRUE)
 }
 
+#' Validate digits parameter
+#'
+#' @param digits Integer (or coercible) number of decimal places
+#' @return Invisible TRUE if valid, otherwise stops with error
+#' @keywords internal
+validate_digits <- function(digits) {
+  if (!is.numeric(digits) || length(digits) != 1L || is.na(digits) ||
+      digits < 0 || digits != as.integer(digits)) {
+    stop(
+      "`digits` must be a single non-negative integer.\n",
+      "  Example: digits = 3",
+      call. = FALSE
+    )
+  }
+  invisible(TRUE)
+}
+
+#' Validate custom.row parameter
+#'
+#' @param custom.row Character vector or NULL
+#' @param n_models Integer number of models in the table
+#' @return Invisible TRUE if valid, otherwise stops with error
+#' @keywords internal
+validate_custom_row <- function(custom.row, n_models) {
+  if (is.null(custom.row)) return(invisible(TRUE))
+
+  if (!is.character(custom.row)) {
+    stop(
+      "`custom.row` must be a character vector.\n",
+      "Example: custom.row = c(\"F. Statistic\", \".004\", \".3\")",
+      call. = FALSE
+    )
+  }
+
+  expected <- n_models + 1L
+
+  if (length(custom.row) != expected) {
+    example_vals <- paste(
+      c('"F. Statistic"', rep('".00"', n_models)),
+      collapse = ", "
+    )
+    stop(
+      sprintf(
+        "`custom.row` must have %d element%s (1 row label + %d model value%s), but %d %s provided.\n",
+        expected,
+        if (expected == 1L) "" else "s",
+        n_models,
+        if (n_models == 1L) "" else "s",
+        length(custom.row),
+        if (length(custom.row) == 1L) "was" else "were"
+      ),
+      sprintf("  Example: custom.row = c(%s)", example_vals),
+      call. = FALSE
+    )
+  }
+
+  invisible(TRUE)
+}
+
 #' Validate table_size parameter
 #'
 #' @param table_size Character string specifying LaTeX table size

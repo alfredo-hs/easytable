@@ -24,6 +24,39 @@ test_that("collapse_control_vars handles log transformations", {
   expect_false("log(income)" %in% result$term)
 })
 
+test_that("collapse_control_vars handles lowercase factor levels via levels_map", {
+  # Regression test: factor levels starting with lowercase were not matched by
+  # the original ^var[A-Z].* pattern (e.g. gendermale, genderfemale)
+  test_table <- data.frame(
+    term = c("(Intercept)", "age", "gendermale", "genderfemale"),
+    Model1 = c("0.5", "1.0", "2.0", "3.0"),
+    stringsAsFactors = FALSE
+  )
+  levels_map <- list(gender = c("female", "male"))
+
+  result <- collapse_control_vars(test_table, "gender", levels_map)
+
+  expect_true("gender" %in% result$term)
+  expect_false("gendermale" %in% result$term)
+  expect_false("genderfemale" %in% result$term)
+  expect_true("age" %in% result$term)  # unrelated term unchanged
+})
+
+test_that("collapse_control_vars with levels_map does not affect prefix-named terms", {
+  # "hp" as control var must not collapse "hpq" even when levels_map is empty for hp
+  test_table <- data.frame(
+    term = c("hp", "hpq", "hp2"),
+    Model1 = c("1.0", "2.0", "3.0"),
+    stringsAsFactors = FALSE
+  )
+  levels_map <- list()  # hp not a factor, no levels
+
+  result <- collapse_control_vars(test_table, "hp", levels_map)
+
+  expect_true("hpq" %in% result$term)
+  expect_true("hp2" %in% result$term)
+})
+
 test_that("collapse_control_vars avoids greedy matching", {
   # Test the critical fix: "hp" should not match "hpq"
   test_table <- data.frame(

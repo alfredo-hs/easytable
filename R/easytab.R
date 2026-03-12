@@ -32,6 +32,13 @@
 #' @param table_size Character string specifying LaTeX table size. Only works with
 #'   \code{output = "latex"}. Options: "tiny", "small", "normalsize", "scriptsize".
 #'   Default "normalsize". Error if used with Word output.
+#' @param digits Number of decimal places for coefficients and standard errors.
+#'   Default 2.
+#' @param custom.row Optional character vector for an additional row placed at
+#'   the bottom of the statistics block. The first element is the row label and
+#'   each subsequent element is the value for the corresponding model column.
+#'   The vector must have exactly one more element than the number of models.
+#'   Default NULL (no extra row).
 #'
 #' @return
 #' Depends on \code{output}:
@@ -58,7 +65,7 @@
 #'
 #' @section Dependencies:
 #' \itemize{
-#'   \item Always required: broom, dplyr
+#'   \item Always required: dplyr
 #'   \item Word output: flextable
 #'   \item LaTeX output: knitr, optionally kableExtra for enhanced formatting
 #'   \item Robust SE: lmtest, sandwich
@@ -91,6 +98,9 @@
 #' # Group species and island as control variables
 #' easytable(m1, m2, m3, control.var = c("species", "island"))
 #'
+#' # Add a custom row below the model statistics block
+#' easytable(m1, m2, custom.row = c("Row label", "value 1", "value 2"))
+#'
 #' # Export to Word and CSV
 #' easytable(m1, m2, export.word = "mytable.docx", export.csv = "mytable.csv")
 #' }
@@ -106,7 +116,9 @@ easytable <- function(...,
                       margins = FALSE,
                       highlight = FALSE,
                       abbreviate = FALSE,
-                      table_size = "normalsize") {
+                      table_size = "normalsize",
+                      digits = 2,
+                      custom.row = NULL) {
 
   # Capture models from dots
   models <- list(...)
@@ -151,6 +163,8 @@ easytable <- function(...,
   validate_control_vars(model_list, control.var)
   validate_parameters(robust.se, margins, highlight, export.word, export.csv, output)
   validate_table_size(table_size, output)
+  validate_digits(digits)
+  validate_custom_row(custom.row, length(model_list))
 
   # Check feature dependencies
   check_robust_dependencies(robust.se)
@@ -158,10 +172,22 @@ easytable <- function(...,
   check_format_dependencies(output)
 
   # Parse models (extract coefficients, SE, p-values)
-  parsed <- parse_models(model_list, robust.se, margins)
+  parsed <- parse_models(model_list, robust.se, margins, digits)
 
   # Transform table (handle control vars, sort, organize)
   transformed <- transform_table(parsed, control.var, abbreviate)
+
+  # Append custom row below AIC if provided
+  if (!is.null(custom.row)) {
+    model_cols <- names(transformed)[-1]
+    new_row <- data.frame(term = custom.row[1], stringsAsFactors = FALSE)
+    for (i in seq_along(model_cols)) {
+      new_row[[model_cols[i]]] <- custom.row[i + 1L]
+    }
+    transformed <- rbind(transformed, new_row)
+    existing_stat_terms <- attr(transformed, "stat_terms")
+    attr(transformed, "stat_terms") <- c(existing_stat_terms, custom.row[1])
+  }
 
   # Export to CSV if requested
   if (!is.null(export.csv)) {

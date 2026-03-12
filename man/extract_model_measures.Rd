@@ -13,6 +13,7 @@ extract_model_measures(model)
 A data frame with model fit statistics
 }
 \description{
-Extract goodness-of-fit measures from a model
+Rounding is fixed per statistic and independent of the user-facing \code{digits}
+option: N = 0, R sq. = 2, Adj. R sq. = 2, AIC = 0.
 }
 \keyword{internal}

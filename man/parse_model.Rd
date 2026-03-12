@@ -4,7 +4,7 @@
 \alias{parse_model}
 \title{Parse a model and return formatted results}
 \usage{
-parse_model(model, robust.se = FALSE, margins = FALSE)
+parse_model(model, robust.se = FALSE, margins = FALSE, digits = 2)
 }
 \arguments{
 \item{model}{A statistical model object (lm or glm)}
@@ -12,6 +12,8 @@ parse_model(model, robust.se = FALSE, margins = FALSE)
 \item{robust.se}{Logical indicating whether to use robust standard errors}
 
 \item{margins}{Logical indicating whether to compute marginal effects}
+
+\item{digits}{Integer number of decimal places for coefficients and SEs}
 }
 \value{
 A data frame with one column for terms and one for formatted estimates

@@ -135,3 +135,53 @@ test_that("penguins dataset end-to-end test", {
   result3 <- easytable(m1, m2, m3, highlight = TRUE)
   expect_s3_class(result3, "flextable")
 })
+
+test_that("custom.row appears in the transformed table below AIC", {
+  parsed <- parse_models(test_models_lm)
+  transformed <- transform_table(parsed)
+
+  # Simulate what easytable does after transform
+  model_cols <- names(transformed)[-1]
+  new_row <- data.frame(term = "F. Statistic", stringsAsFactors = FALSE)
+  new_row[[model_cols[1]]] <- ".004"
+  new_row[[model_cols[2]]] <- ".3"
+  new_row[[model_cols[3]]] <- ".1"
+  result <- rbind(transformed, new_row)
+
+  # Custom row label is present
+  expect_true("F. Statistic" %in% result$term)
+
+  # Custom row appears after the last stat row (lm models have N, R sq., Adj. R sq.)
+  last_stat_idx <- max(which(result$term %in% c("N", "R sq.", "Adj. R sq.", "AIC")))
+  custom_idx <- which(result$term == "F. Statistic")
+  expect_true(custom_idx > last_stat_idx)
+})
+
+test_that("easytable custom.row word output includes custom row", {
+  skip_if_word_tests_unavailable()
+
+  result <- easytable(test_m1, test_m2,
+                      custom.row = c("F. Statistic", ".004", ".3"))
+
+  expect_s3_class(result, "flextable")
+  # flextable body should contain the custom label
+  ft_data <- result$body$dataset
+  expect_true("F. Statistic" %in% ft_data$term)
+})
+
+test_that("easytable custom.row latex output includes custom row", {
+  skip_if_not_installed("knitr")
+
+  result <- easytable(test_m1, test_m2,
+                      output = "latex",
+                      custom.row = c("F. Statistic", ".004", ".3"))
+
+  expect_true(grepl("F. Statistic", as.character(result), fixed = TRUE))
+})
+
+test_that("easytable errors with wrong custom.row length", {
+  expect_error(
+    easytable(test_m1, test_m2, custom.row = c("F. Statistic", ".004")),
+    "must have 3 elements"
+  )
+})

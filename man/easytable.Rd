@@ -15,7 +15,9 @@ easytable(
   margins = FALSE,
   highlight = FALSE,
   abbreviate = FALSE,
-  table_size = "normalsize"
+  table_size = "normalsize",
+  digits = 2,
+  custom.row = NULL
 )
 }
 \arguments{
@@ -57,6 +59,15 @@ When TRUE, long variable names are shortened using deterministic rules.}
 \item{table_size}{Character string specifying LaTeX table size. Only works with
 \code{output = "latex"}. Options: "tiny", "small", "normalsize", "scriptsize".
 Default "normalsize". Error if used with Word output.}
+
+\item{digits}{Number of decimal places for coefficients and standard errors.
+Default 2.}
+
+\item{custom.row}{Optional character vector for an additional row placed at
+the bottom of the statistics block. The first element is the row label and
+each subsequent element is the value for the corresponding model column.
+The vector must have exactly one more element than the number of models.
+Default NULL (no extra row).}
 }
 \value{
 Depends on \code{output}:
@@ -89,7 +100,7 @@ Term labels are automatically formatted for readability:
 \section{Dependencies}{
 
 \itemize{
-\item Always required: broom, dplyr
+\item Always required: dplyr
 \item Word output: flextable
 \item LaTeX output: knitr, optionally kableExtra for enhanced formatting
 \item Robust SE: lmtest, sandwich
@@ -122,6 +133,9 @@ easytable(m1, m2, robust.se = TRUE)
 
 # Group species and island as control variables
 easytable(m1, m2, m3, control.var = c("species", "island"))
+
+# Add a custom row below the model statistics block
+easytable(m1, m2, custom.row = c("Row label", "value 1", "value 2"))
 
 # Export to Word and CSV
 easytable(m1, m2, export.word = "mytable.docx", export.csv = "mytable.csv")

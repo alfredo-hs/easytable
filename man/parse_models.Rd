@@ -4,7 +4,7 @@
 \alias{parse_models}
 \title{Parse multiple models into a combined table}
 \usage{
-parse_models(model_list, robust.se = FALSE, margins = FALSE)
+parse_models(model_list, robust.se = FALSE, margins = FALSE, digits = 2)
 }
 \arguments{
 \item{model_list}{A named list of statistical models}
@@ -12,6 +12,8 @@ parse_models(model_list, robust.se = FALSE, margins = FALSE)
 \item{robust.se}{Logical indicating whether to use robust standard errors}
 
 \item{margins}{Logical indicating whether to compute marginal effects}
+
+\item{digits}{Integer number of decimal places for coefficients and SEs}
 }
 \value{
 A data frame with terms in rows and models in columns

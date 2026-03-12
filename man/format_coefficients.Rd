@@ -4,10 +4,13 @@
 \alias{format_coefficients}
 \title{Format coefficients with significance stars and standard errors}
 \usage{
-format_coefficients(coef_data)
+format_coefficients(coef_data, digits = 2)
 }
 \arguments{
 \item{coef_data}{A data frame with columns: term, estimate, std.error, p.value}
+
+\item{digits}{Integer number of decimal places for coefficients and standard
+errors. Default 2. Does not affect p-value star thresholds.}
 }
 \value{
 A data frame with formatted coefficient strings

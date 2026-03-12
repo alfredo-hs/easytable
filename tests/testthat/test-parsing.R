@@ -103,3 +103,47 @@ test_that("parse_models handles GLM models", {
   expect_s3_class(result, "data.frame")
   expect_equal(ncol(result), length(test_models_glm) + 1)
 })
+
+test_that("format_coefficients respects digits parameter", {
+  coef_data <- data.frame(
+    term      = "x",
+    estimate  = 1.23456,
+    std.error = 0.56789,
+    p.value   = 0.001,
+    stringsAsFactors = FALSE
+  )
+
+  result2 <- format_coefficients(coef_data, digits = 2)
+  expect_true(grepl("1.23", result2$estimate))
+  expect_true(grepl("0.57", result2$estimate))
+
+  result4 <- format_coefficients(coef_data, digits = 4)
+  expect_true(grepl("1.2346", result4$estimate))
+  expect_true(grepl("0.5679", result4$estimate))
+
+  result0 <- format_coefficients(coef_data, digits = 0)
+  expect_true(grepl("^1 ", result0$estimate))
+})
+
+test_that("extract_model_measures uses fixed rounding per stat", {
+  m <- lm(mpg ~ wt + hp, data = mtcars)
+  result <- extract_model_measures(m)
+
+  n_val   <- result$estimate[result$term == "N"]
+  rsq_val <- result$estimate[result$term == "R sq."]
+
+  # N should be a whole number (no decimal point)
+  expect_false(grepl("\\.", n_val))
+  # R sq. should have exactly 2 decimal places
+  expect_true(grepl("^0\\.[0-9]{2}$", rsq_val))
+})
+
+test_that("easytable digits parameter flows through to output", {
+  skip_if_word_tests_unavailable()
+
+  result3 <- easytable(test_m1, digits = 3)
+  ft_data <- result3$body$dataset
+  # At least one cell should contain 3 decimal places
+  coef_cells <- ft_data[[2]]
+  expect_true(any(grepl("\\.[0-9]{3}", coef_cells)))
+})

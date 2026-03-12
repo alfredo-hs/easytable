@@ -4,7 +4,7 @@
 \alias{collapse_control_vars}
 \title{Collapse control variable rows}
 \usage{
-collapse_control_vars(table, control.var)
+collapse_control_vars(table, control.var, levels_map = NULL)
 }
 \arguments{
 \item{table}{A data frame with regression results}

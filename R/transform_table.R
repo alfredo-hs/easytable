@@ -8,7 +8,7 @@
 #'
 #' @return A data frame with collapsed control variables
 #' @keywords internal
-collapse_control_vars <- function(table, control.var) {
+collapse_control_vars <- function(table, control.var, levels_map = NULL) {
   if (is.null(control.var) || length(control.var) == 0) {
     return(table)
   }
@@ -25,11 +25,22 @@ collapse_control_vars <- function(table, control.var) {
     pattern_log <- sprintf("^log\\(%s\\)$", var)
     result$term <- gsub(pattern_log, var, result$term, perl = TRUE)
 
-    # Pattern 3: Variable name directly followed by level names (e.g., speciesChinstrap)
-    pattern_level <- sprintf("^%s[A-Z].*", var)
-    result$term <- gsub(pattern_level, var, result$term, perl = TRUE)
+    # Pattern 3: Variable name directly followed by a factor level.
+    # When levels_map is available, match each known level exactly to avoid
+    # false positives from variable names that are prefixes of others (e.g.
+    # collapsing "hp" must not affect "hpq"). Without levels_map, fall back
+    # to the original uppercase-start heuristic.
+    if (!is.null(levels_map) && !is.null(levels_map[[var]])) {
+      for (level in levels_map[[var]]) {
+        pat <- sprintf("^%s%s($|[^[:alnum:]_].*)", var, level)
+        result$term <- gsub(pat, var, result$term, perl = TRUE)
+      }
+    } else {
+      pattern_level <- sprintf("^%s[A-Z].*", var)
+      result$term <- gsub(pattern_level, var, result$term, perl = TRUE)
+    }
 
-    # Pattern 4: Variable name with transformations or interactions
+    # Pattern 4: Variable name with transformations or interactions (.L, :term, etc.)
     pattern_transform <- sprintf("^%s[^[:alnum:]_].*", var)
     result$term <- gsub(pattern_transform, var, result$term, perl = TRUE)
   }
@@ -148,7 +159,7 @@ transform_table <- function(parsed_table, control.var = NULL, abbreviate = FALSE
 
   # Handle control variables if specified
   if (!is.null(control.var)) {
-    result <- collapse_control_vars(result, control.var)
+    result <- collapse_control_vars(result, control.var, levels_map)
     result <- mark_control_vars(result, control.var)
     result <- deduplicate_control_vars(result)
   }
