@@ -37,9 +37,9 @@ reference:
     contents:
       - format_word
       - format_latex
-  - title: Internal Functions
-    contents:
-      - has_keyword("internal")
+  # - title: Internal Functions
+  #   contents:
+  #     - has_keyword("internal")
 
 articles:
   - title: Tutorials

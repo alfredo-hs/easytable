@@ -6,6 +6,9 @@ Create regression tables that are easy to use and easy to read.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 [![pkgdown](https://img.shields.io/badge/pkgdown-site-blue)](https://alfredo-hs.github.io/easytable/)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.12345678-blue)](https://doi.org/10.5281/zenodo.18673550)
+[![easytable status badge](https://alfredo-hs.r-universe.dev/easytable/badges/version)](https://alfredo-hs.r-universe.dev/easytable)
+[![R-CMD-check](https://github.com/alfredo-hs/easytable/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/alfredo-hs/easytable/actions/workflows/R-CMD-check.yaml)
 
 ## Why easytable
 
@@ -153,7 +156,7 @@ See `DESIGN_PHILOSOPHY.md` for the full contributor policy.
 
 ```text
 Hernandez Sanchez, A. (2026). easytable: Create Multi-Format Regression Tables.
-R package version 2.1.0. https://github.com/alfredo-hs/easytable
+R package version 2.1.0. https://doi.org/10.5281/zenodo.18673550
 ```
 
 ## Acknowledgements
