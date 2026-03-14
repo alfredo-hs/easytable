@@ -17,9 +17,10 @@ Create regression tables that are easy to use and easy to read.
 
 ## Install
 
+To install `easytable` please run the command below:
+
 ```r
-# install.packages("devtools")
-devtools::install_github("alfredo-hs/easytable")
+install.packages("easytable", repos = c("https://alfredo-hs.r-universe.dev/easytable","https://cloud.r-project.org"))
 ```
 
 ## Quick Start (Penguins)
