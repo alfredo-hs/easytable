@@ -7,7 +7,8 @@
 validate_digits(digits)
 }
 \arguments{
-\item{digits}{Integer (or coercible) number of decimal places}
+\item{digits}{Integer number of digits after the decimal point. Allowed
+values are 0 to 4.}
 }
 \value{
 Invisible TRUE if valid, otherwise stops with error

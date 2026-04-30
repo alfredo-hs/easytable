@@ -13,7 +13,9 @@ parse_model(model, robust.se = FALSE, margins = FALSE, digits = 2)
 
 \item{margins}{Logical indicating whether to compute marginal effects}
 
-\item{digits}{Integer number of decimal places for coefficients and SEs}
+\item{digits}{Integer number of digits after the decimal point for
+coefficients and standard errors, including the mantissa in scientific
+notation. Allowed values are 0 to 4.}
 }
 \value{
 A data frame with one column for terms and one for formatted estimates

@@ -91,3 +91,29 @@ test_that("format_latex includes significance footnote", {
 
   expect_true(grepl("Significance", result))
 })
+
+test_that("format_latex highlights negative scientific coefficients by coefficient sign only", {
+  skip_if_not_installed("knitr")
+  skip_if_not_installed("kableExtra")
+
+  negative_coef <- data.frame(
+    term = "x",
+    Model1 = "-3.25E-5 ***\n(1.20E-6)",
+    stringsAsFactors = FALSE
+  )
+  negative_result <- as.character(
+    format_latex(negative_coef, robust.se = FALSE, margins = FALSE, highlight = TRUE)
+  )
+  expect_true(grepl("ffcccc", negative_result, fixed = TRUE))
+
+  positive_coef_negative_se <- data.frame(
+    term = "x",
+    Model1 = "3.25E-5 ***\n(-1.20E-6)",
+    stringsAsFactors = FALSE
+  )
+  positive_result <- as.character(
+    format_latex(positive_coef_negative_se, robust.se = FALSE, margins = FALSE, highlight = TRUE)
+  )
+  expect_true(grepl("e6ffe6", positive_result, fixed = TRUE))
+  expect_false(grepl("ffcccc", positive_result, fixed = TRUE))
+})

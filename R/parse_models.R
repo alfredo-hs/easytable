@@ -110,11 +110,41 @@ parse_single_model <- function(model, robust.se = FALSE, margins = FALSE) {
   m
 }
 
+# Internal formatter for coefficient estimates and standard errors.
+format_coefficient_value <- function(x, digits = 2) {
+  vapply(x, function(value) {
+    if (is.nan(value)) {
+      return("NaN")
+    }
+
+    if (is.na(value)) {
+      return(NA_character_)
+    }
+
+    if (is.infinite(value)) {
+      return(as.character(value))
+    }
+
+    use_scientific <- abs(value) >= 10000 || (value != 0 && round(value, digits) == 0)
+
+    if (use_scientific) {
+      scientific <- sprintf("%.*E", digits, value)
+      parts <- strsplit(scientific, "E", fixed = TRUE)[[1]]
+      exponent <- as.integer(parts[2])
+      return(paste0(parts[1], "E", exponent))
+    }
+
+    sprintf("%.*f", digits, value)
+  }, character(1))
+}
+
 #' Format coefficients with significance stars and standard errors
 #'
 #' @param coef_data A data frame with columns: term, estimate, std.error, p.value
-#' @param digits Integer number of decimal places for coefficients and standard
-#'   errors. Default 2. Does not affect p-value star thresholds.
+#' @param digits Integer number of digits after the decimal point for
+#'   coefficients and standard errors, including the mantissa in scientific
+#'   notation. Allowed values are 0 to 4. Default 2. Does not affect p-value
+#'   star thresholds.
 #'
 #' @return A data frame with formatted coefficient strings
 #' @keywords internal
@@ -130,8 +160,8 @@ format_coefficients <- function(coef_data, digits = 2) {
       )
     ) %>%
     dplyr::mutate(
-      estimate  = round(estimate,  digits),
-      std.error = round(std.error, digits)
+      estimate  = format_coefficient_value(estimate, digits),
+      std.error = format_coefficient_value(std.error, digits)
     ) %>%
     dplyr::mutate(
       estimate = paste0(
@@ -177,7 +207,9 @@ extract_model_measures <- function(model) {
 #' @param model A statistical model object (lm or glm)
 #' @param robust.se Logical indicating whether to use robust standard errors
 #' @param margins Logical indicating whether to compute marginal effects
-#' @param digits Integer number of decimal places for coefficients and SEs
+#' @param digits Integer number of digits after the decimal point for
+#'   coefficients and standard errors, including the mantissa in scientific
+#'   notation. Allowed values are 0 to 4.
 #'
 #' @return A data frame with one column for terms and one for formatted estimates
 #' @keywords internal
@@ -195,7 +227,9 @@ parse_model <- function(model, robust.se = FALSE, margins = FALSE, digits = 2) {
 #' @param model_list A named list of statistical models
 #' @param robust.se Logical indicating whether to use robust standard errors
 #' @param margins Logical indicating whether to compute marginal effects
-#' @param digits Integer number of decimal places for coefficients and SEs
+#' @param digits Integer number of digits after the decimal point for
+#'   coefficients and standard errors, including the mantissa in scientific
+#'   notation. Allowed values are 0 to 4.
 #'
 #' @return A data frame with terms in rows and models in columns
 #' @keywords internal

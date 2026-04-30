@@ -125,6 +125,52 @@ test_that("format_coefficients respects digits parameter", {
   expect_true(grepl("^1 ", result0$estimate))
 })
 
+test_that("format_coefficient_value uses fixed and scientific notation as needed", {
+  expect_identical(
+    format_coefficient_value(
+      c(0.1234, 1.2, 0, 0.0000325, -0.0000325, 11100, -11100, NA, Inf, -Inf),
+      digits = 2
+    ),
+    c("0.12", "1.20", "0.00", "3.25E-5", "-3.25E-5", "1.11E4", "-1.11E4", NA, "Inf", "-Inf")
+  )
+
+  expect_identical(
+    format_coefficient_value(c(1.2, 0.0000325, 11100), digits = 3),
+    c("1.200", "3.250E-5", "1.110E4")
+  )
+})
+
+test_that("format_coefficients applies formatter to estimates and standard errors", {
+  coef_data <- data.frame(
+    term = c("tiny", "large", "special"),
+    estimate = c(-0.0000325, 11100, Inf),
+    std.error = c(0.0000042, 12000, -Inf),
+    p.value = c(0.001, 0.2, 0.2),
+    stringsAsFactors = FALSE
+  )
+
+  result <- format_coefficients(coef_data, digits = 2)
+
+  expect_match(result$estimate[1], "^-3\\.25E-5 \\*\\*\\*")
+  expect_match(result$estimate[1], "\\(4\\.20E-6\\)$")
+  expect_match(result$estimate[2], "^1\\.11E4")
+  expect_match(result$estimate[2], "\\(1\\.20E4\\)$")
+  expect_match(result$estimate[3], "^Inf")
+  expect_match(result$estimate[3], "\\(-Inf\\)$")
+})
+
+test_that("parse_models carries scientific notation into assembled table cells", {
+  m <- lm(I(mpg / 1e6) ~ wt, data = mtcars)
+
+  parsed <- parse_models(list(Model1 = m), digits = 2)
+  transformed <- transform_table(parsed, control.var = NULL, abbreviate = FALSE)
+
+  wt_cell <- transformed[transformed$term == "wt", "Model1"]
+  expect_length(wt_cell, 1)
+  expect_true(grepl("E-", wt_cell, fixed = TRUE))
+  expect_true(grepl("\n\\(", wt_cell))
+})
+
 test_that("extract_model_measures uses fixed rounding per stat", {
   m <- lm(mpg ~ wt + hp, data = mtcars)
   result <- extract_model_measures(m)

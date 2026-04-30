@@ -145,7 +145,7 @@ format_latex <- function(table,
           bg_color <- if (is_striped) "#f0f0f0" else "white"
 
           if (is_sig) {
-            is_negative <- grepl("-\\d+(\\.\\d+)?\\s*\\*", cell_value)
+            is_negative <- grepl("^(\\\\shortstack\\{)?-", cell_value)
             bg_color <- if (is_negative) {
               if (is_striped) "#f0b8b8" else "#ffcccc"
             } else {

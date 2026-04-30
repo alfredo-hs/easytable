@@ -60,8 +60,9 @@ When TRUE, long variable names are shortened using deterministic rules.}
 \code{output = "latex"}. Options: "tiny", "small", "normalsize", "scriptsize".
 Default "normalsize". Error if used with Word output.}
 
-\item{digits}{Number of decimal places for coefficients and standard errors.
-Default 2.}
+\item{digits}{Number of digits after the decimal point for coefficients and
+standard errors, including the mantissa in scientific notation. Allowed
+values are 0 to 4. Default 2.}
 
 \item{custom.row}{Optional character vector for an additional row placed at
 the bottom of the statistics block. The first element is the row label and

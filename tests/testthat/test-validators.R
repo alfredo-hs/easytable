@@ -184,10 +184,11 @@ test_that("validate_digits accepts valid integers", {
   expect_invisible(validate_digits(4))
 })
 
-test_that("validate_digits rejects non-integer and negative values", {
-  expect_error(validate_digits(1.5),  "non-negative integer")
-  expect_error(validate_digits(-1),   "non-negative integer")
-  expect_error(validate_digits("2"),  "non-negative integer")
-  expect_error(validate_digits(NA),   "non-negative integer")
-  expect_error(validate_digits(c(2, 3)), "non-negative integer")
+test_that("validate_digits rejects values outside 0 to 4", {
+  expect_error(validate_digits(1.5), "integer from 0 to 4")
+  expect_error(validate_digits(-1), "integer from 0 to 4")
+  expect_error(validate_digits(5), "integer from 0 to 4")
+  expect_error(validate_digits("2"), "integer from 0 to 4")
+  expect_error(validate_digits(NA), "integer from 0 to 4")
+  expect_error(validate_digits(c(2, 3)), "integer from 0 to 4")
 })

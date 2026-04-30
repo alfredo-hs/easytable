@@ -32,8 +32,9 @@
 #' @param table_size Character string specifying LaTeX table size. Only works with
 #'   \code{output = "latex"}. Options: "tiny", "small", "normalsize", "scriptsize".
 #'   Default "normalsize". Error if used with Word output.
-#' @param digits Number of decimal places for coefficients and standard errors.
-#'   Default 2.
+#' @param digits Number of digits after the decimal point for coefficients and
+#'   standard errors, including the mantissa in scientific notation. Allowed
+#'   values are 0 to 4. Default 2.
 #' @param custom.row Optional character vector for an additional row placed at
 #'   the bottom of the statistics block. The first element is the row label and
 #'   each subsequent element is the value for the corresponding model column.

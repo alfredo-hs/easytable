@@ -84,9 +84,12 @@ format_word <- function(table,
 
   # Apply highlighting if requested
   if (highlight) {
+    coefficient_line <- function(x) sub("\n.*$", "", x)
+
     # Highlight positive significant coefficients (green)
     for (i in 2:ncol(table)) {
-      p_values <- grepl("\\*", table[[i]])
+      coef_lines <- coefficient_line(table[[i]])
+      p_values <- grepl("\\*", coef_lines)
       ft <- ft %>%
         flextable::bg(
           j = i,
@@ -98,7 +101,8 @@ format_word <- function(table,
 
     # Highlight negative significant coefficients (red)
     for (i in 2:ncol(table)) {
-      p_values <- grepl("-\\d+(\\.\\d+)? \\*", table[[i]])
+      coef_lines <- coefficient_line(table[[i]])
+      p_values <- grepl("\\*", coef_lines) & grepl("^-", coef_lines)
       ft <- ft %>%
         flextable::bg(
           j = i,

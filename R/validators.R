@@ -271,14 +271,15 @@ check_margins_dependencies <- function(margins) {
 
 #' Validate digits parameter
 #'
-#' @param digits Integer (or coercible) number of decimal places
+#' @param digits Integer number of digits after the decimal point. Allowed
+#'   values are 0 to 4.
 #' @return Invisible TRUE if valid, otherwise stops with error
 #' @keywords internal
 validate_digits <- function(digits) {
   if (!is.numeric(digits) || length(digits) != 1L || is.na(digits) ||
-      digits < 0 || digits != as.integer(digits)) {
+      digits != as.integer(digits) || digits < 0 || digits > 4) {
     stop(
-      "`digits` must be a single non-negative integer.\n",
+      "`digits` must be a single integer from 0 to 4.\n",
       "  Example: digits = 3",
       call. = FALSE
     )

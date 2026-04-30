@@ -145,20 +145,29 @@ See `DESIGN_PHILOSOPHY.md` for the full contributor policy.
 - Developer roadmap: `vignette("developer-roadmap", package = "easytable")`
 - Agent handoff notes: `AI_NOTES.md`
 - Testing protocol: `tests/README.md`
-
-## Website Deployment
-
 - pkgdown source is defined in `_pkgdown.yml`, `pkgdown/index.md`, and `vignettes/`.
-- Automated build/deploy runs through `.github/workflows/pkgdown.yaml`.
-- Recommended GitHub Pages source is the `gh-pages` branch root.
 
 ## Citation
 
 ```text
-Hernandez Sanchez, A. (2026). easytable: Create Multi-Format Regression Tables.
-R package version 2.1.0. https://doi.org/10.5281/zenodo.18673550
+Hernandez Sanchez, A. (2026). easytable: Simple and Clean Regression Tables in R. Version 2.1.0. https://doi.org/10.5281/zenodo.18673550
+```
+
+```text
+@misc{easytable2026,
+	title = {{e}asytable},
+	subtitle = {Simple and Clean Regression Tables in {R}},
+	author = {Hernandez Sanchez, Alfredo},
+	note = {Version 2.1.0},
+	year = {2026},
+	month = {02},
+	date = {2026-02-17},
+	publisher = {Zenodo},
+	doi = {10.5281/ZENODO.18673550},
+	url = {https://github.com/alfredo-hs/easytable}
+}
 ```
 
 ## Acknowledgements
 
-The development of this package was assisted by AI coding tools such as Claude `4.5 Sonnet` and ChatGPT `5.3 Codex` for code debugging, documentation updates, and package restructuring.
+This package was created as an education technology to facilitate statistics teaching. Many thanks to the students at Vilnius University and the University of Bucaramanga for their feedback on usability and design. The development of this package was assisted by AI coding tools such as Claude `4.5 Sonnet` and ChatGPT `5.3 Codex` for code debugging, documentation updates, and package restructuring. 
