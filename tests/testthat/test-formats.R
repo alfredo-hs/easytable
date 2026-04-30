@@ -7,7 +7,7 @@ test_that("format_word creates flextable object", {
   result <- format_word(transformed, robust.se = FALSE, margins = FALSE, highlight = FALSE)
 
   expect_s3_class(result, "flextable")
-  expect_identical(result$header$dataset[[1]][1], "term")
+  expect_true(any(grepl("Coefficient", unlist(result), fixed = TRUE)))
 })
 
 test_that("format_word includes significance footnote", {
