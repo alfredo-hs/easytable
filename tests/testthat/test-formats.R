@@ -7,6 +7,7 @@ test_that("format_word creates flextable object", {
   result <- format_word(transformed, robust.se = FALSE, margins = FALSE, highlight = FALSE)
 
   expect_s3_class(result, "flextable")
+  expect_identical(result$header$dataset[[1]][1], "Coefficient")
 })
 
 test_that("format_word includes significance footnote", {
@@ -57,6 +58,48 @@ test_that("format_word handles highlighting", {
   expect_s3_class(result, "flextable")
 })
 
+test_that("format_word uses multiplication sign for interaction display", {
+  skip_if_word_tests_unavailable()
+
+  m <- lm(mpg ~ wt * hp, data = mtcars)
+  parsed <- parse_models(list(Model1 = m), robust.se = FALSE, margins = FALSE)
+  transformed <- transform_table(parsed, control.var = NULL)
+
+  result <- format_word(transformed, robust.se = FALSE, margins = FALSE, highlight = FALSE)
+
+  expect_true(any(grepl("×", result$body$dataset$term, fixed = TRUE)))
+  expect_false(any(grepl(" \\* ", result$body$dataset$term)))
+})
+
+test_that("easytable word output handles scientific notation and long model headers", {
+  skip_if_word_tests_unavailable()
+
+  set.seed(123)
+  df <- data.frame(
+    log_gdp = seq(8, 12, length.out = 120),
+    pop = seq(1e6, 4e6, length.out = 120)
+  )
+  df$lifeExp <- 62 +
+    1.2e-8 * df$log_gdp -
+    3.5e-9 * df$pop +
+    7.4e-15 * (df$log_gdp * df$pop) +
+    rnorm(nrow(df), sd = 1e-5)
+
+  m1 <- lm(lifeExp ~ log_gdp + pop, data = df)
+  m2 <- lm(lifeExp ~ log_gdp * pop, data = df)
+
+  result <- easytable(
+    m1, m2,
+    digits = 4,
+    model.names = c("Avghngfnmjghdmkjyu", "b")
+  )
+
+  expect_s3_class(result, "flextable")
+  expect_true(any(grepl("×", result$body$dataset$term, fixed = TRUE)))
+  expect_true(any(grepl("E-", unlist(result$body$dataset[-1]), fixed = TRUE)))
+  expect_true(any(grepl("\n", unlist(result$header$dataset), fixed = TRUE)))
+})
+
 test_that("format_latex creates character output", {
   skip_if_not_installed("knitr")
 
@@ -79,6 +122,7 @@ test_that("format_latex includes LaTeX table elements", {
 
   # Should contain LaTeX elements (if using kableExtra, otherwise basic elements)
   expect_true(grepl("\\\\", result) || grepl("tabular", result))
+  expect_true(grepl("Coefficient", result, fixed = TRUE))
 })
 
 test_that("format_latex includes significance footnote", {
@@ -90,6 +134,20 @@ test_that("format_latex includes significance footnote", {
   result <- format_latex(transformed, robust.se = FALSE, margins = FALSE, highlight = FALSE)
 
   expect_true(grepl("Significance", result))
+})
+
+test_that("format_latex uses a LaTeX-safe multiplication sign for interactions", {
+  skip_if_not_installed("knitr")
+
+  m <- lm(mpg ~ wt * hp, data = mtcars)
+  parsed <- parse_models(list(Model1 = m), robust.se = FALSE, margins = FALSE)
+  transformed <- transform_table(parsed, control.var = NULL)
+
+  result <- as.character(
+    format_latex(transformed, robust.se = FALSE, margins = FALSE, highlight = FALSE)
+  )
+
+  expect_true(grepl("\\times", result, fixed = TRUE))
 })
 
 test_that("format_latex highlights negative scientific coefficients by coefficient sign only", {

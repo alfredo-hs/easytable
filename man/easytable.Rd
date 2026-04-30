@@ -93,7 +93,7 @@ individual coefficients for each factor level or transformation.
 Term labels are automatically formatted for readability:
 \itemize{
 \item Factor levels separated with colon (e.g., \code{advisor_confidence:low})
-\item Interactions shown with asterisk (e.g., \code{var1 * var2})
+\item Interactions shown with a multiplication sign (e.g., \code{var1 × var2})
 \item Polynomial contrasts as L indices (e.g., \code{var:L1}, \code{var:L2})
 \item Long variable names abbreviated for clarity
 }
@@ -107,39 +107,4 @@ Term labels are automatically formatted for readability:
 \item Robust SE: lmtest, sandwich
 \item Marginal effects: margins
 }
-}
-
-\examples{
-\dontrun{
-# Load example data
-library(palmerpenguins)
-data(penguins)
-
-# Fit models
-m1 <- lm(body_mass_g ~ flipper_length_mm, data = penguins)
-m2 <- lm(body_mass_g ~ flipper_length_mm + species, data = penguins)
-m3 <- lm(body_mass_g ~ flipper_length_mm + species + island, data = penguins)
-
-# Create table with default names (Model 1, Model 2, Model 3)
-easytable(m1, m2, m3)
-
-# Custom model names
-easytable(m1, m2, m3, model.names = c("Baseline", "With Species", "Full"))
-
-# LaTeX output
-easytable(m1, m2, output = "latex")
-
-# With robust standard errors
-easytable(m1, m2, robust.se = TRUE)
-
-# Group species and island as control variables
-easytable(m1, m2, m3, control.var = c("species", "island"))
-
-# Add a custom row below the model statistics block
-easytable(m1, m2, custom.row = c("Row label", "value 1", "value 2"))
-
-# Export to Word and CSV
-easytable(m1, m2, export.word = "mytable.docx", export.csv = "mytable.csv")
-}
-
 }

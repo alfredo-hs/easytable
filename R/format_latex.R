@@ -28,7 +28,9 @@ format_latex <- function(table,
   }
 
   table <- as.data.frame(table, stringsAsFactors = FALSE)
-  table$term <- wrap_interaction_terms(table$term)
+  table$term <- wrap_interaction_terms(table$term, output = "latex")
+  display_headers <- names(table)
+  display_headers[1] <- "Coefficient"
 
   # Identify where model-stat rows start (before LaTeX-safe term normalization)
   first_measure_row <- get_first_measure_row(table)
@@ -179,7 +181,7 @@ format_latex <- function(table,
       booktabs = TRUE,
       linesep = "",
       escape = FALSE,
-      col.names = names(table),
+      col.names = display_headers,
       align = c("l", rep("c", ncol(table) - 1))
     ) %>%
       kableExtra::kable_styling(
@@ -209,7 +211,7 @@ format_latex <- function(table,
       booktabs = TRUE,
       linesep = "",
       escape = FALSE,
-      col.names = names(table),
+      col.names = display_headers,
       align = c("l", rep("c", ncol(table) - 1))
     )
 

@@ -3,10 +3,10 @@ is_true_env <- function(name, default = "false") {
 }
 
 skip_if_word_tests_unavailable <- function() {
-  skip_if_not_installed("flextable")
   if (is_true_env("EASYTABLE_SKIP_WORD_TESTS")) {
     skip("Word/flextable tests skipped by EASYTABLE_SKIP_WORD_TESTS.")
   }
+  skip_if_not_installed("flextable")
 }
 
 skip_if_xtest_disabled <- function() {

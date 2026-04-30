@@ -133,7 +133,7 @@ test_that("factor terms display as var:level not varlevel", {
   expect_false(grepl("advisor_confidencemid", result, fixed = TRUE))
 })
 
-test_that("interaction with contrast and factor displays as var:L2 * other:level", {
+test_that("interaction with contrast and factor displays with a multiplication sign", {
   # Create data with ordered factor (to get polynomial contrasts) and regular factor
   set.seed(123)
   test_data <- data.frame(
@@ -148,8 +148,8 @@ test_that("interaction with contrast and factor displays as var:L2 * other:level
   # Should have polynomial contrast labels from ordered factors
   expect_true(grepl("financial\\.prudence\\.(L|Q|C)", result))
 
-  # Should have interaction with asterisk
-  expect_true(grepl("\\*", result))
+  # Should have interaction with a multiplication sign in LaTeX-safe form
+  expect_true(grepl("\\times", result, fixed = TRUE))
 
   # Should have factor level separated
   expect_true(grepl(":low|:high", result))

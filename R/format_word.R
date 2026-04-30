@@ -26,13 +26,74 @@ format_word <- function(table,
   }
 
   table <- as.data.frame(table, stringsAsFactors = FALSE)
-  table$term <- wrap_interaction_terms(table$term)
+  table$term <- wrap_interaction_terms(table$term, output = "word")
+
+  wrap_model_header <- function(x, chunk = 11L) {
+    if (is.na(x) || !nzchar(x) || grepl("\\s", x)) {
+      return(x)
+    }
+
+    if (nchar(x) <= chunk + 1L) {
+      return(x)
+    }
+
+    starts <- seq.int(1L, nchar(x), by = chunk)
+    pieces <- substring(x, starts, pmin(starts + chunk - 1L, nchar(x)))
+    paste(pieces, collapse = "\n")
+  }
+
+  set_word_widths <- function(ft, n_model_cols) {
+    term_width <- if (n_model_cols <= 2) {
+      1.91
+    } else if (n_model_cols <= 4) {
+      1.75
+    } else {
+      1.62
+    }
+
+    model_width <- if (n_model_cols <= 1) {
+      1.70
+    } else if (n_model_cols <= 2) {
+      1.49
+    } else if (n_model_cols <= 4) {
+      1.30
+    } else {
+      1.05
+    }
+
+    ft <- flextable::width(ft, j = 1, width = term_width)
+
+    if (n_model_cols > 0) {
+      ft <- flextable::width(
+        ft,
+        j = seq.int(2L, n_model_cols + 1L),
+        width = model_width
+      )
+    }
+
+    flextable::set_table_properties(ft, layout = "fixed")
+  }
 
   first_measure_row <- get_first_measure_row(table)
+  display_headers <- names(table)
+  display_headers[1] <- "Coefficient"
+  if (length(display_headers) > 1) {
+    display_headers[-1] <- vapply(
+      display_headers[-1],
+      wrap_model_header,
+      character(1),
+      USE.NAMES = FALSE
+    )
+  }
 
   # Create base flextable
   ft <- flextable::flextable(table) %>%
     flextable::add_footer_lines("Significance: ***p < .01; **p < .05; *p < .1 ")
+
+  ft <- do.call(
+    flextable::set_header_labels,
+    c(list(x = ft), as.list(stats::setNames(display_headers, names(table))))
+  )
 
   # Add zebra striping for coefficient rows only (skip control rows)
   if (!is.na(first_measure_row) && first_measure_row > 1) {
@@ -109,9 +170,11 @@ format_word <- function(table,
           i = p_values,
           part = "body",
           bg = "#ffcccc"
-        )
+      )
     }
   }
+
+  ft <- set_word_widths(ft, ncol(table) - 1L)
 
   return(ft)
 }

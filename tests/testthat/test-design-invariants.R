@@ -50,11 +50,17 @@ test_that("csv export keeps estimate and SE in the same cell", {
   expect_true(any(grepl("\\(Intercept\\).*\\([0-9]", csv_lines)))
 })
 
-test_that("interaction terms wrap after asterisk in the term column", {
+test_that("interaction terms wrap onto a multiplication-sign line in word display", {
   m <- lm(mpg ~ wt * hp, data = mtcars)
   parsed <- parse_models(list(Model1 = m), robust.se = FALSE, margins = FALSE)
   transformed <- transform_table(parsed, control.var = NULL, abbreviate = FALSE)
   wrapped <- wrap_interaction_terms(transformed$term)
 
-  expect_true(any(grepl(" \\*\\n", wrapped)))
+  expect_true(any(grepl("\n× ", wrapped, fixed = TRUE)))
+})
+
+test_that("latex interaction wrapping uses a LaTeX-safe multiplication sign", {
+  wrapped <- wrap_interaction_terms("log_gdp * pop", output = "latex")
+
+  expect_identical(wrapped, "log_gdp\n\\(\\times\\) pop")
 })

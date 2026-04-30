@@ -34,11 +34,19 @@ get_first_measure_row <- function(table) {
 
 #' Wrap interaction terms to reduce term-column width
 #'
-#' Example: `"x1 * x2" -> "x1 *\\nx2"`
+#' Example for Word output: `"x1 * x2" -> "x1\\n× x2"`
 #'
 #' @keywords internal
-wrap_interaction_terms <- function(terms) {
-  gsub(" * ", " *\n", terms, fixed = TRUE)
+wrap_interaction_terms <- function(terms, output = c("word", "latex")) {
+  output <- match.arg(output)
+
+  operator <- switch(
+    output,
+    word = "\u00d7 ",
+    latex = "\\(\\times\\) "
+  )
+
+  gsub(" * ", paste0("\n", operator), terms, fixed = TRUE)
 }
 
 #' Abbreviate variable name
