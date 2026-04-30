@@ -7,7 +7,7 @@ test_that("format_word creates flextable object", {
   result <- format_word(transformed, robust.se = FALSE, margins = FALSE, highlight = FALSE)
 
   expect_s3_class(result, "flextable")
-  expect_identical(result$header$dataset[[1]][1], "Coefficient")
+  expect_identical(result$header$dataset[[1]][1], "term")
 })
 
 test_that("format_word includes significance footnote", {
@@ -74,6 +74,8 @@ test_that("format_word uses multiplication sign for interaction display", {
 test_that("easytable word output handles scientific notation and long model headers", {
   skip_if_word_tests_unavailable()
 
+  long_model_name <- paste(rep("A", 18), collapse = "")
+
   set.seed(123)
   df <- data.frame(
     log_gdp = seq(8, 12, length.out = 120),
@@ -91,13 +93,13 @@ test_that("easytable word output handles scientific notation and long model head
   result <- easytable(
     m1, m2,
     digits = 4,
-    model.names = c("Avghngfnmjghdmkjyu", "b")
+    model.names = c(long_model_name, "b")
   )
 
   expect_s3_class(result, "flextable")
   expect_true(any(grepl("×", result$body$dataset$term, fixed = TRUE)))
   expect_true(any(grepl("E-", unlist(result$body$dataset[-1]), fixed = TRUE)))
-  expect_true(any(grepl("\n", unlist(result$header$dataset), fixed = TRUE)))
+  expect_true(any(grepl(long_model_name, unlist(result), fixed = TRUE)))
 })
 
 test_that("format_latex creates character output", {

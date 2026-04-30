@@ -34,7 +34,14 @@ get_first_measure_row <- function(table) {
 
 #' Wrap interaction terms to reduce term-column width
 #'
-#' Example for Word output: `"x1 * x2" -> "x1\\n× x2"`
+#' For Word output, `"x1 * x2"` becomes `"x1\\n× x2"`.
+#'
+#' @param terms Character vector of displayed term labels.
+#' @param output Output backend used for display formatting. `"word"` uses a
+#'   literal multiplication sign, while `"latex"` uses a LaTeX-safe
+#'   multiplication symbol.
+#'
+#' @return Character vector with interaction terms wrapped for display.
 #'
 #' @keywords internal
 wrap_interaction_terms <- function(terms, output = c("word", "latex")) {

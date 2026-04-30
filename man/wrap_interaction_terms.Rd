@@ -4,9 +4,19 @@
 \alias{wrap_interaction_terms}
 \title{Wrap interaction terms to reduce term-column width}
 \usage{
-wrap_interaction_terms(terms)
+wrap_interaction_terms(terms, output = c("word", "latex"))
+}
+\arguments{
+\item{terms}{Character vector of displayed term labels.}
+
+\item{output}{Output backend used for display formatting. \code{"word"} uses a
+literal multiplication sign, while \code{"latex"} uses a LaTeX-safe
+multiplication symbol.}
+}
+\value{
+Character vector with interaction terms wrapped for display.
 }
 \description{
-Example: \code{"x1 * x2" -> "x1 *\\\\nx2"}
+For Word output, \code{"x1 * x2"} becomes \code{"x1\\\\n× x2"}.
 }
 \keyword{internal}

@@ -108,3 +108,4 @@ Term labels are automatically formatted for readability:
 \item Marginal effects: margins
 }
 }
+
