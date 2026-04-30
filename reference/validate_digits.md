@@ -12,7 +12,8 @@ validate_digits(digits)
 
 - digits:
 
-  Integer (or coercible) number of decimal places
+  Integer number of digits after the decimal point. Allowed values are 0
+  to 4.
 
 ## Value
 

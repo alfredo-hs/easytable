@@ -6,6 +6,7 @@ This tutorial shows the full `easytable` workflow using
 ## 1) Fit a sequence of models
 
 ``` r
+
 library(easytable)
 library(palmerpenguins)
 #> 
@@ -22,6 +23,7 @@ m3 <- lm(body_mass_g ~ flipper_length_mm + species + island, data = penguins)
 ## 2) Create a readable baseline table
 
 ``` r
+
 easytable(
   m1, m2, m3,
   model.names = c("Baseline", "With Species", "Full Model")
@@ -38,6 +40,7 @@ By default, each coefficient cell is two lines:
 ## 3) Highlight significant coefficients
 
 ``` r
+
 easytable(
   m1, m2, m3,
   model.names = c("Baseline", "With Species", "Full Model"),
@@ -50,6 +53,7 @@ easytable(
 ## 4) Collapse controls into indicator rows
 
 ``` r
+
 easytable(
   m1, m2, m3,
   model.names = c("Baseline", "With Species", "Full Model"),
@@ -66,6 +70,7 @@ effects.
 ## 5) LaTeX output for PDF workflows
 
 ``` r
+
 easytable(
   m1, m2, m3,
   model.names = c("Baseline", "With Species", "Full Model"),
@@ -78,6 +83,7 @@ easytable(
 ## 6) Robust standard errors (optional dependency path)
 
 ``` r
+
 if (requireNamespace("lmtest", quietly = TRUE) &&
     requireNamespace("sandwich", quietly = TRUE)) {
   easytable(
@@ -93,6 +99,7 @@ if (requireNamespace("lmtest", quietly = TRUE) &&
 ## 7) Marginal effects (optional dependency path)
 
 ``` r
+
 if (requireNamespace("margins", quietly = TRUE)) {
   easytable(
     m2, m3,
@@ -107,6 +114,7 @@ if (requireNamespace("margins", quietly = TRUE)) {
 ## 8) Export outputs
 
 ``` r
+
 easytable(
   m1, m2, m3,
   model.names = c("Baseline", "With Species", "Full Model"),

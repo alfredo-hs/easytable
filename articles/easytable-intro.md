@@ -8,6 +8,7 @@
 ## Minimal Example
 
 ``` r
+
 library(easytable)
 
 m1 <- lm(mpg ~ wt, data = mtcars)
@@ -23,6 +24,7 @@ easytable(m1, m2)
 ### Word / HTML path (default)
 
 ``` r
+
 easytable(m1, m2, output = "word")
 ```
 
@@ -31,12 +33,14 @@ easytable(m1, m2, output = "word")
 ### LaTeX / PDF path
 
 ``` r
+
 easytable(m1, m2, output = "latex")
 ```
 
 ## Common Options
 
 ``` r
+
 easytable(
   m1, m2,
   model.names = c("Baseline", "With Controls"),
@@ -47,6 +51,7 @@ easytable(
 [TABLE]
 
 ``` r
+
 easytable(
   m1, m2,
   robust.se = TRUE
@@ -58,6 +63,7 @@ easytable(
 ## Export Files
 
 ``` r
+
 easytable(
   m1, m2,
   export.word = "table.docx",

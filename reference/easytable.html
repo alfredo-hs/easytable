@@ -130,8 +130,9 @@ Default "normalsize". Error if used with Word output.</p></dd>
 
 
 <dt id="arg-digits">digits<a class="anchor" aria-label="anchor" href="#arg-digits"></a></dt>
-<dd><p>Number of decimal places for coefficients and standard errors.
-Default 2.</p></dd>
+<dd><p>Number of digits after the decimal point for coefficients and
+standard errors, including the mantissa in scientific notation. Allowed
+values are 0 to 4. Default 2.</p></dd>
 
 
 <dt id="arg-custom-row">custom.row<a class="anchor" aria-label="anchor" href="#arg-custom-row"></a></dt>
@@ -155,7 +156,7 @@ model fit statistics (N, R-squared, Adjusted R-squared, AIC).</p>
 <p>Control variables can be grouped to show presence/absence rather than
 individual coefficients for each factor level or transformation.</p>
 <p>Term labels are automatically formatted for readability:</p><ul><li><p>Factor levels separated with colon (e.g., <code>advisor_confidence:low</code>)</p></li>
-<li><p>Interactions shown with asterisk (e.g., <code>var1 * var2</code>)</p></li>
+<li><p>Interactions shown with a multiplication sign (e.g., <code>var1 × var2</code>)</p></li>
 <li><p>Polynomial contrasts as L indices (e.g., <code>var:L1</code>, <code>var:L2</code>)</p></li>
 <li><p>Long variable names abbreviated for clarity</p></li>
 </ul></div>
@@ -170,42 +171,6 @@ individual coefficients for each factor level or transformation.</p>
 <li><p>Marginal effects: margins</p></li>
 </ul></div>
 
-    <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="co"># Load example data</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://allisonhorst.github.io/palmerpenguins/" class="external-link">palmerpenguins</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">penguins</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Fit models</span></span></span>
-<span class="r-in"><span><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">body_mass_g</span> <span class="op">~</span> <span class="va">flipper_length_mm</span>, data <span class="op">=</span> <span class="va">penguins</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">m2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">body_mass_g</span> <span class="op">~</span> <span class="va">flipper_length_mm</span> <span class="op">+</span> <span class="va">species</span>, data <span class="op">=</span> <span class="va">penguins</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">m3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">body_mass_g</span> <span class="op">~</span> <span class="va">flipper_length_mm</span> <span class="op">+</span> <span class="va">species</span> <span class="op">+</span> <span class="va">island</span>, data <span class="op">=</span> <span class="va">penguins</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Create table with default names (Model 1, Model 2, Model 3)</span></span></span>
-<span class="r-in"><span><span class="fu">easytable</span><span class="op">(</span><span class="va">m1</span>, <span class="va">m2</span>, <span class="va">m3</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Custom model names</span></span></span>
-<span class="r-in"><span><span class="fu">easytable</span><span class="op">(</span><span class="va">m1</span>, <span class="va">m2</span>, <span class="va">m3</span>, model.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Baseline"</span>, <span class="st">"With Species"</span>, <span class="st">"Full"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># LaTeX output</span></span></span>
-<span class="r-in"><span><span class="fu">easytable</span><span class="op">(</span><span class="va">m1</span>, <span class="va">m2</span>, output <span class="op">=</span> <span class="st">"latex"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># With robust standard errors</span></span></span>
-<span class="r-in"><span><span class="fu">easytable</span><span class="op">(</span><span class="va">m1</span>, <span class="va">m2</span>, robust.se <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Group species and island as control variables</span></span></span>
-<span class="r-in"><span><span class="fu">easytable</span><span class="op">(</span><span class="va">m1</span>, <span class="va">m2</span>, <span class="va">m3</span>, control.var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"species"</span>, <span class="st">"island"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Add a custom row below the model statistics block</span></span></span>
-<span class="r-in"><span><span class="fu">easytable</span><span class="op">(</span><span class="va">m1</span>, <span class="va">m2</span>, custom.row <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Row label"</span>, <span class="st">"value 1"</span>, <span class="st">"value 2"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Export to Word and CSV</span></span></span>
-<span class="r-in"><span><span class="fu">easytable</span><span class="op">(</span><span class="va">m1</span>, <span class="va">m2</span>, export.word <span class="op">=</span> <span class="st">"mytable.docx"</span>, export.csv <span class="op">=</span> <span class="st">"mytable.csv"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
-    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

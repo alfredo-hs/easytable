@@ -13,12 +13,14 @@ is simple:
 To install `easytable` please run the command below:
 
 ``` r
+
 install.packages("easytable", repos = c("https://alfredo-hs.r-universe.dev/easytable", "https://cloud.r-project.org"))
 ```
 
 After installation, everything is **easy**.
 
 ``` r
+
 library(easytable)
 
 model <- lm(mpg ~ wt, data = mtcars)

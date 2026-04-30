@@ -91,8 +91,9 @@ easytable(
 
 - digits:
 
-  Number of decimal places for coefficients and standard errors. Default
-  2.
+  Number of digits after the decimal point for coefficients and standard
+  errors, including the mantissa in scientific notation. Allowed values
+  are 0 to 4. Default 2.
 
 - custom.row:
 
@@ -124,7 +125,7 @@ Term labels are automatically formatted for readability:
 
 - Factor levels separated with colon (e.g., `advisor_confidence:low`)
 
-- Interactions shown with asterisk (e.g., `var1 * var2`)
+- Interactions shown with a multiplication sign (e.g., `var1 × var2`)
 
 - Polynomial contrasts as L indices (e.g., `var:L1`, `var:L2`)
 
@@ -141,39 +142,3 @@ Term labels are automatically formatted for readability:
 - Robust SE: lmtest, sandwich
 
 - Marginal effects: margins
-
-## Examples
-
-``` r
-if (FALSE) { # \dontrun{
-# Load example data
-library(palmerpenguins)
-data(penguins)
-
-# Fit models
-m1 <- lm(body_mass_g ~ flipper_length_mm, data = penguins)
-m2 <- lm(body_mass_g ~ flipper_length_mm + species, data = penguins)
-m3 <- lm(body_mass_g ~ flipper_length_mm + species + island, data = penguins)
-
-# Create table with default names (Model 1, Model 2, Model 3)
-easytable(m1, m2, m3)
-
-# Custom model names
-easytable(m1, m2, m3, model.names = c("Baseline", "With Species", "Full"))
-
-# LaTeX output
-easytable(m1, m2, output = "latex")
-
-# With robust standard errors
-easytable(m1, m2, robust.se = TRUE)
-
-# Group species and island as control variables
-easytable(m1, m2, m3, control.var = c("species", "island"))
-
-# Add a custom row below the model statistics block
-easytable(m1, m2, custom.row = c("Row label", "value 1", "value 2"))
-
-# Export to Word and CSV
-easytable(m1, m2, export.word = "mytable.docx", export.csv = "mytable.csv")
-} # }
-```

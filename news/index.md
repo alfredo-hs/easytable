@@ -115,6 +115,7 @@
 Most users can adopt the new interface immediately:
 
 ``` r
+
 # Old way (still works)
 models <- list(Model1 = m1, Model2 = m2)
 easy_table(models)
@@ -171,6 +172,7 @@ functionality.
     - If you get an error about missing packages, install them with:
 
       ``` r
+
       install.packages(c("flextable", "lmtest", "sandwich", "margins"))
       ```
 2.  **Function parameter changes**
@@ -232,6 +234,7 @@ functionality.
 **Good news**: Most basic usage should work without changes!
 
 ``` r
+
 # This still works exactly the same
 easy_table(model_list)
 ```
@@ -241,6 +244,7 @@ easy_table(model_list)
 **Old behavior (0.1.0)**:
 
 ``` r
+
 # Package would auto-install dependencies (security risk!)
 easy_table(models)
 # Installing package into '~/R/library'...
@@ -249,6 +253,7 @@ easy_table(models)
 **New behavior (2.0.0)**:
 
 ``` r
+
 # Get clear error with installation instructions
 easy_table(models)
 # Error: Package 'flextable' is required for Word output.
@@ -266,6 +271,7 @@ easy_table(models)
 **New in 2.0.0**:
 
 ``` r
+
 # Markdown for Quarto/RMarkdown
 easy_table(models, output = "markdown")
 
@@ -278,6 +284,7 @@ easy_table(models, output = "latex")
 All advanced features work the same way:
 
 ``` r
+
 # Robust SE - still works
 easy_table(models, robust.se = TRUE)
 
@@ -299,6 +306,7 @@ easy_table(models, csv = "results")
 **Install what you need**:
 
 ``` r
+
 # For basic usage (Word output)
 install.packages(c("broom", "dplyr", "flextable"))
 
