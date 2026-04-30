@@ -1,5 +1,11 @@
 # easytable 2.1.0
 
+## Minor Updates
+
+* pkgdown installation instructions now use the R-universe repository path.
+* pkgdown reference navigation now focuses on `easytable()`, `format_word()`, and `format_latex()`.
+* Scientific-notation display, interaction-term rendering, and Word layout were refined for small or large estimates.
+
 ## Breaking Changes
 
 * **Removed markdown output mode** from `easytable()`. Supported outputs are now `"word"` (default) and `"latex"`.
