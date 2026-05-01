@@ -51,7 +51,8 @@
 #' @details
 #' The function extracts coefficients, standard errors, and p-values from each
 #' model, adds significance stars (*** p<.01, ** p<.05, * p<.1), and includes
-#' model fit statistics (N, R-squared, Adjusted R-squared, AIC).
+#' model fit statistics such as N, R-squared, Adjusted R-squared, and
+#' AIC (for \code{glm} models).
 #'
 #' Control variables can be grouped to show presence/absence rather than
 #' individual coefficients for each factor level or transformation.
@@ -147,11 +148,14 @@ easytable <- function(...,
 
   # Append custom row below AIC if provided
   if (!is.null(custom.row)) {
-    model_cols <- names(transformed)[-1]
+    # model_cols should exclude row_type
+    model_cols <- setdiff(names(transformed), c("term", "row_type"))
     new_row <- data.frame(term = custom.row[1], stringsAsFactors = FALSE)
     for (i in seq_along(model_cols)) {
       new_row[[model_cols[i]]] <- custom.row[i + 1L]
     }
+    new_row$row_type <- "custom"
+    
     transformed <- rbind(transformed, new_row)
     existing_stat_terms <- attr(transformed, "stat_terms")
     attr(transformed, "stat_terms") <- c(existing_stat_terms, custom.row[1])
@@ -160,6 +164,7 @@ easytable <- function(...,
   # Export to CSV if requested
   if (!is.null(export.csv)) {
     csv_table <- transformed
+    csv_table$row_type <- NULL
     for (col in names(csv_table)) {
       if (is.character(csv_table[[col]])) {
         csv_table[[col]] <- gsub("\n", " ", csv_table[[col]], fixed = TRUE)

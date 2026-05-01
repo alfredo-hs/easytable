@@ -170,4 +170,4 @@ Hernandez Sanchez, A. (2026). easytable: Simple and Clean Regression Tables in R
 
 ## Acknowledgements
 
-This package was created as an education technology to facilitate statistics teaching. Many thanks to the students at Vilnius University and the University of Bucaramanga for their feedback on usability and design. The development of this package was assisted by AI coding tools such as Claude `4.5 Sonnet` and ChatGPT `5.3 Codex` for code debugging, documentation updates, and package restructuring. 
+This package was created as an education technology to facilitate statistics teaching. Many thanks to the students at Vilnius University and the University of Bucaramanga for their feedback on usability and design. The development of this package was assisted by AI coding tools such as Gemini `3.1 Pro`, Claude `4.5 Sonnet`, and ChatGPT `5.3 Codex` for code debugging, documentation updates, and package restructuring. 

@@ -102,6 +102,19 @@ test_that("easytable full pipeline with all features", {
   unlink(paste0(temp_csv, ".csv"))
 })
 
+test_that("export.word creates a non-empty .docx file", {
+  skip_if_word_tests_unavailable()
+
+  tmp <- tempfile(fileext = ".docx")
+  on.exit(unlink(tmp), add = TRUE)
+
+  result <- easytable(test_m1, test_m2, export.word = tmp)
+
+  expect_s3_class(result, "flextable")
+  expect_true(file.exists(tmp))
+  expect_true(file.info(tmp)$size > 0)
+})
+
 test_that("easytable latex pipeline with control vars", {
   skip_if_not_installed("knitr")
 
@@ -141,11 +154,13 @@ test_that("custom.row appears in the transformed table below AIC", {
   transformed <- transform_table(parsed)
 
   # Simulate what easytable does after transform
-  model_cols <- names(transformed)[-1]
+  model_cols <- setdiff(names(transformed), c("term", "row_type"))
   new_row <- data.frame(term = "F. Statistic", stringsAsFactors = FALSE)
-  new_row[[model_cols[1]]] <- ".004"
-  new_row[[model_cols[2]]] <- ".3"
-  new_row[[model_cols[3]]] <- ".1"
+  vals <- c(".004", ".3", ".1")
+  for (i in seq_along(model_cols)) {
+    new_row[[model_cols[i]]] <- vals[i]
+  }
+  new_row$row_type <- "custom"
   result <- rbind(transformed, new_row)
 
   # Custom row label is present

@@ -178,15 +178,27 @@ transform_table <- function(parsed_table, control.var = NULL, abbreviate = FALSE
   # Separate model-stat rows and put them at the bottom
   result <- separate_measures(result, control.var)
 
-  # Format term labels for display (skip model-stat rows)
   stat_terms <- attr(result, "stat_terms")
   if (is.null(stat_terms) || length(stat_terms) == 0) {
     stat_terms <- get_measure_names()
   }
+
+  # Add row metadata to remove brittle string inference downstream
+  result$row_type <- "coefficient"
+  result$row_type[result$term == "(Intercept)"] <- "intercept"
+  
+  result$row_type[result$term %in% stat_terms] <- "statistic"
+
+  if (!is.null(control.var)) {
+    result$row_type[result$term %in% control.var] <- "control"
+  }
+
+  # Format term labels for display (skip model-stat rows)
   non_measure_rows <- !result$term %in% stat_terms
 
   result$term[non_measure_rows] <- format_term_labels(
     result$term[non_measure_rows],
+    row_types = result$row_type[non_measure_rows],
     levels_map = levels_map,
     abbreviate = abbreviate
   )

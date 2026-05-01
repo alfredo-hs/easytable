@@ -176,7 +176,8 @@ format_coefficients <- function(coef_data, digits = 2) {
 #' Extract goodness-of-fit measures from a model
 #'
 #' Rounding is fixed per statistic and independent of the user-facing \code{digits}
-#' option: N = 0, R sq. = 2, Adj. R sq. = 2, AIC = 0.
+#' option: N = 0, R sq. = 2, Adj. R sq. = 2, AIC = 0. AIC is only reported
+#' for \code{glm} models.
 #'
 #' @param model A statistical model object (lm or glm)
 #'

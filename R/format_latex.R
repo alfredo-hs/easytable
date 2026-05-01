@@ -29,6 +29,10 @@ format_latex <- function(table,
 
   table <- as.data.frame(table, stringsAsFactors = FALSE)
   table$term <- wrap_interaction_terms(table$term, output = "latex")
+
+  row_types <- table$row_type
+  table$row_type <- NULL
+
   display_headers <- names(table)
   display_headers[1] <- "Coefficient"
 
@@ -110,7 +114,7 @@ format_latex <- function(table,
   stripe_count <- 0
   if (length(coef_row_indices) > 0) {
     for (row_idx in coef_row_indices) {
-      is_control <- any(grepl("^Y$", table[row_idx, 2:ncol(table)]))
+      is_control <- !is.null(row_types) && row_types[row_idx] == "control"
       if (!is_control) {
         stripe_count <- stripe_count + 1
         striped_row[row_idx] <- (stripe_count %% 2 == 0)
