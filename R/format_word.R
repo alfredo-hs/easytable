@@ -28,6 +28,9 @@ format_word <- function(table,
   table <- as.data.frame(table, stringsAsFactors = FALSE)
   table$term <- wrap_interaction_terms(table$term, output = "word")
 
+  row_types <- table$row_type
+  table$row_type <- NULL
+
   wrap_model_header <- function(x, chunk = 11L) {
     if (is.na(x) || !nzchar(x) || grepl("\\s", x)) {
       return(x)
@@ -101,7 +104,7 @@ format_word <- function(table,
     stripe_rows <- integer(0)
 
     for (row_idx in 1:(first_measure_row - 1)) {
-      is_control <- any(table[row_idx, 2:ncol(table), drop = TRUE] == "Y")
+      is_control <- !is.null(row_types) && row_types[row_idx] == "control"
       if (!is_control) {
         stripe_count <- stripe_count + 1
         if (stripe_count %% 2 == 0) {

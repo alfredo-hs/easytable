@@ -4,10 +4,12 @@
 \alias{abbreviate_var_name}
 \title{Abbreviate variable name}
 \usage{
-abbreviate_var_name(var_name)
+abbreviate_var_name(var_name, is_intercept = FALSE)
 }
 \arguments{
 \item{var_name}{Character string}
+
+\item{is_intercept}{Logical indicating if this variable is the intercept}
 }
 \value{
 Character string

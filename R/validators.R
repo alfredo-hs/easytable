@@ -53,9 +53,11 @@ validate_model_types <- function(model_list) {
 
     if (!is_supported_model(model)) {
       stop(
-        "Model '", model_name, "' is not supported yet.\n",
+        "Model '", model_name, "' is not supported.\n",
         "Detected class: ", paste(class(model), collapse = ", "), "\n",
-        "easytable currently supports: lm, glm",
+        "easytable currently supports: lm, glm.\n",
+        "For other model types, please see the modelsummary package:\n",
+        "  https://modelsummary.com",
         call. = FALSE
       )
     }

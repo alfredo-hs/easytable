@@ -14,6 +14,7 @@ A data frame with model fit statistics
 }
 \description{
 Rounding is fixed per statistic and independent of the user-facing \code{digits}
-option: N = 0, R sq. = 2, Adj. R sq. = 2, AIC = 0.
+option: N = 0, R sq. = 2, Adj. R sq. = 2, AIC = 0. AIC is only reported
+for \code{glm} models.
 }
 \keyword{internal}

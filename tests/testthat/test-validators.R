@@ -26,7 +26,7 @@ test_that("validate_model_types catches unsupported models", {
   bad_model <- structure(list(), class = "unsupported_model")
   expect_error(
     validate_model_types(list(BadModel = bad_model)),
-    "not supported yet"
+    "not supported"
   )
 
   # Valid models pass

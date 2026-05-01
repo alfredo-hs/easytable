@@ -66,14 +66,15 @@ wrap_interaction_terms <- function(terms, output = c("word", "latex")) {
 #' - Three-plus-token names become `t1[1:2] . t2[1:2] . t3[1:2]`
 #'
 #' @param var_name Character string
+#' @param is_intercept Logical indicating if this variable is the intercept
 #' @return Character string
 #' @keywords internal
-abbreviate_var_name <- function(var_name) {
+abbreviate_var_name <- function(var_name, is_intercept = FALSE) {
 
   if (is.na(var_name) || !nzchar(var_name)) return(var_name)
 
-  # Preserve intercept label
-  if (identical(var_name, "(Intercept)")) return(var_name)
+  # Preserve intercept label using metadata
+  if (is_intercept) return(var_name)
 
   take <- function(x, k) {
     if (nchar(x) <= k) x else substring(x, 1, k)
@@ -155,9 +156,12 @@ split_factor_level <- function(term, levels_map = NULL) {
 #' - Abbreviate only variable portion (if abbreviate = TRUE)
 #' - Ensure uniqueness after abbreviation
 #'
+#' @param terms Character vector of displayed term labels.
+#' @param row_types Optional character vector of row types
+#' @param levels_map List mapping factor names to their levels
 #' @param abbreviate Logical. Apply abbreviation? Default FALSE
 #' @keywords internal
-format_term_labels <- function(terms, levels_map = NULL, abbreviate = FALSE) {
+format_term_labels <- function(terms, row_types = NULL, levels_map = NULL, abbreviate = FALSE) {
 
   formatted <- terms
 
@@ -199,17 +203,17 @@ format_term_labels <- function(terms, levels_map = NULL, abbreviate = FALSE) {
   if (isTRUE(abbreviate)) {
 
     # Helper: abbreviate variable portion only
-    abbrev_piece <- function(piece) {
+    abbrev_piece <- function(piece, is_intercept = FALSE) {
 
       piece <- trimws(piece)
 
-      if (identical(piece, "(Intercept)")) return(piece)
+      if (is_intercept) return(piece)
 
       # Preserve polynomial suffixes like ".L", ".Q", ".C", ".^4"
       if (grepl("\\.[A-Za-z^0-9]+$", piece)) {
         base <- sub("(\\.[A-Za-z^0-9]+)$", "", piece)
         suffix <- sub("^.*(\\.[A-Za-z^0-9]+)$", "\\1", piece)
-        return(paste0(abbreviate_var_name(base), suffix))
+        return(paste0(abbreviate_var_name(base, is_intercept), suffix))
       }
 
       if (grepl(":", piece, fixed = TRUE)) {
@@ -218,26 +222,27 @@ format_term_labels <- function(terms, levels_map = NULL, abbreviate = FALSE) {
         level_part <- paste(parts[-1], collapse = ":")
         # Replace underscores with periods in level part, then abbreviate
         level_part <- gsub("_", ".", level_part, fixed = TRUE)
-        level_part <- abbreviate_var_name(level_part)
-        return(paste0(abbreviate_var_name(var_name), ":", level_part))
+        level_part <- abbreviate_var_name(level_part, is_intercept)
+        return(paste0(abbreviate_var_name(var_name, is_intercept), ":", level_part))
       }
 
-      abbreviate_var_name(piece)
+      abbreviate_var_name(piece, is_intercept)
     }
 
     for (i in seq_along(formatted)) {
 
       term <- formatted[i]
+      is_idx_intercept <- !is.null(row_types) && row_types[i] == "intercept"
 
       if (grepl("\\*", term)) {
 
         parts <- strsplit(term, " \\* ")[[1]]
-        parts <- vapply(parts, abbrev_piece, character(1))
+        parts <- vapply(parts, function(p) abbrev_piece(p, is_idx_intercept), character(1))
         formatted[i] <- paste(parts, collapse = " * ")
 
       } else {
 
-        formatted[i] <- abbrev_piece(term)
+        formatted[i] <- abbrev_piece(term, is_idx_intercept)
       }
     }
 

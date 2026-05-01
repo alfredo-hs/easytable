@@ -271,7 +271,7 @@ install.packages("kableExtra")  # optional, for enhanced formatting
 ✅ Parameter names: `robust.se`, `margins`, `control.var`, `highlight`, `csv`
 ✅ Model support: `lm`, `glm`
 ✅ Significance stars: `***` p < .01, `**` p < .05, `*` p < .1
-✅ Model fit statistics: N, R sq., Adj. R sq., AIC
+✅ Model fit statistics: N, R sq., Adj. R sq., AIC (glm only)
 
 ### What's Different
 

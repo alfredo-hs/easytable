@@ -4,9 +4,20 @@
 \alias{format_term_labels}
 \title{Format term labels for display}
 \usage{
-format_term_labels(terms, levels_map = NULL, abbreviate = FALSE)
+format_term_labels(
+  terms,
+  row_types = NULL,
+  levels_map = NULL,
+  abbreviate = FALSE
+)
 }
 \arguments{
+\item{terms}{Character vector of displayed term labels.}
+
+\item{row_types}{Optional character vector of row types}
+
+\item{levels_map}{List mapping factor names to their levels}
+
 \item{abbreviate}{Logical. Apply abbreviation? Default FALSE}
 }
 \description{

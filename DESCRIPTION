@@ -12,15 +12,14 @@ Description: Create publication-ready regression tables in multiple formats
     or LaTeX for PDF output.
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Imports:
     dplyr,
+    flextable,
     magrittr,
     stats
 Suggests:
-    flextable,
     knitr,
     kableExtra,
     lmtest,

@@ -85,7 +85,8 @@ marginal effects, and control variable grouping.
 \details{
 The function extracts coefficients, standard errors, and p-values from each
 model, adds significance stars (*** p<.01, ** p<.05, * p<.1), and includes
-model fit statistics (N, R-squared, Adjusted R-squared, AIC).
+model fit statistics such as N, R-squared, Adjusted R-squared, and
+AIC (for \code{glm} models).
 
 Control variables can be grouped to show presence/absence rather than
 individual coefficients for each factor level or transformation.
