@@ -58,14 +58,31 @@ Ensure uniqueness after abbreviation
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">format_term_labels</span><span class="op">(</span><span class="va">terms</span>, levels_map <span class="op">=</span> <span class="cn">NULL</span>, abbreviate <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">format_term_labels</span><span class="op">(</span></span>
+<span>  <span class="va">terms</span>,</span>
+<span>  row_types <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  levels_map <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  abbreviate <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-abbreviate">abbreviate<a class="anchor" aria-label="anchor" href="#arg-abbreviate"></a></dt>
+<dl><dt id="arg-terms">terms<a class="anchor" aria-label="anchor" href="#arg-terms"></a></dt>
+<dd><p>Character vector of displayed term labels.</p></dd>
+
+
+<dt id="arg-row-types">row_types<a class="anchor" aria-label="anchor" href="#arg-row-types"></a></dt>
+<dd><p>Optional character vector of row types</p></dd>
+
+
+<dt id="arg-levels-map">levels_map<a class="anchor" aria-label="anchor" href="#arg-levels-map"></a></dt>
+<dd><p>List mapping factor names to their levels</p></dd>
+
+
+<dt id="arg-abbreviate">abbreviate<a class="anchor" aria-label="anchor" href="#arg-abbreviate"></a></dt>
 <dd><p>Logical. Apply abbreviation? Default FALSE</p></dd>
 
 </dl></div>

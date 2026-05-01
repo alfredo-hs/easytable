@@ -15,7 +15,7 @@ Deterministic abbreviation rules:
 ## Usage
 
 ``` r
-abbreviate_var_name(var_name)
+abbreviate_var_name(var_name, is_intercept = FALSE)
 ```
 
 ## Arguments
@@ -23,6 +23,10 @@ abbreviate_var_name(var_name)
 - var_name:
 
   Character string
+
+- is_intercept:
+
+  Logical indicating if this variable is the intercept
 
 ## Value
 

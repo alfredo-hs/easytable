@@ -2,6 +2,18 @@
 
 ## easytable 2.1.0
 
+### Minor Updates
+
+- pkgdown installation instructions now use the R-universe repository
+  path.
+- pkgdown reference navigation now focuses on
+  [`easytable()`](https://alfredo-hs.github.io/easytable/reference/easytable.md),
+  [`format_word()`](https://alfredo-hs.github.io/easytable/reference/format_word.md),
+  and
+  [`format_latex()`](https://alfredo-hs.github.io/easytable/reference/format_latex.md).
+- Scientific-notation display, interaction-term rendering, and Word
+  layout were refined for small or large estimates.
+
 ### Breaking Changes
 
 - **Removed markdown output mode** from
@@ -327,7 +339,7 @@ install.packages("kableExtra")  # optional, for enhanced formatting
 flextable ✅ Parameter names: `robust.se`, `margins`, `control.var`,
 `highlight`, `csv` ✅ Model support: `lm`, `glm` ✅ Significance stars:
 `***` p \< .01, `**` p \< .05, `*` p \< .1 ✅ Model fit statistics: N, R
-sq., Adj. R sq., AIC
+sq., Adj. R sq., AIC (glm only)
 
 #### What’s Different
 

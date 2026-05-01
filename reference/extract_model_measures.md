@@ -1,7 +1,8 @@
 # Extract goodness-of-fit measures from a model
 
 Rounding is fixed per statistic and independent of the user-facing
-`digits` option: N = 0, R sq. = 2, Adj. R sq. = 2, AIC = 0.
+`digits` option: N = 0, R sq. = 2, Adj. R sq. = 2, AIC = 0. AIC is only
+reported for `glm` models.
 
 ## Usage
 

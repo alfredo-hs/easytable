@@ -13,10 +13,27 @@ Transformations:
 ## Usage
 
 ``` r
-format_term_labels(terms, levels_map = NULL, abbreviate = FALSE)
+format_term_labels(
+  terms,
+  row_types = NULL,
+  levels_map = NULL,
+  abbreviate = FALSE
+)
 ```
 
 ## Arguments
+
+- terms:
+
+  Character vector of displayed term labels.
+
+- row_types:
+
+  Optional character vector of row types
+
+- levels_map:
+
+  List mapping factor names to their levels
 
 - abbreviate:
 
