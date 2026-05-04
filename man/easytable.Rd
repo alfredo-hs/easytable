@@ -2,7 +2,7 @@
 % Please edit documentation in R/easytab.R
 \name{easytable}
 \alias{easytable}
-\title{Create publication-ready regression tables}
+\title{Create Multi-Format Regression Tables}
 \usage{
 easytable(
   ...,

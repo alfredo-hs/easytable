@@ -1,4 +1,4 @@
-#' Create publication-ready regression tables
+#' Create Multi-Format Regression Tables
 #'
 #' Takes model objects as arguments and creates formatted tables for
 #' Word or LaTeX/PDF output. Supports robust standard errors,
@@ -155,7 +155,7 @@ easytable <- function(...,
       new_row[[model_cols[i]]] <- custom.row[i + 1L]
     }
     new_row$row_type <- "custom"
-    
+
     transformed <- rbind(transformed, new_row)
     existing_stat_terms <- attr(transformed, "stat_terms")
     attr(transformed, "stat_terms") <- c(existing_stat_terms, custom.row[1])

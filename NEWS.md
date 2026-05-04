@@ -1,3 +1,11 @@
+# easytable 2.1.1
+
+This is the first CRAN submission version of easytable.
+
+Compared with the earlier GitHub and Zenodo 2.1.0 release, this version includes minor bug fixes, documentation updates, and CRAN-requested formatting changes.
+
+---
+
 # easytable 2.1.0
 
 ## Minor Updates
