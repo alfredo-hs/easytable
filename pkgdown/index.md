@@ -10,7 +10,7 @@
 To install `easytable` please run the command below:
 
 ```r
-install.packages("easytable", repos = c("https://alfredo-hs.r-universe.dev/easytable", "https://cloud.r-project.org"))
+install.packages("easytable")
 ```
 
 After installation, everything is **easy**.
@@ -36,10 +36,8 @@ For more information about package functions, see the [Penguins Tutorial](articl
 
 As a workhorse package, `easytable` currently supports the bread-and-butter classes in R:
 
-- `lm`
-- `glm`
-
-Other model classes (including `plm`) will be added in later releases.
+- `lm()`
+- `glm()`
 
 ## For Contributors
 

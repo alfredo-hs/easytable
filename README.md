@@ -2,7 +2,7 @@
 
 Create regression tables that are easy to use and easy to read.
 
-`easytable` is a workhorse table package for `lm` and `glm` models with predictable defaults across Word/HTML and LaTeX/PDF outputs.
+`easytable` is a workhorse table package for `lm()` and `glm()` models with predictable defaults across Word/HTML and LaTeX/PDF outputs.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 [![pkgdown](https://img.shields.io/badge/pkgdown-site-blue)](https://alfredo-hs.github.io/easytable/)
@@ -23,7 +23,7 @@ Create regression tables that are easy to use and easy to read.
 To install `easytable` please run the command below:
 
 ```r
-install.packages("easytable", repos = c("https://alfredo-hs.r-universe.dev/easytable","https://cloud.r-project.org"))
+install.packages("easytable")
 ```
 
 ## Quick Start (Penguins)
@@ -116,14 +116,10 @@ easytable(m1, m2, robust.se = TRUE, margins = TRUE)
 
 ## Supported Model Classes
 
-Current stable scope:
+The `easytable` supports the following models:
 
-- `lm`
-- `glm`
-
-Planned later:
-
-- `plm` and other model classes
+- `lm()`
+- `glm()`
 
 ## Design Invariants
 
@@ -150,15 +146,15 @@ See `DESIGN_PHILOSOPHY.md` for the full contributor policy.
 ## Citation
 
 ```text
-Hernandez Sanchez, A. (2026). easytable: Simple and Clean Regression Tables in R. Version 2.1.0. https://doi.org/10.5281/zenodo.18673550
+Hernandez Sanchez, A. (2026). easytable: Create Multi-Format Regression Tables. Version 2.1.1. https://doi.org/10.5281/zenodo.18673550
 ```
 
 ```text
 @misc{easytable2026,
 	title = {{e}asytable},
-	subtitle = {Simple and Clean Regression Tables in {R}},
+	subtitle = {Create Multi-Format Regression Tables},
 	author = {Hernandez Sanchez, Alfredo},
-	note = {Version 2.1.0},
+	note = {Version 2.1.1},
 	year = {2026},
 	month = {02},
 	date = {2026-02-17},
