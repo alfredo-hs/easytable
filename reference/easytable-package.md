@@ -1,10 +1,10 @@
 # easytable: Create Multi-Format Regression Tables
 
-Create publication-ready regression tables in multiple formats
-(Word/HTML and LaTeX/PDF) from statistical models. Supports lm and glm
-models with options for robust standard errors, marginal effects, and
-control variable grouping. Tables can be exported to Word via flextable
-or LaTeX for PDF output.
+Create publication-ready regression tables in multiple formats,
+including 'Word', 'HTML', 'LaTeX', and 'PDF', from statistical models.
+Supports lm() and glm() models with options for robust standard errors,
+marginal effects, and control variable grouping. Tables can be exported
+to 'Word' via 'flextable' or to 'LaTeX' for 'PDF' output.
 
 ## See also
 

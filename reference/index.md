@@ -3,7 +3,7 @@
 ## Main Function
 
 - [`easytable()`](https://alfredo-hs.github.io/easytable/reference/easytable.md)
-  : Create publication-ready regression tables
+  : Create Multi-Format Regression Tables
 
 ## Renderer Helpers
 

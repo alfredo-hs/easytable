@@ -1,4 +1,4 @@
-# Create publication-ready regression tables
+# Create Multi-Format Regression Tables
 
 Takes model objects as arguments and creates formatted tables for Word
 or LaTeX/PDF output. Supports robust standard errors, marginal effects,
