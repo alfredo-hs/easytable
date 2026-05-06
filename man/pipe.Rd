@@ -6,7 +6,11 @@
 \usage{
 lhs \%>\% rhs
 }
+\value{
+The result of evaluating the right-hand side expression after the
+left-hand side has been passed through the pipe.
+}
 \description{
-Re-export of \verb{\%>\%} from magrittr.
+Re-export of \verb{\%>\%} from 'magrittr'.
 }
 \keyword{internal}

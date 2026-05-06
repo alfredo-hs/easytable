@@ -7,10 +7,11 @@ Authors@R: person("Alfredo", "Hernandez Sanchez",
     role = c("aut", "cre"))
 Description: Create publication-ready regression tables in multiple
     formats, including 'Word', 'HTML', 'LaTeX', and 'PDF', from
-    statistical models. Supports lm() and glm() models with options for
-    robust standard errors, marginal effects, and control variable
-    grouping. Tables can be exported to 'Word' via 'flextable' or to
-    'LaTeX' for 'PDF' output.
+    statistical models. Supports lm() and glm() models. Includes options for
+    marginal effects, control variable grouping, and robust standard errors
+    using methods described in Zeileis (2004)
+    <doi:10.18637/jss.v011.i10>. Tables can be exported to 'Word' via
+    'flextable' or to 'LaTeX' for 'PDF' output.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
