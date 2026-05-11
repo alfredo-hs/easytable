@@ -18,7 +18,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Alfredo Hernandez Sanchez \email{alhdzsz@gmail.com}
+\strong{Maintainer}: Alfredo Hernandez Sanchez \email{alfredohs [at] protonmail.com}
 
 }
 \keyword{internal}
