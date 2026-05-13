@@ -2,6 +2,8 @@
 
 ## easytable 2.1.1
 
+CRAN release: 2026-05-12
+
 This is the first CRAN submission version of easytable.
 
 Compared with the earlier GitHub and Zenodo 2.1.0 release, this version
