@@ -1,9 +1,9 @@
 Package: easytable
 Type: Package
 Title: Create Multi-Format Regression Tables
-Version: 2.1.1
+Version: 2.1.1.9000
 Authors@R: person("Alfredo", "Hernandez Sanchez",
-    email = "alfredohs [at] protonmail.com",
+    email = "alfredo.sanchez@tspmi.vu.lt",
     role = c("aut", "cre"))
 Description: Create publication-ready regression tables in multiple
     formats, including 'Word', 'HTML', 'LaTeX', and 'PDF', from
