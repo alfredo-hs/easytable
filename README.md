@@ -5,9 +5,9 @@ Create regression tables that are easy to use and easy to read.
 `easytable` is a workhorse table package for `lm()` and `glm()` models with predictable defaults across Word/HTML and LaTeX/PDF outputs.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
+[![CRAN status](https://www.r-pkg.org/badges/version/easytable)](https://CRAN.R-project.org/package=easytable)
 [![pkgdown](https://img.shields.io/badge/pkgdown-site-blue)](https://alfredo-hs.github.io/easytable/)
-[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.12345678-blue)](https://doi.org/10.5281/zenodo.18673550)
-[![easytable status badge](https://alfredo-hs.r-universe.dev/easytable/badges/version)](https://alfredo-hs.r-universe.dev/easytable)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.20155314-blue)](https://doi.org/10.5281/zenodo.20155314)
 [![R-CMD-check](https://github.com/alfredo-hs/easytable/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/alfredo-hs/easytable/actions/workflows/R-CMD-check.yaml)
 
 ## Why easytable
@@ -20,7 +20,7 @@ Create regression tables that are easy to use and easy to read.
 
 ## Install
 
-To install `easytable` please run the command below:
+To install `easytable` from CRAN please run the command below:
 
 ```r
 install.packages("easytable")
@@ -159,7 +159,7 @@ Hernandez Sanchez, A. (2026). easytable: Create Multi-Format Regression Tables. 
 	month = {02},
 	date = {2026-02-17},
 	publisher = {Zenodo},
-	doi = {10.5281/ZENODO.18673550},
+	doi = {10.5281/zenodo.20155314}, 
 	url = {https://github.com/alfredo-hs/easytable}
 }
 ```
