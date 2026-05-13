@@ -116,7 +116,7 @@ easytable(m1, m2, robust.se = TRUE, margins = TRUE)
 
 ## Supported Model Classes
 
-The `easytable` supports the following models:
+`easytable` currently supports the following models:
 
 - `lm()`
 - `glm()`
@@ -141,26 +141,23 @@ See `DESIGN_PHILOSOPHY.md` for the full contributor policy.
 - Developer roadmap: `vignette("developer-roadmap", package = "easytable")`
 - Agent handoff notes: `AI_NOTES.md`
 - Testing protocol: `tests/README.md`
-- pkgdown source is defined in `_pkgdown.yml`, `pkgdown/index.md`, and `vignettes/`.
 
 ## Citation
 
 ```text
-Hernandez Sanchez, A. (2026). easytable: Create Multi-Format Regression Tables. Version 2.1.1. https://doi.org/10.5281/zenodo.18673550
+Hernandez Sanchez, A. (2026). easytable: Create Multi-Format Regression Tables. Version 2.1.1. https://doi.org/10.5281/zenodo.20155314
 ```
 
 ```text
 @misc{easytable2026,
-	title = {{e}asytable},
-	subtitle = {Create Multi-Format Regression Tables},
-	author = {Hernandez Sanchez, Alfredo},
-	note = {Version 2.1.1},
-	year = {2026},
-	month = {02},
-	date = {2026-02-17},
-	publisher = {Zenodo},
-	doi = {10.5281/zenodo.20155314}, 
-	url = {https://github.com/alfredo-hs/easytable}
+  title = {easytable},
+  subtitle = {Create Multi-Format Regression Tables},
+  author = {Hernandez Sanchez, Alfredo},
+  note = {Version 2.1.1},
+  year = {2026},
+  publisher = {Zenodo},
+  doi = {10.5281/zenodo.20155314},
+  url = {https://github.com/alfredo-hs/easytable}
 }
 ```
 
